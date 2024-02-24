@@ -1,13 +1,27 @@
+import { useEffect } from "react";
 import { Link, Outlet } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { store } from "./store";
+import { getProfileData } from "./store/slices/profile";
+import { Header } from "./components/header";
 
-function App() {
+export function App() {
+  const dispatch: typeof store.dispatch = useDispatch();
+
+  const { data } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.profile
+  );
+
+  useEffect(() => {
+    dispatch(getProfileData());
+  }, []);
+
   return (
     <>
-      <h1>Car market</h1>
-      <Link to="/">Home</Link> | <Link to="/signUp">Sign Up</Link> |
+      <Header />
+      <Link to="/">Home</Link>{" "}
+      {!data.username && "|" && <Link to="/signUp">Sign Up</Link>} |
       <Outlet />
     </>
   );
 }
-
-export default App;

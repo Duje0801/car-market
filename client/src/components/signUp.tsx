@@ -1,4 +1,9 @@
 import React, { FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { addProfileData } from "../store/slices/profile";
+import { store } from "../store";
+import { IProfileData } from "../interfaces/IProfileData";
 import { Hourglass } from "react-loader-spinner";
 import axios from "axios";
 
@@ -21,6 +26,13 @@ export function SignUp() {
   const [uploadImage, setUploadImage] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+
+  const { data, isChecked } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.profile
+  );
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   //Form data states changes
   const handleChangeUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,8 +99,9 @@ export function SignUp() {
           },
         }
       );
-      //Saving user data to local storage
-      localStorage.setItem("userData", JSON.stringify(response.data.data));
+      const profileData: IProfileData = response.data.data;
+      localStorage.setItem("userData", JSON.stringify(profileData));
+      dispatch(addProfileData(profileData));
       setError("Profile successfully created");
       setUsername("");
       setEmail("");
@@ -98,6 +111,7 @@ export function SignUp() {
       setUploadedImageURL("");
       setUploadedImagePublicID("");
       handleChangeUpload();
+      navigate("/");
     } catch (error: any) {
       if (
         error?.response?.data?.status === "fail" &&
@@ -189,133 +203,136 @@ export function SignUp() {
     }
   };
 
-  return (
-    <>
-      <form onSubmit={handleSubmit} className="border-2 border-black m-4">
-        <p>SignUp Form</p>
-        {error && <p className="text-red-500">{error}</p>}
-        <div>
-          <label htmlFor="usernameField">Username:</label>
-          <input
-            type="text"
-            minLength={3}
-            maxLength={20}
-            id="usernameField"
-            value={username}
-            onChange={handleChangeUsername}
-            className="border-2 border-black"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="emailField">Email:</label>
-          <input
-            type="email"
-            maxLength={40}
-            id="emailField"
-            value={email}
-            onChange={handleChangeEmail}
-            className="border-2 border-black"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="passwordField">Password:</label>
-          <input
-            type="password"
-            minLength={9}
-            maxLength={20}
-            id="passwordField"
-            value={password}
-            onChange={handleChangePassword}
-            className="border-2 border-black"
-            required
-          />{" "}
-        </div>
-        <div>
-          <label htmlFor="confirmPasswordField">Confirm Password:</label>
-          <input
-            type="password"
-            minLength={9}
-            maxLength={20}
-            id="confirmPasswordField"
-            value={confirmPassword}
-            onChange={handleChangeConfirmPassword}
-            className="border-2 border-black"
-            required
-          />{" "}
-        </div>
-        <div>
-          <label htmlFor="contactField">Contact (Mob/Tel):</label>
-          <input
-            type="text"
-            maxLength={30}
-            id="contactField"
-            value={contact}
-            onChange={handleChangeContact}
-            className="border-2 border-black"
-          />{" "}
-        </div>
-        <div>
-          <label htmlFor="avatarURL">User type:</label>
-          {userTypesID.map((type) => (
-            <div key={type.id}>
-              <input
-                type="radio"
-                id={type.id}
-                name="user_type"
-                value={type.id}
-                checked={userType === type.id}
-                onChange={handleOptionChange}
-                className="border-2 border-black"
-                required
-              />
-              <label htmlFor={type.id}>{type.id}</label>
-            </div>
-          ))}
-        </div>
-        <div>
-          {uploadImage ? (
-            <>
-              <label htmlFor="avatarURL">Avatar URL:</label>
-              <input
-                type="text"
-                maxLength={200}
-                id="avatarURL"
-                value={avatarURL}
-                onChange={handleChangeAvatarURL}
-                className="border-2 border-black"
-              />
-            </>
-          ) : (
-            <div>
-              {uploadedImageURL && (
-                <img src={uploadedImageURL} alt="avatar"></img>
-              )}
-              <input type="file" onChange={handleUploadAvatar} />
-            </div>
-          )}
-        </div>
-        <button type="button" onClick={handleChangeUpload} className="btn">
-          {uploadImage ? "Upload avatar" : "Avatar URL"}
-        </button>
-        <div>
-          <button type="submit" className="btn">
-            Submit
+  if (!isChecked) return <div>Loading...</div>;
+  else if (data.username) return <div>You are already logged in!</div>;
+  else
+    return (
+      <>
+        <form onSubmit={handleSubmit} className="border-2 border-black m-4">
+          <p>SignUp Form</p>
+          {error && <p className="text-red-500">{error}</p>}
+          <div>
+            <label htmlFor="usernameField">Username:</label>
+            <input
+              type="text"
+              minLength={3}
+              maxLength={20}
+              id="usernameField"
+              value={username}
+              onChange={handleChangeUsername}
+              className="border-2 border-black"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="emailField">Email:</label>
+            <input
+              type="email"
+              maxLength={40}
+              id="emailField"
+              value={email}
+              onChange={handleChangeEmail}
+              className="border-2 border-black"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="passwordField">Password:</label>
+            <input
+              type="password"
+              minLength={9}
+              maxLength={20}
+              id="passwordField"
+              value={password}
+              onChange={handleChangePassword}
+              className="border-2 border-black"
+              required
+            />{" "}
+          </div>
+          <div>
+            <label htmlFor="confirmPasswordField">Confirm Password:</label>
+            <input
+              type="password"
+              minLength={9}
+              maxLength={20}
+              id="confirmPasswordField"
+              value={confirmPassword}
+              onChange={handleChangeConfirmPassword}
+              className="border-2 border-black"
+              required
+            />{" "}
+          </div>
+          <div>
+            <label htmlFor="contactField">Contact (Mob/Tel):</label>
+            <input
+              type="text"
+              maxLength={30}
+              id="contactField"
+              value={contact}
+              onChange={handleChangeContact}
+              className="border-2 border-black"
+            />{" "}
+          </div>
+          <div>
+            <label htmlFor="avatarURL">User type:</label>
+            {userTypesID.map((type) => (
+              <div key={type.id}>
+                <input
+                  type="radio"
+                  id={type.id}
+                  name="user_type"
+                  value={type.id}
+                  checked={userType === type.id}
+                  onChange={handleOptionChange}
+                  className="border-2 border-black"
+                  required
+                />
+                <label htmlFor={type.id}>{type.id}</label>
+              </div>
+            ))}
+          </div>
+          <div>
+            {uploadImage ? (
+              <>
+                <label htmlFor="avatarURL">Avatar URL:</label>
+                <input
+                  type="text"
+                  maxLength={200}
+                  id="avatarURL"
+                  value={avatarURL}
+                  onChange={handleChangeAvatarURL}
+                  className="border-2 border-black"
+                />
+              </>
+            ) : (
+              <div>
+                {uploadedImageURL && (
+                  <img src={uploadedImageURL} alt="avatar"></img>
+                )}
+                <input type="file" onChange={handleUploadAvatar} />
+              </div>
+            )}
+          </div>
+          <button type="button" onClick={handleChangeUpload} className="btn">
+            {uploadImage ? "Upload avatar" : "Avatar URL"}
           </button>
-        </div>
-      </form>
-      {isSaving && (
-        <Hourglass
-          visible={true}
-          height="80"
-          width="80"
-          ariaLabel="hourglass-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-          colors={["#306cce", "#72a1ed"]}
-        />
-      )}
-    </>
-  );
+          <div>
+            <button type="submit" className="btn">
+              Submit
+            </button>
+          </div>
+        </form>
+        {isSaving && (
+          <Hourglass
+            visible={true}
+            height="80"
+            width="80"
+            ariaLabel="hourglass-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+            colors={["#306cce", "#72a1ed"]}
+          />
+        )}
+      </>
+    );
 }
