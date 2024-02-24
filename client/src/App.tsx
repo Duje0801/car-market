@@ -1,8 +1,11 @@
+import { Link, Outlet } from "react-router-dom";
+
 function App() {
   return (
     <>
-      <p>Hello World!</p>
-      <button className="btn">Click!</button>
+      <h1>Car market</h1>
+      <Link to="/">Home</Link> | <Link to="/signUp">Sign Up</Link> |
+      <Outlet />
     </>
   );
 }
