@@ -102,15 +102,6 @@ export function SignUp() {
       const profileData: IProfileData = response.data.data;
       localStorage.setItem("userData", JSON.stringify(profileData));
       dispatch(addProfileData(profileData));
-      setError("Profile successfully created");
-      setUsername("");
-      setEmail("");
-      setContact("");
-      setUserType("");
-      setAvatarURL("");
-      setUploadedImageURL("");
-      setUploadedImagePublicID("");
-      handleChangeUpload();
       navigate("/");
     } catch (error: any) {
       if (
@@ -121,10 +112,9 @@ export function SignUp() {
       } else {
         setError("Something went wrong, please try again later.");
       }
-    } finally {
-      setIsSaving(false);
       setPassword("");
       setConfirmPassword("");
+      setIsSaving(false);
     }
   };
 
