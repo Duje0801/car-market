@@ -11,6 +11,7 @@ import { App } from "./App.tsx";
 import { SignUp } from "./components/signUp.tsx";
 import { LogIn } from "./components/logIn.tsx";
 import { ForgotPassword } from "./components/forgotPassword.tsx";
+import { ResetPassword } from "./components/resetPassword.tsx";
 import "./index.css";
 
 const router = createBrowserRouter(
@@ -19,6 +20,7 @@ const router = createBrowserRouter(
       <Route path="/signUp" element={<SignUp />} />
       <Route path="/logIn" element={<LogIn />} />
       <Route path="/forgotPassword" element={<ForgotPassword />} />
+      <Route path="/resetPassword" element={<ResetPassword />} />
     </Route>
   )
 );

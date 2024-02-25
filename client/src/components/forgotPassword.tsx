@@ -2,6 +2,7 @@ import React, { FormEvent, useState } from "react";
 import { useSelector } from "react-redux";
 import { store } from "../store";
 import { Hourglass } from "react-loader-spinner";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export function ForgotPassword() {
@@ -16,6 +17,8 @@ export function ForgotPassword() {
   const { data, isChecked } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
   );
+
+  const navigate = useNavigate()
 
   //Form data states changes
   const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +60,9 @@ export function ForgotPassword() {
   };
 
   //Next step, password restarting
-  const handleClick = () => {};
+  const handleClick = () => {
+    navigate("/resetPassword")
+  };
 
   if (!isChecked) return <div>Loading...</div>;
   else if (data.username) return <div>You are already logged in!</div>;
