@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import multer from "multer";
-import { signUp } from "../controller/authController";
-import { logIn } from "../controller/authController";
+import { signUp } from "../controller/auth/signUp";
+import { logIn } from "../controller/auth/logIn";
 import { forgotPassword } from "../controller/forgotPassword/forgotPassword";
 import { resetPassword } from "../controller/forgotPassword/resetPassword";
 import { avatarUpload } from "../controller/avatar/avatarUpload";
