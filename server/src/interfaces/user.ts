@@ -1,4 +1,6 @@
-export interface IUser {
+import { Document } from "mongoose";
+
+export interface IUser extends Document {
   _id: string;
   username: string;
   email: string;
@@ -17,4 +19,6 @@ export interface IUser {
     };
   };
   id: String;
+  restartPasswordCode?: string;
+  restartPasswordCodeExpire?: Date;
 }

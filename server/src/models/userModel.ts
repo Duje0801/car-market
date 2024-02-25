@@ -91,6 +91,8 @@ const userSchema = new Schema(
         },
       },
     },
+    restartPasswordCode: { type: String, select: false },
+    restartPasswordCodeExpire: { type: Date, select: false },
   },
   {
     timestamps: true,

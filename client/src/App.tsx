@@ -20,8 +20,12 @@ export function App() {
     <>
       <Header />
       <Link to="/">Home</Link> |
-      {!data.username && <Link to="/signUp">Sign Up</Link>} |
-      {!data.username && <Link to="/logIn">Log In</Link>} |
+      {!data.username && (
+        <>
+          <Link to="/signUp">Sign Up</Link> | <Link to="/logIn">Log In</Link> |{" "}
+          <Link to="/forgotPassword">Forgot Password</Link>
+        </>
+      )}
       <Outlet />
     </>
   );

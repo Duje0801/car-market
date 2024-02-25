@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import multer from "multer";
 import { signUp } from "../controller/authController";
 import { logIn } from "../controller/authController";
+import { forgotPassword } from "../controller/forgotPassword/forgotPassword";
 import { avatarUpload } from "../controller/avatar/avatarUpload";
 import { avatarDelete } from "../controller/avatar/avatarDelete";
 
@@ -11,5 +12,6 @@ const upload = multer({ dest: "uploads/" });
 
 router.route("/signUp").post(signUp);
 router.route("/logIn").post(logIn);
+router.route("/forgotPassword").post(forgotPassword);
 router.route("/avatarUpload").post(upload.single("image"), avatarUpload);
 router.route("/avatarDelete").post(avatarDelete);
