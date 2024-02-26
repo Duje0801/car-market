@@ -26,7 +26,7 @@ const avatarUpload: any = async function (req: Request, res: Response) {
     } catch (err) {
       res.status(400).json({
         status: "fail",
-        message: "Error while uploading image, please try again later.",
+        message: "Error while uploading image.",
       });
     }
   } else {

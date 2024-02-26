@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { EditAvatar } from "./edit/editAvatar";
 import { EditContact } from "./edit/editContact";
 import { EditPassword } from "./edit/editPassword";
 import { EditEmail } from "./edit/editEmail";
@@ -92,6 +93,15 @@ export function UserProfile() {
                   Edit avatar
                 </button>
               </div>
+            )}
+            {openEditAvatar && (
+              <EditAvatar
+                email={profileData.email}
+                oldUploadedImagePublicID={profileData.avatar.uploadedAvatar.publicID}
+                setProfileData={setProfileData}
+                setOpenEditAvatar={setOpenEditAvatar}
+                setError={setError}
+              />
             )}
             <p>Username: {profileData.username}</p>
             <p>Email: {profileData.email}</p>
