@@ -37,7 +37,6 @@ export const protect: any = async function (
     if (user && user.active) {
       //Memorizing user data in request
       req.user = user;
-      console.log(req.user)
       next();
     } else
       return errorResponse(
