@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { EditContact } from "./edit/editContact";
 import { EditPassword } from "./edit/editPassword";
+import { EditEmail } from "./edit/editEmail";
 import { IUserData } from "../interfaces/IUserData";
 import { useCreateAtToString } from "../hooks/useCreateAtToString";
 import { useProfileAvatar } from "../hooks/useProfileAvatar";
@@ -100,6 +101,14 @@ export function UserProfile() {
                   Edit email
                 </button>
               </div>
+            )}
+            {openEditEmail && (
+              <EditEmail
+                email={profileData.email}
+                setProfileData={setProfileData}
+                setOpenEditEmail={setOpenEditEmail}
+                setError={setError}
+              />
             )}
             <p>Seller type: {profileData.userType}</p>
             {profileData.contact && (
