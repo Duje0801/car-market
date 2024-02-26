@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { EditPassword } from "./edit/editPassword";
+import { IUserData } from "../interfaces/IUserData";
 import { useCreateAtToString } from "../hooks/useCreateAtToString";
 import { useProfileAvatar } from "../hooks/useProfileAvatar";
-import { IUserData } from "../interfaces/IUserData";
 import { store } from "../store";
 import axios from "axios";
 
 export function UserProfile() {
   const [profileData, setProfileData] = useState<IUserData | null>(null);
+  const [openEditAvatar, setOpenEditAvatar] = useState<boolean>(false);
+  const [openEditEmail, setOpenEditEmail] = useState<boolean>(false);
+  const [openEditContact, setOpenEditContact] = useState<boolean>(false);
+  const [openEditPassword, setOpenEditPassword] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
@@ -26,7 +31,6 @@ export function UserProfile() {
         const response = await axios.get(
           `http://localhost:4000/api/v1/user/profile/${params.id}`
         );
-        console.log(response)
         setProfileData(response.data.user);
       } catch (error: any) {
         if (
@@ -45,7 +49,25 @@ export function UserProfile() {
     setIsLoaded(true);
   }, [data.username, params.id]);
 
-  const handleEditData = () => {};
+  const handleEditAvatar = () => {
+    return openEditAvatar ? setOpenEditAvatar(false) : setOpenEditAvatar(true);
+  };
+
+  const handleEditEmail = () => {
+    return openEditEmail ? setOpenEditEmail(false) : setOpenEditEmail(true);
+  };
+
+  const handleEditContact = () => {
+    return openEditContact
+      ? setOpenEditContact(false)
+      : setOpenEditContact(true);
+  };
+
+  const handleEditPassword = () => {
+    return openEditPassword
+      ? setOpenEditPassword(false)
+      : setOpenEditPassword(true);
+  };
 
   if (!isLoaded) return <div>Loading...</div>;
   else if (!data.username) {
@@ -62,20 +84,42 @@ export function UserProfile() {
             ) : (
               <p>No avatar</p>
             )}
+            {data.username === params.id && (
+              <div>
+                <button onClick={handleEditAvatar} className="btn">
+                  Edit avatar
+                </button>
+              </div>
+            )}
             <p>Username: {profileData.username}</p>
             <p>Email: {profileData.email}</p>
+            {data.username === params.id && (
+              <div>
+                <button onClick={handleEditEmail} className="btn">
+                  Edit email
+                </button>
+              </div>
+            )}
             <p>Seller type: {profileData.userType}</p>
             {profileData.contact && (
               <p>Contact (tel/mob): {profileData.contact}</p>
             )}
-            <p>Active since: {createdAt}</p>
             {data.username === params.id && (
               <div>
-                <button onClick={handleEditData} className="btn">
-                  Edit data
+                <button onClick={handleEditContact} className="btn">
+                  Edit contact
                 </button>
               </div>
             )}
+            <p>Active since: {createdAt}</p>
+            {data.username === params.id && (
+              <div>
+                <button onClick={handleEditPassword} className="btn">
+                  Edit password
+                </button>
+              </div>
+            )}
+            {openEditPassword && <EditPassword setOpenEditPassword={setOpenEditPassword} setError={setError} />}
           </div>
         ) : null}
       </>

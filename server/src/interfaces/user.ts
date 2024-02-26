@@ -6,9 +6,9 @@ export interface IUser extends Document {
   email: string;
   contact?: string;
   password: string;
-  active: boolean;
-  role: string;
-  type: string;
+  active?: boolean;
+  role?: string;
+  userType: string;
   createdAt: Date;
   updatedAt: Date;
   avatar: {
@@ -18,7 +18,7 @@ export interface IUser extends Document {
       publicID?: string;
     };
   };
-  id: String;
   restartPasswordCode?: string;
   restartPasswordCodeExpire?: Date;
+  id: string;
 }
