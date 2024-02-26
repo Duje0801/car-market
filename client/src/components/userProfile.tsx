@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { EditContact } from "./edit/editContact";
 import { EditPassword } from "./edit/editPassword";
 import { IUserData } from "../interfaces/IUserData";
 import { useCreateAtToString } from "../hooks/useCreateAtToString";
@@ -104,6 +105,14 @@ export function UserProfile() {
             {profileData.contact && (
               <p>Contact (tel/mob): {profileData.contact}</p>
             )}
+            {openEditContact && (
+              <EditContact
+                email={profileData.email}
+                setProfileData={setProfileData}
+                setOpenEditContact={setOpenEditContact}
+                setError={setError}
+              />
+            )}
             {data.username === params.id && (
               <div>
                 <button onClick={handleEditContact} className="btn">
@@ -119,7 +128,12 @@ export function UserProfile() {
                 </button>
               </div>
             )}
-            {openEditPassword && <EditPassword setOpenEditPassword={setOpenEditPassword} setError={setError} />}
+            {openEditPassword && (
+              <EditPassword
+                setOpenEditPassword={setOpenEditPassword}
+                setError={setError}
+              />
+            )}
           </div>
         ) : null}
       </>
