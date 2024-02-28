@@ -18,6 +18,7 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
       power,
       price,
       description,
+      adImages
     } = req.body;
 
     //Checking first registration
@@ -52,6 +53,7 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
       power: Number(power),
       price: Number(price),
       description,
+      images: JSON.parse(adImages)
     });
 
     res.status(200).json({

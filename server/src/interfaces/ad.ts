@@ -11,4 +11,8 @@ export interface IAd {
   power: number;
   price: number;
   description: string;
+  images: {
+    imageUrl: string;
+    publicID: string;
+  }[];
 }

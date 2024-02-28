@@ -79,7 +79,10 @@ const adSchema = new Schema(
     firstRegistration: {
       type: Number,
       required: [true, "Year of first registration is required"],
-      min: [1999, "First registration year must be from 2000 onwards or text - older"],
+      min: [
+        1999,
+        "First registration year must be from 2000 onwards or text - older",
+      ],
       max: [
         new Date().getFullYear(),
         "This year is lastest possible year to choose",
@@ -115,6 +118,30 @@ const adSchema = new Schema(
         "The maximum number of characters allowed in the car description is 300",
       ],
     },
+    images: {
+      type: [
+        {
+          imageUrl: {
+            type: String,
+            required: true,
+            maxLength: [
+              200,
+              `The maximum number of characters allowed in image URL is 200`,
+            ],
+          },
+          publicID: {
+            type: String,
+            required: true,
+            maxLength: [
+              200,
+              `The maximum number of characters allowed in public ID is 200`,
+            ],
+          },
+        },
+      ],
+      required: [true, "Ad must have at least one image"],
+      validate: [arrayLimit, "Maximum number of images per ad is 10"],
+    },
   },
   {
     timestamps: true,
@@ -122,6 +149,10 @@ const adSchema = new Schema(
     toObject: { virtuals: true },
   }
 );
+
+function arrayLimit(val: any) {
+  return val.length <= 10;
+}
 
 const Ad = model<IAd>("Ad", adSchema);
 

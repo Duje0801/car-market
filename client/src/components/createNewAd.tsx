@@ -1,11 +1,13 @@
 import { FormEvent, useState } from "react";
 import { useSelector } from "react-redux";
+import { IImageData } from "../interfaces/IImageData";
 import { store } from "../store";
 import { yearsData } from "../data/years";
 import { makes as makesList } from "../data/makes";
 import { fuel as fuelList } from "../data/fuel";
 import { condition as conditionList } from "../data/condition";
 import { countries as countriesList } from "../data/countries";
+import { UploadAdImages } from "./uploadAdImages";
 import { Hourglass } from "react-loader-spinner";
 import axios from "axios";
 
@@ -24,6 +26,7 @@ export function NewAd() {
   const [power, setPower] = useState<string>("");
   const [price, setPrice] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [adImages, setAdImages] = useState<IImageData[]>([]);
 
   //Other states
   const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -109,19 +112,15 @@ export function NewAd() {
       formData.append("power", power);
       formData.append("price", price);
       formData.append("description", description);
+      formData.append("adImages", JSON.stringify(adImages));
 
-      const response = await axios.post(
-        "http://localhost:4000/api/v1/ad/newAd",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${data?.token}`,
-          },
-        }
-      );
-      setError(response.data.message);
-      handleClearAll()
+      await axios.post("http://localhost:4000/api/v1/ad/newAd", formData, {
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${data?.token}`,
+        },
+      });
+      handleClearAll();
     } catch (error: any) {
       if (
         error?.response?.data?.status === "fail" &&
@@ -137,6 +136,7 @@ export function NewAd() {
 
   //Clear button click
   const handleClearAll = () => {
+    setError("");
     setTitle("");
     setCondition("");
     setCountry("");
@@ -148,6 +148,7 @@ export function NewAd() {
     setPower("");
     setPrice("");
     setDescription("");
+    setAdImages([]);
   };
 
   if (!isChecked) return <div>Loading...</div>;
@@ -309,7 +310,11 @@ export function NewAd() {
               cols={75}
             />
           </div>
-
+          <UploadAdImages
+            setError={setError}
+            adImages={adImages}
+            setAdImages={setAdImages}
+          />
           <button type="submit" className="btn">
             Submit
           </button>
