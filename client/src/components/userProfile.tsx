@@ -46,11 +46,9 @@ export function UserProfile() {
         }
       }
     };
-    if (data.username) {
-      fetchData();
-    }
+    fetchData();
     setIsLoaded(true);
-  }, [data.username, params.id]);
+  }, [params.id]);
 
   const handleEditAvatar = () => {
     return openEditAvatar ? setOpenEditAvatar(false) : setOpenEditAvatar(true);
@@ -73,9 +71,7 @@ export function UserProfile() {
   };
 
   if (!isLoaded) return <div>Loading...</div>;
-  else if (!data.username) {
-    return <div>Only logged in users can see profile</div>;
-  } else {
+  else {
     return (
       <>
         {error && <div className="text-red-500">{error}</div>}
@@ -97,7 +93,9 @@ export function UserProfile() {
             {openEditAvatar && (
               <EditAvatar
                 email={profileData.email}
-                oldUploadedImagePublicID={profileData.avatar.uploadedAvatar.publicID}
+                oldUploadedImagePublicID={
+                  profileData.avatar.uploadedAvatar.publicID
+                }
                 setProfileData={setProfileData}
                 setOpenEditAvatar={setOpenEditAvatar}
                 setError={setError}
@@ -153,6 +151,26 @@ export function UserProfile() {
                 setError={setError}
               />
             )}
+            {profileData.ads && profileData.ads.length > 0 ? (
+              <div>
+                Ads:
+                {profileData.ads.map((ad, i) => {
+                  return (
+                    <div key={i} className="border-black border-2">
+                      <p>Title: {ad.title}</p>
+                      <p>Price: {ad.price}€</p>
+                      <img
+                        src={ad.images[0].imageUrl}
+                        width={200}
+                        height={200}
+                        alt="adImage"
+                      />
+                      <button className="btn">See more</button>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : null}
           </div>
         ) : null}
       </>

@@ -1,10 +1,11 @@
+import { IAd } from "./IAd";
+
 export interface IUserData {
   _id: string;
   username: string;
   email: string;
   contact?: string;
   active: boolean;
-  type: string;
   createdAt: Date;
   userType: string;
   avatar: {
@@ -14,5 +15,6 @@ export interface IUserData {
       publicID?: string;
     };
   };
-  id: String;
+  ads?: IAd[];
+  id: string;
 }

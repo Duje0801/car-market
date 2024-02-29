@@ -1,4 +1,5 @@
 import { model, Schema } from "mongoose";
+import { Ad } from "./adModel";
 import { IUser } from "../interfaces/user";
 import validator from "validator";
 
@@ -100,6 +101,12 @@ const userSchema = new Schema(
     toObject: { virtuals: true },
   }
 );
+
+userSchema.virtual(`ads`, {
+  ref: Ad,
+  localField: "username",
+  foreignField: "username",
+});
 
 const User = model<IUser>(`User`, userSchema);
 

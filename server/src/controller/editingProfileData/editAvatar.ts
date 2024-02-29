@@ -61,9 +61,16 @@ export const editAvatar: any = async function (req: ReqUser, res: Response) {
     //Saving new avatar links
     await user.save({ validateBeforeSave: true });
 
-    const userToReturn: IUser = await User.findById(user._id).select(
-      "+active -updatedAt -__v"
-    );
+    const userToReturn: IUser | null = await User.findById(user._id)
+      .select("+active -updatedAt -__v")
+      .populate({
+        path: `ads`,
+        options: { sort: { createdAt: -1 } },
+        select: {
+          updatedAt: 0,
+          __v: 0,
+        },
+      });
 
     res.status(200).json({
       status: "success",

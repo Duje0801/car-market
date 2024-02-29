@@ -1,4 +1,5 @@
 import { Document } from "mongoose";
+import { IAd } from "./ad";
 
 export interface IUser extends Document {
   _id: string;
@@ -18,6 +19,7 @@ export interface IUser extends Document {
       publicID?: string;
     };
   };
+  ads?: IAd[],
   restartPasswordCode?: string;
   restartPasswordCodeExpire?: Date;
   id: string;

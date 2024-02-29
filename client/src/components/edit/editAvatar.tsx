@@ -71,6 +71,7 @@ export function EditAvatar({
           {
             headers: {
               "Content-Type": "application/json",
+              authorization: `Bearer ${data?.token}`,
             },
           }
         );
@@ -109,6 +110,7 @@ export function EditAvatar({
             {
               headers: {
                 "Content-Type": "application/json",
+                authorization: `Bearer ${data?.token}`,
               },
             }
           );
@@ -133,17 +135,18 @@ export function EditAvatar({
   //Avatar upload function
   const handleUploadAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const data = new FormData();
-      data.append("image", e.target.files[0]);
+      const formData = new FormData();
+      formData.append("image", e.target.files[0]);
       setIsSaving(true);
 
       try {
         const response = await axios.post(
           "http://localhost:4000/api/v1/user/uploadAvatar",
-          data,
+          formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
+              authorization: `Bearer ${data?.token}`,
             },
           }
         );
