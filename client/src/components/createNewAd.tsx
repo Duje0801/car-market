@@ -274,8 +274,8 @@ export function NewAd() {
             <label htmlFor="powerField">Power:</label>
             <input
               type="text"
-              min={1}
-              max={4}
+              minLength={1}
+              maxLength={4}
               id="powerField"
               value={power}
               onChange={handleChangePower}
@@ -288,8 +288,8 @@ export function NewAd() {
             <label htmlFor="priceField">Price:</label>
             <input
               type="text"
-              min={1}
-              max={8}
+              minLength={1}
+              maxLength={8}
               id="priceField"
               value={price}
               onChange={handleChangePrice}
@@ -298,7 +298,6 @@ export function NewAd() {
             />{" "}
             €
           </div>
-
           <div>
             <label htmlFor="textInput">Description:</label>
             <textarea

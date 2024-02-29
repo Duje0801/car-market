@@ -91,7 +91,7 @@ const adSchema = new Schema(
     mileage: {
       type: Number,
       required: [true, "Mileage is required"],
-      min: [1, "The minimum milage number is 1"],
+      min: [0, "The minimum milage number is 0"],
       max: [9999999, "The maximum milage number is 9999999"],
     },
     fuel: {
