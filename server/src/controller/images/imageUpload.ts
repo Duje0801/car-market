@@ -11,17 +11,24 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const avatarUpload: any = async function (req: Request, res: Response) {
+const uploadImage: any = async function (req: Request, res: Response) {
   if (req.file) {
+    //Ad images and avatars have different dimensions
+    const imageDimensions =
+      req.originalUrl.split("/")[3] === "ad"
+        ? { width: 800, height: 800, crop: "pad", background: "transparent" }
+        : { width: 200, height: 200, crop: "pad", background: "transparent" };
+
     try {
       const cloudinaryUpload = await cloudinary.uploader.upload(req.file.path, {
-        transformation: [
-          { width: 200, height: 200, crop: "pad", background: "transparent" },
-        ],
+        transformation: [imageDimensions],
       });
       res.status(200).json({
-        imageUrl: cloudinaryUpload.secure_url,
-        publicID: cloudinaryUpload.public_id,
+        status: "success",
+        image: {
+          imageUrl: cloudinaryUpload.secure_url,
+          publicID: cloudinaryUpload.public_id,
+        },
       });
     } catch (err) {
       res.status(400).json({
@@ -34,4 +41,4 @@ const avatarUpload: any = async function (req: Request, res: Response) {
   }
 };
 
-export { avatarUpload };
+export { uploadImage };

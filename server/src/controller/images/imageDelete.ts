@@ -11,7 +11,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const deleteAdImage: any = async function (req: Request, res: Response) {
+const deleteImage: any = async function (req: Request, res: Response) {
   try {
     await cloudinary.uploader.destroy(req.body.data);
     res
@@ -24,4 +24,4 @@ const deleteAdImage: any = async function (req: Request, res: Response) {
   }
 };
 
-export { deleteAdImage };
+export { deleteImage };

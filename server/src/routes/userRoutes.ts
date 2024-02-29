@@ -9,8 +9,8 @@ import { editAvatar } from "../controller/editingProfileData/editAvatar";
 import { editPassword } from "../controller/editingProfileData/editPassword";
 import { editContact } from "../controller/editingProfileData/editContact";
 import { editEmail } from "../controller/editingProfileData/editEmail";
-import { avatarUpload } from "../controller/avatar/avatarUpload";
-import { avatarDelete } from "../controller/avatar/avatarDelete";
+import { uploadImage } from "../controller/images/imageUpload";
+import { deleteImage } from "../controller/images/imageDelete";
 import { protect } from "../controller/auth/protect";
 
 export const router: Router = express.Router();
@@ -26,5 +26,5 @@ router.route("/editAvatar").patch(protect, editAvatar);
 router.route("/editPassword").patch(protect, editPassword);
 router.route("/editContact").patch(protect, editContact);
 router.route("/editEmail").patch(protect, editEmail);
-router.route("/avatarUpload").post(upload.single("image"), avatarUpload);
-router.route("/avatarDelete").post(avatarDelete);
+router.route("/uploadAvatar").post(upload.single("image"), protect, uploadImage);
+router.route("/deleteAvatar").post(protect, deleteImage);

@@ -130,7 +130,7 @@ export function SignUp() {
         setIsSaving(true);
         try {
           await axios.post(
-            "http://localhost:4000/api/v1/user/avatarDelete",
+            "http://localhost:4000/api/v1/user/deleteAvatar",
             { data: uploadedImagePublicID },
             {
               headers: {
@@ -165,7 +165,7 @@ export function SignUp() {
 
       try {
         const response = await axios.post(
-          "http://localhost:4000/api/v1/user/avatarUpload",
+          "http://localhost:4000/api/v1/user/uploadAvatar",
           data,
           {
             headers: {
@@ -173,8 +173,8 @@ export function SignUp() {
             },
           }
         );
-        setUploadedImageURL(response.data.imageUrl);
-        setUploadedImagePublicID(response.data.publicID);
+        setUploadedImageURL(response.data.image.imageUrl);
+        setUploadedImagePublicID(response.data.image.publicID);
         setError("Avatar successfully uploaded.");
       } catch (error: any) {
         if (
