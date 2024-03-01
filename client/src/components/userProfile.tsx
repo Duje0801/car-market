@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { EditAvatar } from "./edit/editAvatar";
 import { EditContact } from "./edit/editContact";
@@ -27,6 +27,8 @@ export function UserProfile() {
   const { data } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
   );
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,6 +70,10 @@ export function UserProfile() {
     return openEditPassword
       ? setOpenEditPassword(false)
       : setOpenEditPassword(true);
+  };
+
+  const handleBtnClick = (id: string) => {
+    navigate(`/ad/${id}`);
   };
 
   if (!isLoaded) return <div>Loading...</div>;
@@ -165,7 +171,12 @@ export function UserProfile() {
                         height={200}
                         alt="adImage"
                       />
-                      <button className="btn">See more</button>
+                      <button
+                        className="btn"
+                        onClick={() => handleBtnClick(ad.id)}
+                      >
+                        See more
+                      </button>
                     </div>
                   );
                 })}

@@ -1,3 +1,5 @@
+import { IUserData } from "./IUserData";
+
 export interface IAd {
   _id: string;
   username: string;
@@ -20,4 +22,5 @@ export interface IAd {
     id: string;
     _id: string;
   }[];
+  user?: IUserData[]
 }

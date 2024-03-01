@@ -13,10 +13,7 @@ export const viewProfile: any = async function (req: Request, res: Response) {
       .populate({
         path: `ads`,
         options: { sort: { createdAt: -1 } },
-        select: {
-          updatedAt: 0,
-          __v: 0,
-        },
+        select: "-updatedAt -__v",
       });
 
     if (!user || !user.active) {

@@ -1,5 +1,6 @@
 import express, { Router } from "express";
 import multer from "multer";
+import { oneAd } from "../controller/ad/oneAd";
 import { newAd } from "../controller/ad/newAd";
 import { searchAds } from "../controller/ad/searchAds";
 import { uploadImage } from "../controller/images/imageUpload";
@@ -10,6 +11,7 @@ export const router: Router = express.Router();
 
 const upload = multer({ dest: "uploads/" });
 
+router.route("/find/:id").get(oneAd);
 router.route("/searchNo").get(searchAds);
 router.route("/search").get(searchAds);
 router.route("/newAd").post(protect, newAd);

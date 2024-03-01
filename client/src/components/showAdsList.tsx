@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IAd } from "../interfaces/IAd";
 import { useCreateAtToString } from "../hooks/useCreateAtToString";
 import axios from "axios";
@@ -10,11 +10,19 @@ export function ShowAdsList() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const params = useParams();
+  const navigate = useNavigate();
 
-  const fetchData = async (id: string) => {
+  //Automatically fetches ad list data on page load
+  useEffect(() => {
+    if (params.id) {
+      fetchData();
+    }
+  }, []);
+
+  const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/v1/ad/search/?${id}`
+        `http://localhost:4000/api/v1/ad/search/?${params.id}`
       );
       setAdInfo(response.data.ads);
     } catch (error: any) {
@@ -30,12 +38,9 @@ export function ShowAdsList() {
     setIsLoading(false);
   };
 
-  //Automatically fetch ad list data on page load
-  useEffect(() => {
-    if (params.id) {
-      fetchData(params.id);
-    }
-  }, []);
+  const handleBtnClick = (id: string) => {
+    navigate(`/ad/${id}`);
+  };
 
   if (!params.id) return <div>Can't find any matching ad</div>;
   else if (params.id && isLoading) return <div>Loading...</div>;
@@ -60,7 +65,9 @@ export function ShowAdsList() {
               />
               <div>Active since: {createdAt}</div>
               <div>Price: {ad.price}€</div>
-              <button className="btn">See more</button>
+              <button className="btn" onClick={() => handleBtnClick(ad.id)}>
+                See more
+              </button>
             </div>
           );
         })}

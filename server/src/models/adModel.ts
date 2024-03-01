@@ -1,6 +1,10 @@
 import { model, Schema } from "mongoose";
 import { IAd } from "../interfaces/ad";
 
+function arrayLimit(val: any) {
+  return val.length <= 10;
+}
+
 const adSchema = new Schema(
   {
     username: {
@@ -150,9 +154,11 @@ const adSchema = new Schema(
   }
 );
 
-function arrayLimit(val: any) {
-  return val.length <= 10;
-}
+adSchema.virtual(`user`, {
+  ref: `User`,
+  localField: "username",
+  foreignField: "username",
+});
 
 const Ad = model<IAd>("Ad", adSchema);
 

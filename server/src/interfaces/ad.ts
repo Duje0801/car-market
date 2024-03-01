@@ -1,3 +1,5 @@
+import { IUser } from "./user";
+
 export interface IAd {
   username: string;
   title: string;
@@ -15,4 +17,5 @@ export interface IAd {
     imageUrl: string;
     publicID: string;
   }[];
+  user?: IUser
 }

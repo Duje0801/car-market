@@ -114,6 +114,12 @@ export function NewAd() {
       formData.append("description", description);
       formData.append("adImages", JSON.stringify(adImages));
 
+      if (adImages.length < 1) {
+        setError("Ad must have at least one image");
+        setIsSaving(false);
+        return;
+      }
+
       await axios.post("http://localhost:4000/api/v1/ad/newAd", formData, {
         headers: {
           "Content-Type": "application/json",
