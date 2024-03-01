@@ -1,5 +1,5 @@
-import { Search } from "./search";
+import { SearchAds } from "./searchAds"
 
 export function Home () {
-    return <><Search /></>
+    return <SearchAds />
 }

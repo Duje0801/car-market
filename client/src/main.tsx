@@ -15,6 +15,7 @@ import { ForgotPassword } from "./components/forgotPassword.tsx";
 import { ResetPassword } from "./components/resetPassword.tsx";
 import { UserProfile } from "./components/userProfile.tsx";
 import { NewAd } from "./components/createNewAd.tsx";
+import { ShowAdsList } from "./components/showAdsList.tsx";
 import "./index.css";
 
 const router = createBrowserRouter(
@@ -27,6 +28,7 @@ const router = createBrowserRouter(
       <Route path="/resetPassword" element={<ResetPassword />} />
       <Route path="/profile/:id" element={<UserProfile />} />
       <Route path="/newAd" element={<NewAd />} />
+      <Route path="/ads/:id?" element={<ShowAdsList />} />
     </Route>
   )
 );

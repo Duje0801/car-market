@@ -1,4 +1,5 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { makes as makesList } from "../data/makes";
 import { countries as countriesList } from "../data/countries";
 import { yearsData } from "../data/years";
@@ -6,7 +7,7 @@ import { fuel as fuelList } from "../data/fuel";
 import { Hourglass } from "react-loader-spinner";
 import axios from "axios";
 
-export function Search() {
+export function SearchAds() {
   const [make, setMake] = useState<string>("");
   const [model, setModel] = useState<string>("");
   const [priceFrom, setPriceFrom] = useState<string>("");
@@ -24,8 +25,44 @@ export function Search() {
   const [moreSearchOptions, setMoreSearchOptions] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [resultsNo, setResultsNo] = useState<number>(0);
+  const [searchId, setSearchId] = useState<string>("");
+
+  const navigate = useNavigate();
 
   const years = yearsData();
+
+  useEffect(() => {
+    if (
+      make ||
+      model ||
+      priceFrom ||
+      priceTo ||
+      country ||
+      fuel ||
+      firstRegistrationFrom ||
+      firstRegistrationTo ||
+      mileageFrom ||
+      mileageTo ||
+      minPower ||
+      maxPower
+    ) {
+      fetchData();
+    } else setResultsNo(0);
+  }, [
+    make,
+    model,
+    priceFrom,
+    priceTo,
+    country,
+    fuel,
+    firstRegistrationFrom,
+    firstRegistrationTo,
+    mileageFrom,
+    mileageTo,
+    minPower,
+    maxPower,
+  ]);
 
   const handleSelectMake = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setMake(event.target.value);
@@ -50,7 +87,8 @@ export function Search() {
   };
 
   const handleSelectCountry = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setCountry(event.target.value);
+    if (event.target.value === "Any") setCountry("");
+    else setCountry(event.target.value);
   };
 
   const handleSelectFuel = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -103,19 +141,20 @@ export function Search() {
       : setMoreSearchOptions(true);
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const fetchData = async () => {
     setIsLoading(true);
 
     try {
-      let url = "http://localhost:4000/api/v1/ad/search/?";
+      let url = "";
       if (country) url += `country=${country}&`;
       if (make) url += `make=${make}&`;
       if (model) url += `model=${model}&`;
-      if (firstRegistrationFrom)
+      if (firstRegistrationFrom) {
         url += `firstRegistrationFrom=${firstRegistrationFrom}&`;
-      if (firstRegistrationTo)
+      }
+      if (firstRegistrationTo) {
         url += `firstRegistrationTo=${firstRegistrationTo}&`;
+      }
       if (mileageFrom) url += `mileageFrom=${mileageFrom}&`;
       if (mileageTo) url += `mileageTo=${mileageTo}&`;
       if (fuel) url += `fuel=${fuel}&`;
@@ -124,10 +163,14 @@ export function Search() {
       if (priceFrom) url += `priceFrom=${priceFrom}&`;
       if (priceTo) url += `priceTo=${priceTo}`;
 
-      if (url.slice(-1) === "&" || url.slice(-1) === "?")
+      if (url.slice(-1) === "&" || url.slice(-1) === "?") {
         url = url.slice(0, -1);
-
-      await axios.get(url);
+      }
+      const response = await axios.get(
+        `http://localhost:4000/api/v1/ad/searchNo/?${url}`
+      );
+      setResultsNo(response.data.ads);
+      setSearchId(url);
     } catch (error: any) {
       if (
         error?.response?.data?.status === "fail" &&
@@ -138,8 +181,13 @@ export function Search() {
         setError("Something went wrong, please try again later.");
       }
     }
-
     setIsLoading(false);
+  };
+
+  const handleRedirect = (e: FormEvent) => {
+    e.preventDefault();
+    if (resultsNo < 1) return;
+    navigate(`/ads/${searchId}`);
   };
 
   const clearAll = () => {
@@ -159,7 +207,7 @@ export function Search() {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form>
         {error && <p className="text-red-500">{error}</p>}
         <div>
           <label htmlFor="makeField">Make:</label>
@@ -351,8 +399,8 @@ export function Search() {
         <button type="button" className="btn" onClick={clearAll}>
           Clear All
         </button>
-        <button type="submit" className="btn">
-          Submit
+        <button type="button" className="btn" onClick={handleRedirect}>
+          {resultsNo} Results
         </button>
       </form>
       {isLoading && (

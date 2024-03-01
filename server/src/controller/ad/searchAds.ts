@@ -3,7 +3,7 @@ import { Ad } from "../../models/adModel";
 import { IAd } from "../../interfaces/ad";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
 
-export const searchAd: any = async function (req: Request, res: Response) {
+export const searchAds: any = async function (req: Request, res: Response) {
   try {
     let adsCheck: {} = {};
 
@@ -79,11 +79,27 @@ export const searchAd: any = async function (req: Request, res: Response) {
       };
     }
 
-    const adsList: IAd[] = await Ad.find(adsCheck);
+    //Returning empty array if adsCheck object is empty
+    if (Object.keys(adsCheck).length === 0) {
+      const ads = req.originalUrl.includes("/searchNo") ? 0 : [];
+      return res.status(200).json({
+        status: `success`,
+        ads,
+      });
+    }
+
+    //In response user can get number of matching ads (inside button at home page)
+    //or ads with all information
+    let find: any;
+    if (req.originalUrl.includes("/searchNo"))
+      find = Ad.countDocuments(adsCheck);
+    else find = Ad.find(adsCheck).select("-updatedAt -__v");
+
+    const ads: IAd[] | number = await find;
 
     res.status(200).json({
       status: `success`,
-      data: adsList,
+      ads,
     });
   } catch (error) {
     errorHandler(error, req, res);
