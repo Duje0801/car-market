@@ -11,6 +11,7 @@ import { App } from "./App.tsx";
 import { Home } from "./components/home.tsx";
 import { ShowAdsList } from "./components/showAdsList.tsx";
 import { AdView } from "./components/adView.tsx";
+import { EditAdData } from "./components/edit/ad/editAdData.tsx";
 import { UserProfile } from "./components/userProfile.tsx";
 import { SignUp } from "./components/signUp.tsx";
 import { LogIn } from "./components/logIn.tsx";
@@ -25,6 +26,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<Home />} />
       <Route path="/ads/:id?" element={<ShowAdsList />} />
       <Route path="/ad/:id?" element={<AdView />} />
+      <Route path="/editAd/:id?" element={<EditAdData />} />
       <Route path="/profile/:id" element={<UserProfile />} />
       <Route path="/signUp" element={<SignUp />} />
       <Route path="/logIn" element={<LogIn />} />

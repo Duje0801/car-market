@@ -1,11 +1,11 @@
 import React, { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { IUserData } from "../../interfaces/IUserData";
+import { IUserData } from "../../../interfaces/IUserData";
 import { Hourglass } from "react-loader-spinner";
-import { store } from "../../store";
+import { store } from "../../../store";
 import axios from "axios";
-import { addProfileData } from "../../store/slices/profile";
-import { IProfileData } from "../../interfaces/IProfileData";
+import { addProfileData } from "../../../store/slices/profile";
+import { IProfileData } from "../../../interfaces/IProfileData";
 
 interface Props {
   email: string;

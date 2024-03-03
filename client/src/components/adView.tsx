@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../store";
 import { IAd } from "../interfaces/IAd";
@@ -12,6 +12,7 @@ export function AdView() {
   const [message, setMessage] = useState<string>("");
 
   const params = useParams();
+  const navigate = useNavigate()
 
   const { data, isChecked } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
@@ -71,7 +72,11 @@ export function AdView() {
     }
   };
 
-  if (error) return <div>{error}</div>;
+  const handleEditClick = () => {
+    navigate(`/editAd/${params.id}`)
+  }
+
+  if (error) return <div className="text-red-500">{error}</div>;
   else if (!isChecked) return <div>Loading...</div>;
   else if (adInfo && adInfo.user) {
     const createdAt = useCreateAtToString(adInfo.createdAt);
@@ -91,6 +96,16 @@ export function AdView() {
         <div>
           <b>{adInfo.title}</b>
         </div>
+        {data.username === adInfo.username ? (
+          <div>
+            <button
+              className="btn btn-neutral"
+              onClick={() => handleEditClick()}
+            >
+              Edit
+            </button>
+          </div>
+        ) : null}
         {message && <div className="text-red-500">{message}</div>}
         <div>
           User: <span>{adInfo.user[0].username}</span>

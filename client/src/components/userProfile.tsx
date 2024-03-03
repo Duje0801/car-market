@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { EditAvatar } from "./edit/editAvatar";
-import { EditContact } from "./edit/editContact";
-import { EditPassword } from "./edit/editPassword";
-import { EditEmail } from "./edit/editEmail";
+import { EditAvatar } from "./edit/user/editAvatar";
+import { EditContact } from "./edit/user/editContact";
+import { EditPassword } from "./edit/user/editPassword";
+import { EditEmail } from "./edit/user/editEmail";
 import { IUserData } from "../interfaces/IUserData";
 import { useCreateAtToString } from "../hooks/useCreateAtToString";
 import { useProfileAvatar } from "../hooks/useProfileAvatar";

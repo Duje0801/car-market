@@ -1,7 +1,7 @@
 import React, { FormEvent, useState, Dispatch, SetStateAction } from "react";
 import { useSelector } from "react-redux";
 import { Hourglass } from "react-loader-spinner";
-import { store } from "../../store";
+import { store } from "../../../store";
 import axios from "axios";
 
 interface Props {
