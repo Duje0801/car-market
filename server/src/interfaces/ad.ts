@@ -1,6 +1,7 @@
+import { Document } from "mongodb";
 import { IUser } from "./user";
 
-export interface IAd {
+export interface IAd extends Document {
   username: string;
   title: string;
   condition: string;
@@ -17,5 +18,7 @@ export interface IAd {
     imageUrl: string;
     publicID: string;
   }[];
-  user?: IUser
+  user?: IUser[];
+  active: boolean;
+  visible: boolean
 }

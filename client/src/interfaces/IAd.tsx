@@ -22,5 +22,7 @@ export interface IAd {
     id: string;
     _id: string;
   }[];
-  user?: IUserData[]
+  user?: IUserData[];
+  active: boolean;
+  visible: boolean
 }

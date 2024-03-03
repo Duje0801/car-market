@@ -6,6 +6,7 @@ import { ReqUser } from "../../interfaces/reqUser";
 import { errorResponse } from "../../utilis/errorHandling/errorResponse";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
 
+//Dotenv
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -32,7 +33,9 @@ export const protect: any = async function (
     if (typeof decoded === `string`)
       return errorResponse("Invalid token", res, 401);
 
-    const user: IUser = await User.findById(decoded._id).select("+active -updatedAt -__v")
+    const user: IUser = await User.findById(decoded._id).select(
+      "+active +role -updatedAt -__v"
+    );
 
     if (user && user.active) {
       //Memorizing user data in request

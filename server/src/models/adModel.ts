@@ -122,6 +122,14 @@ const adSchema = new Schema(
         "The maximum number of characters allowed in the car description is 300",
       ],
     },
+    active: {
+      type: Boolean,
+      default: true,
+    },
+    visible: {
+      type: Boolean,
+      default: true,
+    },
     images: {
       type: [
         {
