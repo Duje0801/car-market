@@ -2,9 +2,13 @@ import { Request, Response } from "express";
 import { Ad } from "../../models/adModel";
 import { IAd } from "../../interfaces/ad";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
+import { checkUser } from "../../utilis/checkUser";
+import { IUser } from "../../interfaces/user";
 
 export const searchAds: any = async function (req: Request, res: Response) {
   try {
+    const user: IUser | null = await checkUser(req);
+
     let adsCheck: {} = {};
 
     if (req.query.make) {
@@ -88,12 +92,21 @@ export const searchAds: any = async function (req: Request, res: Response) {
       });
     }
 
+    let find: any;
+    let activeVisible: {} = { active: true, visible: true };
+
+    if (user?.role === `admin`) {
+      activeVisible = {};
+    }
+
     //In response user can get number of matching ads (inside button at home page)
     //or ads with all information
-    let find: any;
     if (req.originalUrl.includes("/searchNo"))
-      find = Ad.countDocuments(adsCheck);
-    else find = Ad.find(adsCheck).select("-updatedAt -__v");
+      find = Ad.countDocuments({ ...adsCheck, ...activeVisible });
+    else
+      find = Ad.find({ ...adsCheck, ...activeVisible }).select(
+        "-updatedAt -__v"
+      );
 
     const ads: IAd[] | number = await find;
 

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { store } from "../store";
 import { IAd } from "../interfaces/IAd";
 import { useCreateAtToString } from "../hooks/useCreateAtToString";
 import axios from "axios";
@@ -12,17 +14,26 @@ export function ShowAdsList() {
   const params = useParams();
   const navigate = useNavigate();
 
+  const { data, isChecked } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.profile
+  );
+
   //Automatically fetches ad list data on page load
   useEffect(() => {
-    if (params.id) {
+    if (params.id && isChecked) {
       fetchData();
     }
-  }, []);
+  }, [isChecked]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/v1/ad/search/?${params.id}`
+        `http://localhost:4000/api/v1/ad/search/?${params.id}`,
+        {
+          headers: {
+            authorization: `Bearer ${data?.token}`,
+          },
+        }
       );
       setAdInfo(response.data.ads);
     } catch (error: any) {
@@ -57,6 +68,14 @@ export function ShowAdsList() {
               <div>
                 Title: <b>{ad.title}</b>
               </div>
+              {!ad.visible && (
+                <div className="text-red-500">
+                  This ad is not visible to public
+                </div>
+              )}
+              {!ad.active && (
+                <div className="text-red-500">This ad is deactivated</div>
+              )}
               <img
                 src={ad.images[0].imageUrl}
                 width={200}

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { checkUser } from "../../utilis/checkUser";
 import { IAd } from "../../interfaces/ad";
+import { IUser } from "../../interfaces/user";
 import { Ad } from "../../models/adModel";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
 import { errorResponse } from "../../utilis/errorHandling/errorResponse";
@@ -8,7 +9,7 @@ import { errorResponse } from "../../utilis/errorHandling/errorResponse";
 export const oneAd = async (req: Request, res: Response) => {
   try {
     //Getting user data (if the user exists)
-    const user: any = await checkUser(req);
+    const user: IUser | null = await checkUser(req);
 
     //Getting ad
     const ad: IAd | null = await Ad.findById(req.params.id)
@@ -27,7 +28,7 @@ export const oneAd = async (req: Request, res: Response) => {
       (req.originalUrl.split("/")[5] === `edit` && !user) ||
       (req.originalUrl.split("/")[5] === `edit` &&
         ad.user &&
-        ad.user[0].id !== user.id)
+        ad.user[0].id !== user?.id)
     ) {
       return errorResponse(
         "You don`t have permission to view this page",

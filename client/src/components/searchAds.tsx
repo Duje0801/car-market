@@ -1,5 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { store } from "../store";
 import { makes as makesList } from "../data/makes";
 import { countries as countriesList } from "../data/countries";
 import { yearsData } from "../data/years";
@@ -27,6 +29,10 @@ export function SearchAds() {
   const [error, setError] = useState<string>("");
   const [resultsNo, setResultsNo] = useState<number>(0);
   const [searchId, setSearchId] = useState<string>("");
+
+  const { data } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.profile
+  );
 
   const navigate = useNavigate();
 
@@ -167,7 +173,12 @@ export function SearchAds() {
         url = url.slice(0, -1);
       }
       const response = await axios.get(
-        `http://localhost:4000/api/v1/ad/searchNo/?${url}`
+        `http://localhost:4000/api/v1/ad/searchNo/?${url}`,
+        {
+          headers: {
+            authorization: `Bearer ${data?.token}`,
+          },
+        }
       );
       setResultsNo(response.data.ads);
       setSearchId(url);
