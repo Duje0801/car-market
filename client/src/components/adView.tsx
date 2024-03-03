@@ -12,7 +12,7 @@ export function AdView() {
   const [message, setMessage] = useState<string>("");
 
   const params = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const { data, isChecked } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
@@ -73,8 +73,12 @@ export function AdView() {
   };
 
   const handleEditClick = () => {
-    navigate(`/editAd/${params.id}`)
-  }
+    navigate(`/editAd/${params.id}`);
+  };
+
+  const handleRedirectToProfile = (username: string) => {
+    navigate(`/profile/${username}`);
+  };
 
   if (error) return <div className="text-red-500">{error}</div>;
   else if (!isChecked) return <div>Loading...</div>;
@@ -108,7 +112,10 @@ export function AdView() {
         ) : null}
         {message && <div className="text-red-500">{message}</div>}
         <div>
-          User: <span>{adInfo.user[0].username}</span>
+          User:{" "}
+          <span onClick={() => handleRedirectToProfile(adInfo.username)}>
+            {adInfo.user[0].username}
+          </span>
         </div>
         <div>Active since: {createdAt}</div>
         <img

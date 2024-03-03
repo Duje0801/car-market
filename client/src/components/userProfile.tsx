@@ -24,7 +24,7 @@ export function UserProfile() {
   const createdAt = useCreateAtToString(profileData?.createdAt);
   const avatar = useProfileAvatar(profileData?.avatar);
 
-  const { data } = useSelector(
+  const { data, isChecked } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
@@ -34,7 +34,12 @@ export function UserProfile() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/v1/user/profile/${params.id}`
+          `http://localhost:4000/api/v1/user/profile/${params.id}`,
+          {
+            headers: {
+              authorization: `Bearer ${data?.token}`,
+            },
+          }
         );
         setProfileData(response.data.user);
       } catch (error: any) {
@@ -47,10 +52,10 @@ export function UserProfile() {
           setError("Something went wrong, please try again later.");
         }
       }
+      setIsLoaded(true);
     };
     fetchData();
-    setIsLoaded(true);
-  }, [params.id]);
+  }, [isChecked]);
 
   const handleEditAvatar = () => {
     return openEditAvatar ? setOpenEditAvatar(false) : setOpenEditAvatar(true);
@@ -72,7 +77,7 @@ export function UserProfile() {
       : setOpenEditPassword(true);
   };
 
-  const handleBtnClick = (id: string) => {
+  const handleSeeMoreClick = (id: string) => {
     navigate(`/ad/${id}`);
   };
 
@@ -164,6 +169,16 @@ export function UserProfile() {
                   return (
                     <div key={i} className="border-black border-2">
                       <p>Title: {ad.title}</p>
+                      {!ad.active && (
+                        <div className="text-red-500">
+                          This ad is deactivated
+                        </div>
+                      )}
+                      {!ad.visible && (
+                        <div className="text-red-500">
+                          This ad is hidden from other users
+                        </div>
+                      )}
                       <p>Price: {ad.price}€</p>
                       <img
                         src={ad.images[0].imageUrl}
@@ -173,7 +188,7 @@ export function UserProfile() {
                       />
                       <button
                         className="btn"
-                        onClick={() => handleBtnClick(ad.id)}
+                        onClick={() => handleSeeMoreClick(ad.id)}
                       >
                         See more
                       </button>
