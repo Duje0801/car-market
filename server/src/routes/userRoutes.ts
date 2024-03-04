@@ -11,8 +11,8 @@ import { editAvatar } from "../controller/editingProfileData/editAvatar";
 import { editPassword } from "../controller/editingProfileData/editPassword";
 import { editContact } from "../controller/editingProfileData/editContact";
 import { editEmail } from "../controller/editingProfileData/editEmail";
-import { uploadImage } from "../controller/images/imageUpload";
-import { deleteImage } from "../controller/images/imageDelete";
+import { uploadImage } from "../controller/images/uploadImage";
+import { deleteImage } from "../controller/images/deleteImage";
 import { protect } from "../controller/auth/protect";
 import { userList } from "../controller/admin/userList";
 
@@ -33,6 +33,6 @@ router.route("/editContact").patch(protect, editContact);
 router.route("/editEmail").patch(protect, editEmail);
 router
   .route("/uploadAvatar")
-  .post(upload.single("image"), uploadImage);
-router.route("/deleteAvatar").post(deleteImage);
+  .post(protect, upload.single("image"), uploadImage);
+router.route("/deleteImage/:id").delete(protect, deleteImage);
 router.route("/admin/userList").get(protect, userList);

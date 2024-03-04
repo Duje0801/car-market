@@ -4,12 +4,14 @@ import { useSelector } from "react-redux";
 import { store } from "../store";
 import { IAd } from "../interfaces/IAd";
 import { useCreateAtToString } from "../hooks/useCreateAtToString";
+import { Hourglass } from "react-loader-spinner";
 import axios from "axios";
 
 export function AdView() {
   const [adInfo, setAdInfo] = useState<IAd | null>(null);
-  const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   const params = useParams();
   const navigate = useNavigate();
@@ -25,6 +27,7 @@ export function AdView() {
   }, [isChecked]);
 
   const fetchData = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get(
         `http://localhost:4000/api/v1/ad/find/${params.id}`,
@@ -45,9 +48,11 @@ export function AdView() {
         setError("Something went wrong.");
       }
     }
+    setIsLoading(false);
   };
 
   const handleBtnClick = async (operation: string) => {
+    setIsLoading(true);
     try {
       const response = await axios.delete(
         `http://localhost:4000/api/v1/ad/${operation}/${params.id}`,
@@ -58,7 +63,8 @@ export function AdView() {
         }
       );
       setAdInfo(response.data.ad);
-      if (operation === "delete") setError(response.data.message);
+      if (operation === "delete")
+        setError(response.data.message + (await deleteImage()));
       else setMessage(response.data.message);
     } catch (error: any) {
       if (
@@ -68,6 +74,40 @@ export function AdView() {
         setMessage(error.response.data.message);
       } else {
         setMessage("Something went wrong.");
+      }
+    }
+    setIsLoading(false);
+  };
+
+  const deleteImage = async () => {
+    let imagesDeleteList: string[] = [];
+
+    //Adding all ad`s images
+    adInfo?.images?.forEach((img) => {
+      imagesDeleteList.push(img.publicID);
+    });
+
+    //Creating fetch for all images
+    const promises = imagesDeleteList.map((publicID) =>
+      axios.delete(`http://localhost:4000/api/v1/ad/deleteImage/${publicID}`, {
+        headers: {
+          authorization: `Bearer ${data?.token}`,
+        },
+      })
+    );
+
+    try {
+      //Deleting images
+      await Promise.all(promises);
+      return ". All ad images have also been deleted.";
+    } catch (error: any) {
+      if (
+        error?.response?.data?.status === "fail" &&
+        typeof error?.response?.data?.message === `string`
+      ) {
+        return `. ${error.response.data.message}`;
+      } else {
+        return ". Something went wrong, maybe some images were not deleted!";
       }
     }
   };
@@ -81,8 +121,19 @@ export function AdView() {
   };
 
   if (error) return <div className="text-red-500">{error}</div>;
-  else if (!isChecked) return <div>Loading...</div>;
-  else if (adInfo && adInfo.user) {
+  else if (!isChecked || isLoading) {
+    return (
+      <Hourglass
+        visible={true}
+        height="80"
+        width="80"
+        ariaLabel="hourglass-loading"
+        wrapperStyle={{}}
+        wrapperClass=""
+        colors={["#306cce", "#72a1ed"]}
+      />
+    );
+  } else if (adInfo && adInfo.user) {
     const createdAt = useCreateAtToString(adInfo.createdAt);
     return (
       <div className="border-black border-2 p-2 m-2">

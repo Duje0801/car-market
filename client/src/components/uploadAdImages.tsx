@@ -61,9 +61,8 @@ export function UploadAdImages({ setError, adImages, setAdImages }: Props) {
   const handleDeleteImage = async (image: IImageData, index: number) => {
     setIsSaving(true);
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/v1/ad/deleteImage",
-        { data: image.publicID },
+      const response = await axios.delete(
+        `http://localhost:4000/api/v1/ad/deleteImage/${image.publicID}`,
         {
           headers: {
             "Content-Type": "application/json",

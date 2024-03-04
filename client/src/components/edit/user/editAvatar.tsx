@@ -63,22 +63,11 @@ export function EditAvatar({
         }
       );
 
-      if (oldUploadedImagePublicID) {
-        //Deleting avatar from Cloudinary database
-        await axios.post(
-          "http://localhost:4000/api/v1/user/deleteAvatar",
-          { data: oldUploadedImagePublicID },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              authorization: `Bearer ${data?.token}`,
-            },
-          }
-        );
-      }
-
+      //Deleting old avatar
+      const delAvatarMessage: string = await deleteAvatar();
+      
       setProfileData(response.data.user);
-      setError("Avatar successfully uploaded!");
+      setError(response.data.message + delAvatarMessage);
       setOpenEditAvatar(false);
     } catch (error: any) {
       if (
@@ -93,6 +82,33 @@ export function EditAvatar({
     }
   };
 
+  //Delete avatar function (deleting from Cloudinary database, after deleting user profile)
+  const deleteAvatar = async () => {
+    if (oldUploadedImagePublicID) {
+      try {
+        //Deleting avatar from Cloudinary database
+        await axios.delete(
+          `http://localhost:4000/api/v1/user/deleteImage/${oldUploadedImagePublicID}`,
+          {
+            headers: {
+              authorization: `Bearer ${data?.token}`,
+            },
+          }
+        );
+        return ". Old user avatar is succesfully deleted too.";
+      } catch (error: any) {
+        if (
+          error?.response?.data?.status === "fail" &&
+          typeof error?.response?.data?.message === `string`
+        ) {
+          return `. ${error.response.data.message}`;
+        } else {
+          return ". Old user's avatar is not deleted";
+        }
+      }
+    } else return "";
+  };
+
   //Changing from copy/paste avatar URL to upload avatar (and vice versa)
   const handleChangeUpload = async () => {
     if (uploadImage) {
@@ -104,9 +120,8 @@ export function EditAvatar({
       if (uploadedImageURL && uploadedImagePublicID) {
         setIsSaving(true);
         try {
-          await axios.post(
-            "http://localhost:4000/api/v1/user/deleteAvatar",
-            { data: uploadedImagePublicID },
+          await axios.delete(
+            `http://localhost:4000/api/v1/user/deleteImage/${uploadedImagePublicID}`,
             {
               headers: {
                 "Content-Type": "application/json",

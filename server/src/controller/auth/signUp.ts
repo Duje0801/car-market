@@ -16,9 +16,6 @@ export const signUp: any = async function (req: Request, res: Response) {
       confirmPassword,
       contact,
       userType,
-      avatarURL,
-      uploadedAvatarURL,
-      uploadedPublicID,
     } = req.body;
 
     //Checking email
@@ -64,10 +61,10 @@ export const signUp: any = async function (req: Request, res: Response) {
       contact,
       userType,
       avatar: {
-        avatarURL,
+        avatarURL: "",
         uploadedAvatar: {
-          imageUrl: uploadedAvatarURL,
-          publicID: uploadedPublicID,
+          imageUrl: "",
+          publicID: "",
         },
       },
     });

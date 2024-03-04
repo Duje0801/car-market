@@ -74,7 +74,7 @@ export const editAvatar: any = async function (req: ReqUser, res: Response) {
 
     res.status(200).json({
       status: "success",
-      message: "Contact succesfully changed!",
+      message: "Avatar succesfully changed!",
       user: userToReturn,
     });
   } catch (error) {

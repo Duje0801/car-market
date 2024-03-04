@@ -9,6 +9,7 @@ import { IUserData } from "../interfaces/IUserData";
 import { useCreateAtToString } from "../hooks/useCreateAtToString";
 import { useProfileAvatar } from "../hooks/useProfileAvatar";
 import { removeProfileData } from "../store/slices/profile";
+import { Hourglass } from "react-loader-spinner";
 import { store } from "../store";
 import axios from "axios";
 
@@ -18,6 +19,7 @@ export function UserProfile() {
   const [openEditEmail, setOpenEditEmail] = useState<boolean>(false);
   const [openEditContact, setOpenEditContact] = useState<boolean>(false);
   const [openEditPassword, setOpenEditPassword] = useState<boolean>(false);
+
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -34,34 +36,12 @@ export function UserProfile() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:4000/api/v1/user/profile/${params.id}`,
-          {
-            headers: {
-              authorization: `Bearer ${data?.token}`,
-            },
-          }
-        );
-        setProfileData(response.data.user);
-      } catch (error: any) {
-        if (
-          error?.response?.data?.status === "fail" &&
-          typeof error?.response?.data?.message === `string`
-        ) {
-          setError(error.response.data.message);
-        } else {
-          setError("Something went wrong, please try again later.");
-        }
-      }
-      setIsLoaded(true);
-    };
     if (isChecked) {
       fetchData();
     }
   }, [isChecked]);
 
+  //Edit form states
   const handleEditAvatar = () => {
     return openEditAvatar ? setOpenEditAvatar(false) : setOpenEditAvatar(true);
   };
@@ -82,6 +62,32 @@ export function UserProfile() {
       : setOpenEditPassword(true);
   };
 
+  //Fetch user data function
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/api/v1/user/profile/${params.id}`,
+        {
+          headers: {
+            authorization: `Bearer ${data?.token}`,
+          },
+        }
+      );
+      setProfileData(response.data.user);
+    } catch (error: any) {
+      if (
+        error?.response?.data?.status === "fail" &&
+        typeof error?.response?.data?.message === `string`
+      ) {
+        setError(error.response.data.message);
+      } else {
+        setError("Something went wrong, please try again later.");
+      }
+    }
+    setIsLoaded(true);
+  };
+
+  //Deactivate user function
   const handleDeactivateUser = async (id: string) => {
     try {
       const response = await axios.delete(
@@ -110,6 +116,7 @@ export function UserProfile() {
     }
   };
 
+  //Delete user function
   const handleDeleteUser = async (id: string) => {
     try {
       const response = await axios.delete(
@@ -120,7 +127,9 @@ export function UserProfile() {
           },
         }
       );
-      setError(response.data.message);
+      //Deleting all images associatedwith profile (avatar and ad's images)
+      const delImageMessage: string = await deleteImage();
+      setError(response.data.message + delImageMessage);
     } catch (error: any) {
       if (
         error?.response?.data?.status === "fail" &&
@@ -133,12 +142,68 @@ export function UserProfile() {
     }
   };
 
+  //Delete avatar function (deleting avatar and all ads images from Cloudinary database, after deleting user profile)
+  const deleteImage = async () => {
+    let imagesDeleteList: string[] = [];
+
+    //Adding avatar to delete list
+    if (profileData?.avatar.uploadedAvatar.publicID) {
+      imagesDeleteList = [profileData?.avatar.uploadedAvatar.publicID];
+    }
+
+    //Adding all ad`s images
+    profileData?.ads?.forEach((ad) => {
+      ad.images.forEach((img) => {
+        imagesDeleteList.push(img.publicID);
+      });
+    });
+
+    //Creating fetch for all images
+    const promises = imagesDeleteList.map((publicID) =>
+      axios.delete(
+        `http://localhost:4000/api/v1/user/deleteImage/${publicID}`,
+        {
+          headers: {
+            authorization: `Bearer ${data?.token}`,
+          },
+        }
+      )
+    );
+
+    try {
+      //Deleting images
+      await Promise.all(promises);
+      return ". The user's avatar and all images of his ads have been deleted.";
+    } catch (error: any) {
+      if (
+        error?.response?.data?.status === "fail" &&
+        typeof error?.response?.data?.message === `string`
+      ) {
+        return `. ${error.response.data.message}`;
+      } else {
+        return ". Something went wrong, maybe some images were not deleted!";
+      }
+    }
+  };
+
+  //Redirect to ad (after clicking See more button)
   const handleSeeMoreClick = (id: string) => {
     navigate(`/ad/${id}`);
   };
 
   if (error) return <div className="text-red-500">{error}</div>;
-  else if (!isLoaded) return <div>Loading...</div>;
+  else if (!isLoaded)
+    return (
+      <Hourglass
+        visible={true}
+        height="80"
+        width="80"
+        ariaLabel="hourglass-loading"
+        wrapperStyle={{}}
+        wrapperClass=""
+        colors={["#306cce", "#72a1ed"]}
+      />
+    );
   else {
     return (
       <>
@@ -180,7 +245,11 @@ export function UserProfile() {
             {data.username === params.id && (
               <div>
                 <button onClick={handleEditAvatar} className="btn">
-                  Edit avatar
+                  {profileData.avatar.avatarURL === "" &&
+                  profileData.avatar.uploadedAvatar.imageUrl === ""
+                    ? "Add"
+                    : "Change"}{" "}
+                  avatar
                 </button>
               </div>
             )}
@@ -192,7 +261,7 @@ export function UserProfile() {
                 }
                 setProfileData={setProfileData}
                 setOpenEditAvatar={setOpenEditAvatar}
-                setError={setError}
+                setError={setMessage}
               />
             )}
             <p>Username: {profileData.username}</p>

@@ -13,14 +13,14 @@ cloudinary.config({
 
 const deleteImage: any = async function (req: Request, res: Response) {
   try {
-    await cloudinary.uploader.destroy(req.body.data);
+    await cloudinary.uploader.destroy(req.params.id);
     res
       .status(200)
-      .json({ status: "success", message: "Image successfully deleted!" });
+      .json({ status: "success", message: "Image is successfully deleted" });
   } catch (error) {
     res
       .status(500)
-      .json({ status: "fail", message: "Failed to delete avatar" });
+      .json({ status: "fail", message: "Failed to delete image" });
   }
 };
 

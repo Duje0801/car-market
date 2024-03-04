@@ -17,13 +17,8 @@ export function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [contact, setContact] = useState<string>("");
   const [userType, setUserType] = useState<string>("");
-  const [avatarURL, setAvatarURL] = useState<string>("");
-  const [uploadedImageURL, setUploadedImageURL] = useState<string>("");
-  const [uploadedImagePublicID, setUploadedImagePublicID] =
-    useState<string>("");
 
   //Other states
-  const [uploadImage, setUploadImage] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
@@ -61,12 +56,6 @@ export function SignUp() {
     setUserType(event.target.value);
   };
 
-  const handleChangeAvatarURL = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setAvatarURL(event.target.value);
-  };
-
   //Submit function
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -86,9 +75,6 @@ export function SignUp() {
       data.append("confirmPassword", confirmPassword);
       data.append("contact", contact);
       data.append("userType", userType);
-      data.append("avatarURL", avatarURL);
-      data.append("uploadedAvatarURL", uploadedImageURL);
-      data.append("uploadedPublicID", uploadedImagePublicID);
 
       const response = await axios.post(
         "http://localhost:4000/api/v1/user/signUp",
@@ -115,81 +101,6 @@ export function SignUp() {
       setPassword("");
       setConfirmPassword("");
       setIsSaving(false);
-    }
-  };
-
-  //Changing from copy/paste avatar URL to upload avatar (and vice versa)
-  const handleChangeUpload = async () => {
-    if (uploadImage) {
-      setUploadedImageURL("");
-      setUploadedImagePublicID("");
-      setUploadImage(false);
-      setError("");
-    } else {
-      if (uploadedImageURL && uploadedImagePublicID) {
-        setIsSaving(true);
-        try {
-          await axios.post(
-            "http://localhost:4000/api/v1/user/deleteAvatar",
-            { data: uploadedImagePublicID },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          setError("Avatar removed");
-        } catch (error: any) {
-          if (
-            error?.response?.data?.status === "fail" &&
-            typeof error?.response?.data?.message === `string`
-          ) {
-            setError(error.response.data.message);
-          } else {
-            setError("Removing avatar error, please try again later.");
-          }
-        }
-      }
-      setAvatarURL(``);
-      setUploadImage(true);
-      setIsSaving(false);
-    }
-  };
-
-  //Avatar upload function
-  const handleUploadAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const data = new FormData();
-      data.append("image", e.target.files[0]);
-      setIsSaving(true);
-
-      try {
-        const response = await axios.post(
-          "http://localhost:4000/api/v1/user/uploadAvatar",
-          data,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        setUploadedImageURL(response.data.image.imageUrl);
-        setUploadedImagePublicID(response.data.image.publicID);
-        setError("Avatar successfully uploaded.");
-      } catch (error: any) {
-        if (
-          error?.response?.data?.status === "fail" &&
-          typeof error?.response?.data?.message === `string`
-        ) {
-          setError(error.response.data.message);
-        } else {
-          setError("Uploading avatar error, please try again later.");
-        }
-      } finally {
-        setIsSaving(false);
-      }
-    } else {
-      setError("Please set valid image for upload.");
     }
   };
 
@@ -281,31 +192,6 @@ export function SignUp() {
               </div>
             ))}
           </div>
-          <div>
-            {uploadImage ? (
-              <>
-                <label htmlFor="avatarURL">Avatar URL:</label>
-                <input
-                  type="text"
-                  maxLength={200}
-                  id="avatarURL"
-                  value={avatarURL}
-                  onChange={handleChangeAvatarURL}
-                  className="border-2 border-black"
-                />
-              </>
-            ) : (
-              <div>
-                {uploadedImageURL && (
-                  <img src={uploadedImageURL} alt="avatar"></img>
-                )}
-                <input type="file" onChange={handleUploadAvatar} />
-              </div>
-            )}
-          </div>
-          <button type="button" onClick={handleChangeUpload} className="btn">
-            {uploadImage ? "Upload avatar" : "Avatar URL"}
-          </button>
           <div>
             <button type="submit" className="btn">
               Submit
