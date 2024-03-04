@@ -14,6 +14,7 @@ import { editEmail } from "../controller/editingProfileData/editEmail";
 import { uploadImage } from "../controller/images/imageUpload";
 import { deleteImage } from "../controller/images/imageDelete";
 import { protect } from "../controller/auth/protect";
+import { userList } from "../controller/admin/userList";
 
 export const router: Router = express.Router();
 
@@ -34,3 +35,4 @@ router
   .route("/uploadAvatar")
   .post(upload.single("image"), uploadImage);
 router.route("/deleteAvatar").post(deleteImage);
+router.route("/admin/userList").get(protect, userList);

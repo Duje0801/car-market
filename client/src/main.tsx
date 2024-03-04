@@ -18,6 +18,7 @@ import { LogIn } from "./components/logIn.tsx";
 import { ForgotPassword } from "./components/forgotPassword.tsx";
 import { ResetPassword } from "./components/resetPassword.tsx";
 import { NewAd } from "./components/createNewAd.tsx";
+import { UserList } from "./components/userList.tsx";
 import "./index.css";
 
 const router = createBrowserRouter(
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
       <Route path="/forgotPassword" element={<ForgotPassword />} />
       <Route path="/resetPassword" element={<ResetPassword />} />
       <Route path="/newAd" element={<NewAd />} />
+      <Route path="/admin/userList" element={<UserList />} />
     </Route>
   )
 );

@@ -28,6 +28,9 @@ export function App() {
           <Link to="/forgotPassword">Forgot Password</Link>
         </>
       )}
+      {data.username === `admin` ? (
+        <Link to="/admin/userList">| User List</Link>
+      ) : null}
       <Outlet />
     </>
   );
