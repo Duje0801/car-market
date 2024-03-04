@@ -54,7 +54,7 @@ export function EditEmail({
       formData.append("password", password);
 
       const response = await axios.patch(
-        "http://localhost:4000/api/v1/user/editEmail",
+        "http://localhost:4000/api/v1/user/edit/email",
         formData,
         {
           headers: {

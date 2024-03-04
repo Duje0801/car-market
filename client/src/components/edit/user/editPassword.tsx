@@ -66,7 +66,7 @@ export function EditPassword({ setOpenEditPassword, setError }: Props) {
       formData.append("confirmNewPassword", confirmNewPassword);
 
       const response = await axios.patch(
-        "http://localhost:4000/api/v1/user/editPassword",
+        "http://localhost:4000/api/v1/user/edit/password",
         formData,
         {
           headers: {

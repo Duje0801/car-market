@@ -27,10 +27,10 @@ router.route("/resetPassword").post(resetPassword);
 router.route("/profile/:id").get(viewProfile);
 router.route("/deactivate/:id").delete(protect, deactivateProfile);
 router.route("/delete/:id").delete(protect, deleteProfile);
-router.route("/editAvatar").patch(protect, editAvatar);
-router.route("/editPassword").patch(protect, editPassword);
-router.route("/editContact").patch(protect, editContact);
-router.route("/editEmail").patch(protect, editEmail);
+router.route("/edit/avatar").patch(protect, editAvatar);
+router.route("/edit/password").patch(protect, editPassword);
+router.route("/edit/contact").patch(protect, editContact);
+router.route("/edit/email").patch(protect, editEmail);
 router
   .route("/uploadAvatar")
   .post(protect, upload.single("image"), uploadImage);

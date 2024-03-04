@@ -120,7 +120,7 @@ export function NewAd() {
         return;
       }
 
-      await axios.post("http://localhost:4000/api/v1/ad/newAd", formData, {
+      await axios.post("http://localhost:4000/api/v1/ad/new", formData, {
         headers: {
           "Content-Type": "application/json",
           authorization: `Bearer ${data?.token}`,

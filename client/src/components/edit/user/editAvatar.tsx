@@ -53,7 +53,7 @@ export function EditAvatar({
       formData.append("uploadedPublicID", uploadedImagePublicID);
 
       const response = await axios.patch(
-        "http://localhost:4000/api/v1/user/editAvatar",
+        "http://localhost:4000/api/v1/user/edit/avatar",
         formData,
         {
           headers: {

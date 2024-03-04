@@ -174,7 +174,7 @@ export function EditAdData() {
       }
 
       const response = await axios.patch(
-        `http://localhost:4000/api/v1/ad/editAd/${params.id}`,
+        `http://localhost:4000/api/v1/ad/edit/${params.id}`,
         formData,
         {
           headers: {
