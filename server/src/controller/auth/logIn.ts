@@ -26,7 +26,9 @@ export const logIn: any = async function (req: Request, res: Response) {
     }
 
     //Getting user profile
-    const user: IUser = await User.findOne({ email }).select("+password -__v");
+    const user: IUser = await User.findOne({ email }).select(
+      "+active +password -__v"
+    );
 
     if (
       !user ||
@@ -34,6 +36,9 @@ export const logIn: any = async function (req: Request, res: Response) {
       !(await bcrypt.compare(password, user.password))
     )
       return errorResponse("The email or password is incorrect", res, 401);
+
+    if (!user.active)
+      return errorResponse("This user is deactivated", res, 401);
 
     //Creating token
     const token = createToken(user._id);

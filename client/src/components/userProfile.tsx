@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { EditAvatar } from "./edit/user/editAvatar";
 import { EditContact } from "./edit/user/editContact";
 import { EditPassword } from "./edit/user/editPassword";
@@ -8,6 +8,7 @@ import { EditEmail } from "./edit/user/editEmail";
 import { IUserData } from "../interfaces/IUserData";
 import { useCreateAtToString } from "../hooks/useCreateAtToString";
 import { useProfileAvatar } from "../hooks/useProfileAvatar";
+import { removeProfileData } from "../store/slices/profile";
 import { store } from "../store";
 import axios from "axios";
 
@@ -18,6 +19,7 @@ export function UserProfile() {
   const [openEditContact, setOpenEditContact] = useState<boolean>(false);
   const [openEditPassword, setOpenEditPassword] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
 
   const params = useParams();
@@ -28,6 +30,7 @@ export function UserProfile() {
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -54,7 +57,9 @@ export function UserProfile() {
       }
       setIsLoaded(true);
     };
-    fetchData();
+    if (isChecked) {
+      fetchData();
+    }
   }, [isChecked]);
 
   const handleEditAvatar = () => {
@@ -77,18 +82,96 @@ export function UserProfile() {
       : setOpenEditPassword(true);
   };
 
+  const handleDeactivateUser = async (id: string) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:4000/api/v1/user/deactivate/${id}`,
+        {
+          headers: {
+            authorization: `Bearer ${data?.token}`,
+          },
+        }
+      );
+      if (data.username === `admin`) setMessage(response.data.message);
+      else {
+        localStorage.removeItem("userData");
+        dispatch(removeProfileData());
+        setError(response.data.message);
+      }
+    } catch (error: any) {
+      if (
+        error?.response?.data?.status === "fail" &&
+        typeof error?.response?.data?.message === `string`
+      ) {
+        setError(error.response.data.message);
+      } else {
+        setError("Something went wrong.");
+      }
+    }
+  };
+
+  const handleDeleteUser = async (id: string) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:4000/api/v1/user/delete/${id}`,
+        {
+          headers: {
+            authorization: `Bearer ${data?.token}`,
+          },
+        }
+      );
+      setError(response.data.message);
+    } catch (error: any) {
+      if (
+        error?.response?.data?.status === "fail" &&
+        typeof error?.response?.data?.message === `string`
+      ) {
+        setError(error.response.data.message);
+      } else {
+        setError("Something went wrong.");
+      }
+    }
+  };
+
   const handleSeeMoreClick = (id: string) => {
     navigate(`/ad/${id}`);
   };
 
-  if (!isLoaded) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+  else if (!isLoaded) return <div>Loading...</div>;
   else {
     return (
       <>
-        {error && <div className="text-red-500">{error}</div>}
+        {message && <div className="text-red-500">{message}</div>}
         {profileData ? (
           <div className="border-black border-2 m-2 p-2">
-            <p>Profile info:</p>
+            <p>
+              <b>Profile info:</b>
+            </p>
+            {!profileData.active && (
+              <p className="text-red-500">User is deactivated</p>
+            )}
+            <div>
+              {data.username === `admin` &&
+                profileData.username !== `admin` && (
+                  <button
+                    className="btn btn-error"
+                    onClick={() => handleDeleteUser(profileData.id)}
+                  >
+                    Delete user
+                  </button>
+                )}
+              {(data.username === `admin` ||
+                data.username === profileData.username) &&
+                profileData.username !== `admin` && (
+                  <button
+                    className="btn btn-error"
+                    onClick={() => handleDeactivateUser(profileData.id)}
+                  >
+                    {profileData.active ? "Dea" : "A"}ctivate user
+                  </button>
+                )}
+            </div>
             {avatar ? (
               <img src={avatar} alt="avatarImage"></img>
             ) : (

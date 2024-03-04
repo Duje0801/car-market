@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { IUser } from "../../interfaces/user";
 import { User } from "../../models/userModel";
+import { checkUser } from "../../utilis/checkUser";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
 import { errorResponse } from "../../utilis/errorHandling/errorResponse";
-import { checkUser } from "../../utilis/checkUser";
 
 export const viewProfile: any = async function (req: Request, res: Response) {
   try {
@@ -22,7 +22,7 @@ export const viewProfile: any = async function (req: Request, res: Response) {
       visible = {};
     }
 
-    const user: IUser | null = await User.findOne({ username: params })
+    const user: IUser | null = await User.findOne({ username: params, ...active })
       .select("+active -updatedAt -__v")
       .populate({
         path: `ads`,
@@ -31,7 +31,7 @@ export const viewProfile: any = async function (req: Request, res: Response) {
         select: "-updatedAt -__v",
       });
 
-    if (!user || !user.active) {
+    if (!user) {
       return errorResponse("Can't find user with this username", res, 404);
     }
 
