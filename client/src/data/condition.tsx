@@ -1,1 +1,1 @@
-export const condition = ["", "New", "Used"]
+export const condition = ["New", "Used"]

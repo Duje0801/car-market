@@ -1,5 +1,4 @@
 export const countries = [
-  "",
   "Austria",
   "Belgium",
   "Croatia",

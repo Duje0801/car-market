@@ -1,1 +1,1 @@
-export const fuel = ["", "Gasoline", "Diesel", "Hybrid", "LPG", "EV"];
+export const fuel = ["Gasoline", "Diesel", "Hybrid", "LPG", "EV"];

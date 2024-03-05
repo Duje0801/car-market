@@ -11,6 +11,7 @@ export const searchAds: any = async function (req: Request, res: Response) {
 
     let adsCheck: {} = {};
 
+    //Adding queries to adsCheck object
     if (req.query.make) {
       adsCheck = {
         make: req.query.make,
@@ -19,7 +20,7 @@ export const searchAds: any = async function (req: Request, res: Response) {
     if (req.query.model) {
       adsCheck = {
         ...adsCheck,
-        model: req.query.model,
+        model: { $regex: req.query.model, $options: "i" },
       };
     }
     if (req.query.priceFrom || req.query.priceTo) {
@@ -37,6 +38,12 @@ export const searchAds: any = async function (req: Request, res: Response) {
       adsCheck = {
         ...adsCheck,
         country: req.query.country,
+      };
+    }
+    if (req.query.condition) {
+      adsCheck = {
+        ...adsCheck,
+        condition: req.query.condition,
       };
     }
     if (req.query.fuel) {
@@ -83,7 +90,7 @@ export const searchAds: any = async function (req: Request, res: Response) {
       };
     }
 
-    //Returning empty array if adsCheck object is empty
+    //Returning empty array if adsCheck object is empty (/searchNo)
     if (Object.keys(adsCheck).length === 0) {
       const ads = req.originalUrl.includes("/searchNo") ? 0 : [];
       return res.status(200).json({
@@ -92,23 +99,22 @@ export const searchAds: any = async function (req: Request, res: Response) {
       });
     }
 
-    let find: any;
+    let ads: IAd[] | number;
     let activeVisible: {} = { active: true, visible: true };
 
+    //Only admin can see hidden and unvisible ads
     if (user?.role === `admin`) {
       activeVisible = {};
     }
 
-    //In response user can get number of matching ads (inside button at home page)
-    //or ads with all information
+    //In response user can get number of matching ads (inside button at home page) - /searchNo
+    //or ads with all information - /search
     if (req.originalUrl.includes("/searchNo"))
-      find = Ad.countDocuments({ ...adsCheck, ...activeVisible });
+      ads = await Ad.countDocuments({ ...adsCheck, ...activeVisible });
     else
-      find = Ad.find({ ...adsCheck, ...activeVisible }).select(
+      ads = await Ad.find({ ...adsCheck, ...activeVisible }).select(
         "-updatedAt -__v"
       );
-
-    const ads: IAd[] | number = await find;
 
     res.status(200).json({
       status: `success`,

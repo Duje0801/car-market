@@ -1,5 +1,4 @@
 export const makes = [
-  "",
   "Audi",
   "BMW",
   "Citroën",
