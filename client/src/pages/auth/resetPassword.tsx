@@ -1,7 +1,7 @@
 import React, { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { store } from "../store";
+import { store } from "../../store";
 import { Hourglass } from "react-loader-spinner";
 import axios from "axios";
 

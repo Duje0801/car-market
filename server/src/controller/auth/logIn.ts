@@ -35,10 +35,10 @@ export const logIn: any = async function (req: Request, res: Response) {
       !("password" in user) ||
       !(await bcrypt.compare(password, user.password))
     )
-      return errorResponse("The email or password is incorrect", res, 401);
+      return errorResponse("Your email or password is incorrect", res, 401);
 
     if (!user.active)
-      return errorResponse("This user is deactivated", res, 401);
+      return errorResponse("The user is deactivated", res, 401);
 
     //Creating token
     const token = createToken(user._id);

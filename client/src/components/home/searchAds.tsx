@@ -268,12 +268,13 @@ export function SearchAds() {
           <p className="text-sm text-center">{error}</p>
         </div>
       )}
-      <form className="flex flex-wrap justify-between px-4">
+      {/* Search form */}
+      <form className="flex flex-wrap justify-between bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw]">
         {/* Make select */}
         <select
           value={make}
           onChange={handleSelectMake}
-          className="input input-bordered w-[45vw] max-w-xs mt-2"
+          className="input input-bordered w-[39.5vw] max-w-xs"
         >
           <option>Make</option>
           {makesList.map((m, i) => (
@@ -286,7 +287,7 @@ export function SearchAds() {
         <input
           type="text"
           placeholder="Model"
-          className="input input-bordered w-[45vw] max-w-xs text-black mt-2"
+          className="input input-bordered w-[39.5vw] max-w-xs text-black"
           minLength={1}
           maxLength={20}
           value={model}
@@ -296,7 +297,7 @@ export function SearchAds() {
         <input
           type="text"
           placeholder="Price from"
-          className="input input-bordered w-[45vw] max-w-xs text-black mt-2"
+          className="input input-bordered w-[39.5vw] max-w-xs text-black"
           minLength={0}
           maxLength={8}
           value={priceFrom}
@@ -306,7 +307,7 @@ export function SearchAds() {
         <input
           type="text"
           placeholder="Price to"
-          className="input input-bordered w-[45vw] max-w-xs text-black mt-2"
+          className="input input-bordered w-[39.5vw] max-w-xs text-black"
           minLength={0}
           maxLength={8}
           value={priceTo}
@@ -316,7 +317,7 @@ export function SearchAds() {
         <select
           value={country}
           onChange={handleSelectCountry}
-          className="input input-bordered w-full mt-2"
+          className="input input-bordered w-full"
         >
           <option>Pick country</option>
           {countriesList.map((c, i) => {
@@ -330,7 +331,7 @@ export function SearchAds() {
         {/* More search options button */}
         <button
           type="button"
-          className="btn mt-2"
+          className="btn bg-black text-white w-full"
           onClick={handleMoreSearchOptions}
         >
           {moreSearchOptions ? "Less" : "More"} search options
@@ -341,7 +342,7 @@ export function SearchAds() {
             <select
               value={condition}
               onChange={handleSelectCondition}
-              className="input input-bordered w-full mt-2"
+              className="input input-bordered w-full"
             >
               <option>New/Used</option>
               {conditionList.map((f, i) => (
@@ -355,7 +356,7 @@ export function SearchAds() {
             <select
               value={fuel}
               onChange={handleSelectFuel}
-              className="input input-bordered w-full mt-2"
+              className="input input-bordered w-full"
             >
               <option>Fuel</option>
               {fuelList.map((f, i) => (
@@ -368,7 +369,7 @@ export function SearchAds() {
             <select
               value={firstRegistrationFrom}
               onChange={handleSelectFirstRegistrationFrom}
-              className="input input-bordered w-[45vw] mt-2"
+              className="input input-bordered w-[39.5vw]"
             >
               <option>First registration from</option>
               {years.map((y, i) => {
@@ -383,7 +384,7 @@ export function SearchAds() {
             <select
               value={firstRegistrationTo}
               onChange={handleSelectFirstRegistrationTo}
-              className="input input-bordered w-[45vw] mt-2"
+              className="input input-bordered w-[39.5vw]"
             >
               <option>First registration to</option>
               {years.map((y, i) => {
@@ -401,7 +402,7 @@ export function SearchAds() {
             <input
               type="text"
               placeholder="Mileage from (km)"
-              className="input input-bordered w-[45vw] max-w-xs text-black mt-2"
+              className="input input-bordered w-[39.5vw] max-w-xs text-black"
               minLength={1}
               maxLength={7}
               value={mileageFrom}
@@ -411,7 +412,7 @@ export function SearchAds() {
             <input
               type="text"
               placeholder="Mileage to (km)"
-              className="input input-bordered w-[45vw] max-w-xs text-black mt-2"
+              className="input input-bordered w-[39.5vw] max-w-xs text-black"
               minLength={1}
               maxLength={7}
               value={mileageTo}
@@ -421,7 +422,7 @@ export function SearchAds() {
             <input
               type="text"
               placeholder="Min power (kW)"
-              className="input input-bordered w-[45vw] max-w-xs text-black mt-2"
+              className="input input-bordered w-[39.5vw] max-w-xs text-black"
               minLength={1}
               maxLength={4}
               value={minPower}
@@ -431,7 +432,7 @@ export function SearchAds() {
             <input
               type="text"
               placeholder="Max power (kW)"
-              className="input input-bordered w-[45vw] max-w-xs text-black mt-2"
+              className="input input-bordered w-[39.5vw] max-w-xs text-black"
               minLength={1}
               maxLength={4}
               value={maxPower}
@@ -440,32 +441,29 @@ export function SearchAds() {
           </>
         )}
         {/* Clear all and Results buttons */}
-        <div className="flex ml-auto">
-          <button
-            type="button"
-            className="btn btn-error m-auto mt-2 ml-auto"
-            onClick={() => clearFields(true)}
-          >
-            Clear All
-          </button>
-          <button
-            type="button"
-            className="btn m-auto mt-2 w-[24vw]"
-            onClick={handleRedirect}
-          >
-            {isLoading ? (
-              <div className="flex">
-                <span className="loading loading-ball loading-xs"></span>
-                <span className="loading loading-ball loading-xs"></span>
-                <span className="loading loading-ball loading-xs"></span>
-              </div>
-            ) : (
-              `${resultsNo} Results`
-            )}{" "}
-          </button>
-        </div>
+        <button
+          type="button"
+          className="btn btn-error w-[39.5vw] max-w-xs"
+          onClick={() => clearFields(true)}
+        >
+          Clear All
+        </button>
+        <button
+          type="button"
+          className="btn bg-black text-white w-[39.5vw] max-w-xs"
+          onClick={handleRedirect}
+        >
+          {isLoading ? (
+            <div className="flex">
+              <span className="loading loading-ball loading-xs"></span>
+              <span className="loading loading-ball loading-xs"></span>
+              <span className="loading loading-ball loading-xs"></span>
+            </div>
+          ) : (
+            `${resultsNo} Results`
+          )}{" "}
+        </button>
       </form>
-      {/*Error modal*/}
     </>
   );
 }

@@ -1,9 +1,9 @@
 import React, { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addProfileData } from "../store/slices/profile";
-import { store } from "../store";
-import { IProfileData } from "../interfaces/IProfileData";
+import { addProfileData } from "../../store/slices/profile";
+import { store } from "../../store";
+import { IProfileData } from "../../interfaces/IProfileData";
 import { Hourglass } from "react-loader-spinner";
 import axios from "axios";
 
