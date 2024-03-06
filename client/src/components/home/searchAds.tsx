@@ -7,6 +7,8 @@ import { countries as countriesList } from "../../data/countries";
 import { yearsData } from "../../data/years";
 import { condition as conditionList } from "../../data/condition";
 import { fuel as fuelList } from "../../data/fuel";
+import { WaitingDots } from "../elements/waitingDots";
+import { ErrorMessage } from "../elements/errorMessage";
 import axios from "axios";
 
 export function SearchAds() {
@@ -250,24 +252,7 @@ export function SearchAds() {
   return (
     <>
       {/*Error box*/}
-      {error && (
-        <div className="badge badge-error flex flex-justify gap-2 rounded-lg p-4 m-auto h-fit max-w-[80vw]">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            className="inline-block w-8 h-8 stroke-current"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M6 18L18 6M6 6l12 12"
-            ></path>
-          </svg>
-          <p className="text-sm text-center">{error}</p>
-        </div>
-      )}
+      {error && <ErrorMessage text={error} />}
       {/* Search form */}
       <form className="flex flex-wrap justify-between bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw]">
         {/* Make select */}
@@ -453,15 +438,7 @@ export function SearchAds() {
           className="btn bg-black text-white w-[39.5vw] max-w-xs"
           onClick={handleRedirect}
         >
-          {isLoading ? (
-            <div className="flex">
-              <span className="loading loading-ball loading-xs"></span>
-              <span className="loading loading-ball loading-xs"></span>
-              <span className="loading loading-ball loading-xs"></span>
-            </div>
-          ) : (
-            `${resultsNo} Results`
-          )}{" "}
+          {isLoading ? <WaitingDots size={"xs"} /> : `${resultsNo} Results`}{" "}
         </button>
       </form>
     </>
