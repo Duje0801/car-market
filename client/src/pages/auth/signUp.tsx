@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addProfileData } from "../../store/slices/profile";
 import { store } from "../../store";
+import { userTypes as userTypesList } from "../../data/userTypes";
 import { IProfileData } from "../../interfaces/IProfileData";
-import { Hourglass } from "react-loader-spinner";
+import { WaitingDots } from "../../components/elements/waitingDots";
+import { ErrorMessage } from "../../components/elements/errorMessage";
 import axios from "axios";
-
-const userTypesID = [{ id: "Company" }, { id: "Person" }];
 
 export function SignUp() {
   //Form data states
@@ -19,7 +19,7 @@ export function SignUp() {
   const [userType, setUserType] = useState<string>("");
 
   //Other states
-  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
   const { data, isChecked } = useSelector(
@@ -60,11 +60,15 @@ export function SignUp() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    setIsSaving(true);
+    setIsSigningUp(true);
 
     if (password !== confirmPassword) {
-      setIsSaving(false);
-      return setError("Passwords must be identical");
+      setIsSigningUp(false);
+      setPassword("");
+      setConfirmPassword("");
+      setError("Passwords must be identical");
+      window.scrollTo(0, 0);
+      return;
     }
 
     try {
@@ -85,7 +89,7 @@ export function SignUp() {
           },
         }
       );
-      const profileData: IProfileData = response.data.data;
+      const profileData: IProfileData = response.data.userData;
       localStorage.setItem("userData", JSON.stringify(profileData));
       dispatch(addProfileData(profileData));
       navigate("/");
@@ -100,115 +104,160 @@ export function SignUp() {
       }
       setPassword("");
       setConfirmPassword("");
-      setIsSaving(false);
     }
+    setIsSigningUp(false);
   };
 
-  if (!isChecked) return <div>Loading...</div>;
-  else if (data.username) return <div>You are already logged in!</div>;
-  else
+  {
+    /* Loading user data */
+  }
+  if (!isChecked)
     return (
-      <>
-        <form onSubmit={handleSubmit} className="border-2 border-black m-4">
-          <p>SignUp Form</p>
-          {error && <p className="text-red-500">{error}</p>}
-          <div>
-            <label htmlFor="usernameField">Username:</label>
-            <input
-              type="text"
-              minLength={3}
-              maxLength={20}
-              id="usernameField"
-              value={username}
-              onChange={handleChangeUsername}
-              className="border-2 border-black"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="emailField">Email:</label>
-            <input
-              type="email"
-              maxLength={40}
-              id="emailField"
-              value={email}
-              onChange={handleChangeEmail}
-              className="border-2 border-black"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="passwordField">Password:</label>
-            <input
-              type="password"
-              minLength={9}
-              maxLength={20}
-              id="passwordField"
-              value={password}
-              onChange={handleChangePassword}
-              className="border-2 border-black"
-              required
-            />{" "}
-          </div>
-          <div>
-            <label htmlFor="confirmPasswordField">Confirm Password:</label>
-            <input
-              type="password"
-              minLength={9}
-              maxLength={20}
-              id="confirmPasswordField"
-              value={confirmPassword}
-              onChange={handleChangeConfirmPassword}
-              className="border-2 border-black"
-              required
-            />{" "}
-          </div>
-          <div>
-            <label htmlFor="contactField">Contact (Mob/Tel):</label>
-            <input
-              type="text"
-              maxLength={30}
-              id="contactField"
-              value={contact}
-              onChange={handleChangeContact}
-              className="border-2 border-black"
-            />{" "}
-          </div>
-          <div>
-            <label htmlFor="avatarURL">User type:</label>
-            {userTypesID.map((type) => (
-              <div key={type.id}>
-                <input
-                  type="radio"
-                  id={type.id}
-                  name="user_type"
-                  value={type.id}
-                  checked={userType === type.id}
-                  onChange={handleOptionChange}
-                  className="border-2 border-black"
-                  required
-                />
-                <label htmlFor={type.id}>{type.id}</label>
+      <main>
+        <WaitingDots size={"md"} />{" "}
+      </main>
+    );
+  else if (data.username) {
+    {
+      /* If the user is already logged in */
+    }
+    return (
+      <main>
+        <ErrorMessage text={"You are already logged in!"} />
+      </main>
+    );
+  } else
+    return (
+      <main className="pb-4">
+        {isSigningUp ? (
+          <WaitingDots size={"md"} />
+        ) : (
+          <>
+            {error && <ErrorMessage text={error} />}
+            {/* Sign Up form */}
+            <form
+              onSubmit={handleSubmit}
+              className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw]"
+            >
+              <div className="card-body p-4">
+                <p className="card-title text-3xl">Sign Up</p>
+                {/* Username input */}
+                <label className="form-control w-full max-w-xs">
+                  <div className="label p-0">
+                    <span className="label-text">Username</span>
+                  </div>
+                  <input
+                    type="text"
+                    minLength={3}
+                    maxLength={20}
+                    id="usernameField"
+                    value={username}
+                    onChange={handleChangeUsername}
+                    className="input input-bordered w-full max-w-xs"
+                    required
+                  />
+                </label>
+                {/* Email input */}
+                <label className="form-control w-full max-w-xs">
+                  <div className="label p-0">
+                    <span className="label-text">Email</span>
+                  </div>
+                  <input
+                    type="email"
+                    maxLength={40}
+                    id="emailField"
+                    value={email}
+                    onChange={handleChangeEmail}
+                    className="input input-bordered w-full max-w-xs"
+                    required
+                  />
+                  <div className="label"></div>
+                </label>
+                {/* Password input */}
+                <label className="form-control w-full max-w-xs">
+                  <div className="label p-0">
+                    <span className="label-text">Password</span>
+                  </div>
+                  <input
+                    type="password"
+                    minLength={9}
+                    maxLength={20}
+                    id="passwordField"
+                    value={password}
+                    onChange={handleChangePassword}
+                    className="input input-bordered w-full max-w-xs"
+                    required
+                  />
+                  <div className="label"></div>
+                </label>
+                {/* Confirm Password input */}
+                <label className="form-control w-full max-w-xs">
+                  <div className="label p-0">
+                    <span className="label-text">Confirm Password</span>
+                  </div>
+                  <input
+                    type="password"
+                    minLength={9}
+                    maxLength={20}
+                    id="confirmPasswordField"
+                    value={confirmPassword}
+                    onChange={handleChangeConfirmPassword}
+                    className="input input-bordered w-full max-w-xs"
+                    required
+                  />
+                  <div className="label"></div>
+                </label>
+                {/* Contact input */}
+                <label className="form-control w-full max-w-xs">
+                  <div className="label p-0">
+                    <span className="label-text">Contact (Mob/Tel)</span>
+                  </div>
+                  <input
+                    type="text"
+                    maxLength={30}
+                    id="contactField"
+                    value={contact}
+                    onChange={handleChangeContact}
+                    className="input input-bordered w-full max-w-xs"
+                    required
+                  />
+                  <div className="label pt-1">
+                    <span className="label-text-alt text-[0.6rem]">
+                      Contact number can contain only numbers, +, /, ( and )
+                    </span>
+                  </div>
+                </label>
+                {/* User type radio */}
+                <div>
+                  <label className="text-sm">User type:</label>
+                  {userTypesList.map((type) => (
+                    <div className="form-control">
+                      <label className="label cursor-pointer">
+                        <span className="label-text text-sm">{type}</span>
+                        <input
+                          type="radio"
+                          id={type}
+                          name="user_type"
+                          value={type}
+                          checked={userType === type}
+                          onChange={handleOptionChange}
+                          className="radio checked:bg-black"
+                          required
+                        />
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                {/* Submit button */}
+                <div className="card-actions justify-end mt-4">
+                  <button type="submit" className="btn bg-black text-white">
+                    Submit
+                  </button>
+                </div>
               </div>
-            ))}
-          </div>
-          <div>
-            <button type="submit" className="btn">
-              Submit
-            </button>
-          </div>
-        </form>
-        {isSaving && (
-          <Hourglass
-            visible={true}
-            height="80"
-            width="80"
-            ariaLabel="hourglass-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
-            colors={["#306cce", "#72a1ed"]}
-          />
+            </form>
+          </>
         )}
-      </>
+      </main>
     );
 }

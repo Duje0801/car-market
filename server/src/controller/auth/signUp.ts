@@ -20,7 +20,7 @@ export const signUp: any = async function (req: Request, res: Response) {
 
     //Checking email
     if (!validator.isEmail(email)) {
-      return errorResponse("Invalid email address", res, 401);
+      return errorResponse("Invalid email address format", res, 401);
     }
 
     //Checking password
@@ -46,7 +46,7 @@ export const signUp: any = async function (req: Request, res: Response) {
         `Password must be longer than 8 characters and must contain at least one: uppercase letter, 
          lowercase letter, digit and special character.`,
         res,
-        400
+        401
       );
     }
 
@@ -76,7 +76,7 @@ export const signUp: any = async function (req: Request, res: Response) {
 
     res.status(201).json({
       status: `success`,
-      data: {
+      userData: {
         username,
         email,
         token,
