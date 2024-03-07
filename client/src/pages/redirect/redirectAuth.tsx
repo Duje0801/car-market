@@ -18,17 +18,20 @@ export function RedirectAuth() {
 
   useEffect(() => {
     if (params.id === `logIn`) {
-      setMessage(`You have logged in, go to`);
+      setMessage(`You have logged in. Go to `);
       setClickRedirect(`the home page`);
     } else if (params.id === `signUp`) {
-      setMessage(`Profile has been created, go to`);
+      setMessage(`Profile has been created. Go to `);
       setClickRedirect(`log in`);
     } else if (params.id === `resetPassword`) {
-      setMessage(`The password has been successfully changed. Go to`);
+      setMessage(`The password has been successfully changed. Go to `);
       setClickRedirect(`log in`);
+    } else if (params.id === `logOut`) {
+      setMessage(`You have been succesfully logged out. Go to `);
+      setClickRedirect(`the home page`);
     } else {
-      setMessage(`Something went wrong. Go to`);
-      setClickRedirect(`home page`);
+      setMessage(`Something went wrong. Go to `);
+      setClickRedirect(`the home page`);
     }
   }, []);
 
@@ -53,7 +56,7 @@ export function RedirectAuth() {
     }
     return (
       <main>
-        <ErrorMessage text={"You are already logged in!"} />
+        <ErrorMessage text={"You are logged in!"} />
       </main>
     );
   } else {

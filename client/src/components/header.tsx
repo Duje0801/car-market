@@ -24,6 +24,7 @@ export function Header() {
   const handleLogOut = () => {
     localStorage.removeItem("userData");
     dispatch(removeProfileData());
+    navigate(`redirect/auth/logOut`)
   };
 
   return (
