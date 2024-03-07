@@ -12,7 +12,7 @@ export const resetPassword: any = async function (req: Request, res: Response) {
 
     //Checking email
     if (!validator.isEmail(email)) {
-      return errorResponse("Invalid email address", res, 401);
+      return errorResponse("Invalid email address form", res, 401);
     }
 
     //Checking password
@@ -79,7 +79,7 @@ export const resetPassword: any = async function (req: Request, res: Response) {
 
     res.status(200).json({
       status: "success",
-      message: "Password succesfully changed!",
+      message: "The password has been successfully changed!",
     });
   } catch (error) {
     errorHandler(error, req, res);
