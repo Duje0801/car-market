@@ -72,8 +72,8 @@ export function LogIn() {
   };
 
   //Redirect to Sign Up
-  const handleSignUp = () => {
-    navigate(`/signUp`);
+  const handleClick = (to: string) => {
+    navigate(`/${to}`);
   };
 
   {
@@ -99,7 +99,7 @@ export function LogIn() {
       /* Log in form */
     }
     return (
-      <main>
+      <main className="pb-4">
         {isLogging ? (
           <WaitingDots size={"md"} />
         ) : (
@@ -142,8 +142,16 @@ export function LogIn() {
                   <div className="label"></div>
                 </label>
                 <p className="text-center">
+                  <a
+                    className="link"
+                    onClick={() => handleClick(`forgotPassword`)}
+                  >
+                    Forgot password?
+                  </a>
+                </p>
+                <p className="text-center">
                   Not a member yet?{" "}
-                  <a className="link" onClick={handleSignUp}>
+                  <a className="link" onClick={() => handleClick(`signUp`)}>
                     Sign up
                   </a>
                 </p>

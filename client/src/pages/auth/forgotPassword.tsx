@@ -1,8 +1,9 @@
 import React, { FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
-import { Hourglass } from "react-loader-spinner";
-import { useNavigate } from "react-router-dom";
+import { WaitingDots } from "../../components/elements/waitingDots";
+import { ErrorMessage } from "../../components/elements/errorMessage";
 import axios from "axios";
 
 export function ForgotPassword() {
@@ -18,7 +19,7 @@ export function ForgotPassword() {
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   //Form data states changes
   const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,12 +33,12 @@ export function ForgotPassword() {
     setIsSending(true);
 
     try {
-      const data = new FormData();
-      data.append("email", email);
+      const formData = new FormData();
+      formData.append("email", email);
 
       await axios.post(
         "http://localhost:4000/api/v1/user/forgotPassword",
-        data,
+        formData,
         {
           headers: {
             "Content-Type": "application/json",
@@ -59,59 +60,89 @@ export function ForgotPassword() {
     }
   };
 
-  //Next step, password restarting
+  //Click to next step, password restarting
   const handleClick = () => {
-    navigate("/resetPassword")
+    navigate("/resetPassword");
   };
 
-  if (!isChecked) return <div>Loading...</div>;
-  else if (data.username) return <div>You are already logged in!</div>;
-  else
+  if (!isChecked) {
     return (
-      <>
-        {!codeSended ? (
+      <main>
+        <WaitingDots size={"md"} />{" "}
+      </main>
+    );
+  } else if (data.username) {
+    {
+      /* If the user is already logged in */
+    }
+    return (
+      <main>
+        <ErrorMessage text={"You are already logged in!"} />
+      </main>
+    );
+  } else if (codeSended) {
+    {
+      /* Password reset link, once the code has been sent */
+    }
+    return (
+      <div>
+        <p className="text-center mt-2">
+          A recovery code has been sent to your email address. Go to{" "}
+          <a onClick={handleClick} className="link">
+            reset password page
+          </a>
+          .
+        </p>
+      </div>
+    );
+  } else {
+    return (
+      <main className="pb-4">
+        {/* Waiting while code is sent to email */}
+        {isSending ? (
+          <WaitingDots size={"md"} />
+        ) : (
           <>
-            <form onSubmit={handleSubmit} className="border-2 border-black m-4">
-              <p>Forgot Password Form</p>
-              <p>Please type your email:</p>
-              {error && <p className="text-red-500">{error}</p>}
-              <div>
-                <label htmlFor="emailField">Email:</label>
-                <input
-                  type="email"
-                  maxLength={40}
-                  id="emailField"
-                  value={email}
-                  onChange={handleChangeEmail}
-                  className="border-2 border-black"
-                  required
-                />
-              </div>
-              <div>
-                <button type="submit" className="btn">
-                  Submit
-                </button>
+            {error && <ErrorMessage text={error} />}
+            {/* Forgot password form */}
+            <form
+              onSubmit={handleSubmit}
+              className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw]"
+            >
+              <div className="card-body p-4">
+                <p className="card-title text-3xl">Forgot Password</p>
+                <label className="form-control w-full max-w-xs">
+                  <div className="label p-0">
+                    <span className="label-text mt-4">
+                      Please type your email:
+                    </span>
+                  </div>
+                  <input
+                    type="email"
+                    maxLength={40}
+                    id="emailField"
+                    value={email}
+                    onChange={handleChangeEmail}
+                    className="input input-bordered w-full max-w-xs"
+                    required
+                  />
+                  <div className="label pt-1">
+                    <span className="label-text-alt text-[0.6rem]">
+                      A recovery code will be sent to your email.
+                    </span>
+                  </div>
+                </label>
+                {/* Submit button */}
+                <div className="card-actions justify-end mt-4">
+                  <button type="submit" className="btn bg-black text-white">
+                    Submit
+                  </button>
+                </div>
               </div>
             </form>
-            {isSending && (
-              <Hourglass
-                visible={true}
-                height="80"
-                width="80"
-                ariaLabel="hourglass-loading"
-                wrapperStyle={{}}
-                wrapperClass=""
-                colors={["#306cce", "#72a1ed"]}
-              />
-            )}{" "}
           </>
-        ) : (
-          <div>
-            <button onClick={handleClick} className="btn">
-              Go to reset password page
-            </button>
-          </div>
         )}
-      </>
+      </main>
     );
+  }
 }
