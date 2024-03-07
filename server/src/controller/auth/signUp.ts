@@ -3,20 +3,13 @@ import validator = require("validator");
 import bcrypt from "bcryptjs";
 import { User } from "../../models/userModel";
 import { IUser } from "../../interfaces/user";
-import { createToken } from "../../utilis/createToken";
 import { errorResponse } from "../../utilis/errorHandling/errorResponse";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
 
 export const signUp: any = async function (req: Request, res: Response) {
   try {
-    const {
-      username,
-      email,
-      password,
-      confirmPassword,
-      contact,
-      userType,
-    } = req.body;
+    const { username, email, password, confirmPassword, contact, userType } =
+      req.body;
 
     //Checking email
     if (!validator.isEmail(email)) {
@@ -71,16 +64,9 @@ export const signUp: any = async function (req: Request, res: Response) {
 
     if (!newUser) return errorResponse("Can't create new user", res, 401);
 
-    //Creating token
-    const token = createToken(newUser._id);
-
     res.status(201).json({
       status: `success`,
-      userData: {
-        username,
-        email,
-        token,
-      },
+      message: `Profile has been succesfully created!`,
     });
   } catch (error) {
     errorHandler(error, req, res);

@@ -85,15 +85,15 @@ export function ForgotPassword() {
       /* Password reset link, once the code has been sent */
     }
     return (
-      <div>
-        <p className="text-center mt-2">
+      <main>
+        <p className="text-center mx-auto mt-2 w-[90vw]">
           A recovery code has been sent to your email address. Go to{" "}
           <a onClick={handleClick} className="link">
             reset password page
           </a>
           .
         </p>
-      </div>
+      </main>
     );
   } else {
     return (

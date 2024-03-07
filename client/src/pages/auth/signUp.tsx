@@ -1,10 +1,8 @@
 import React, { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { addProfileData } from "../../store/slices/profile";
+import { useSelector } from "react-redux";
 import { store } from "../../store";
 import { userTypes as userTypesList } from "../../data/userTypes";
-import { IProfileData } from "../../interfaces/IProfileData";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { ErrorMessage } from "../../components/elements/errorMessage";
 import axios from "axios";
@@ -26,7 +24,6 @@ export function SignUp() {
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   //Form data states changes
@@ -72,27 +69,20 @@ export function SignUp() {
     }
 
     try {
-      const data = new FormData();
-      data.append("username", username);
-      data.append("email", email);
-      data.append("password", password);
-      data.append("confirmPassword", confirmPassword);
-      data.append("contact", contact);
-      data.append("userType", userType);
+      const formData = new FormData();
+      formData.append("username", username);
+      formData.append("email", email);
+      formData.append("password", password);
+      formData.append("confirmPassword", confirmPassword);
+      formData.append("contact", contact);
+      formData.append("userType", userType);
 
-      const response = await axios.post(
-        "http://localhost:4000/api/v1/user/signUp",
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const profileData: IProfileData = response.data.userData;
-      localStorage.setItem("userData", JSON.stringify(profileData));
-      dispatch(addProfileData(profileData));
-      navigate("/");
+      await axios.post("http://localhost:4000/api/v1/user/signUp", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      navigate("/redirect/auth/signUp");
     } catch (error: any) {
       if (
         error?.response?.data?.status === "fail" &&
@@ -108,16 +98,16 @@ export function SignUp() {
     setIsSigningUp(false);
   };
 
-  {
-    /* Loading user data */
-  }
-  if (!isChecked)
+  if (!isChecked) {
+    {
+      /* Loading user data */
+    }
     return (
       <main>
         <WaitingDots size={"md"} />{" "}
       </main>
     );
-  else if (data.username) {
+  } else if (data.username) {
     {
       /* If the user is already logged in */
     }
@@ -230,13 +220,14 @@ export function SignUp() {
                 {/* User type radio */}
                 <div>
                   <label className="text-sm">User type:</label>
-                  {userTypesList.map((type) => (
+                  {userTypesList.map((type, i) => (
                     <div className="form-control">
                       <label className="label cursor-pointer">
                         <span className="label-text text-sm">{type}</span>
                         <input
                           type="radio"
                           id={type}
+                          key={i}
                           name="user_type"
                           value={type}
                           checked={userType === type}

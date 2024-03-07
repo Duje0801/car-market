@@ -73,7 +73,7 @@ export function ResetPassword() {
           },
         }
       );
-      navigate("/");
+      navigate("/redirect/auth/resetPassword");
     } catch (error: any) {
       if (
         error?.response?.data?.status === "fail" &&

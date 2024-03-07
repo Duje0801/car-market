@@ -40,13 +40,13 @@ export function LogIn() {
     setIsLogging(true);
 
     try {
-      const data = new FormData();
-      data.append("email", email);
-      data.append("password", password);
+      const formData = new FormData();
+      formData.append("email", email);
+      formData.append("password", password);
 
       const response = await axios.post(
         "http://localhost:4000/api/v1/user/logIn",
-        data,
+        formData,
         {
           headers: {
             "Content-Type": "application/json",
@@ -56,7 +56,7 @@ export function LogIn() {
       const profileData: IProfileData = response.data.data;
       localStorage.setItem("userData", JSON.stringify(profileData));
       dispatch(addProfileData(profileData));
-      navigate("/");
+      navigate("/redirect/auth/logIn");
     } catch (error: any) {
       if (
         error?.response?.data?.status === "fail" &&
