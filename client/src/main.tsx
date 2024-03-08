@@ -17,8 +17,9 @@ import { SignUp } from "./pages/auth/signUp.tsx";
 import { LogIn } from "./pages/auth/logIn.tsx";
 import { ForgotPassword } from "./pages/auth/forgotPassword.tsx";
 import { ResetPassword } from "./pages/auth/resetPassword.tsx";
-import { NewAd } from "./components/createNewAd.tsx";
+import { NewAd } from "./pages/ad/createNewAd.tsx";
 import { RedirectAuth } from "./pages/redirect/redirectAuth.tsx";
+import { RedirectAd } from "./pages/redirect/redirectAd.tsx";
 import { UserList } from "./components/userList.tsx";
 import "./index.css";
 
@@ -36,6 +37,7 @@ const router = createBrowserRouter(
       <Route path="/resetPassword" element={<ResetPassword />} />
       <Route path="/newAd" element={<NewAd />} />
       <Route path="/redirect/auth/:id" element={<RedirectAuth />} />
+      <Route path="/redirect/ad/:id" element={<RedirectAd />} />
       <Route path="/admin/userList" element={<UserList />} />
     </Route>
   )

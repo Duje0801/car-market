@@ -1,15 +1,17 @@
 interface Props {
   size: string;
+  marginTop: number;
 }
 
-export function WaitingDots({ size }: Props) {
-  const classname = `loading loading-ball loading-${size}`;
+export function WaitingDots({ size, marginTop }: Props) {
+  const classnameDiv = `flex justify-center mt-${marginTop}`;
+  const classnameSpan = `loading loading-ball loading-${size}`;
 
   return (
-    <div className="flex justify-center mt-8">
-      <span className={classname}></span>
-      <span className={classname}></span>
-      <span className={classname}></span>
+    <div className={classnameDiv}>
+      <span className={classnameSpan}></span>
+      <span className={classnameSpan}></span>
+      <span className={classnameSpan}></span>
     </div>
   );
 }

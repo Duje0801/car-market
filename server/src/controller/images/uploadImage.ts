@@ -25,6 +25,7 @@ const uploadImage: any = async function (req: Request, res: Response) {
       });
       res.status(200).json({
         status: "success",
+        message: "Image successfully uploaded",
         image: {
           imageUrl: cloudinaryUpload.secure_url,
           publicID: cloudinaryUpload.public_id,

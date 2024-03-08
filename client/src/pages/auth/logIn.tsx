@@ -82,7 +82,7 @@ export function LogIn() {
   if (!isChecked) {
     return (
       <main>
-        <WaitingDots size={"md"} />{" "}
+        <WaitingDots size={"md"} marginTop={8} />{" "}
       </main>
     );
   } else if (data.username) {
@@ -101,7 +101,7 @@ export function LogIn() {
     return (
       <main className="pb-4">
         {isLogging ? (
-          <WaitingDots size={"md"} />
+          <WaitingDots size={"md"} marginTop={8} />
         ) : (
           <>
             {error && <ErrorMessage text={error} />}

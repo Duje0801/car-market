@@ -118,8 +118,8 @@ const adSchema = new Schema(
     description: {
       type: String,
       maxLength: [
-        300,
-        "The maximum number of characters allowed in the car description is 300",
+        1000,
+        "The maximum number of characters allowed in the car description is 1000",
       ],
     },
     active: {

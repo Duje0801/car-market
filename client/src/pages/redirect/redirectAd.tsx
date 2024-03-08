@@ -5,7 +5,7 @@ import { store } from "../../store";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { ErrorMessage } from "../../components/elements/errorMessage";
 
-export function RedirectAuth() {
+export function RedirectAd() {
   const [message, setMessage] = useState<string>("");
   const [clickRedirect, setClickRedirect] = useState<string>("");
 
@@ -17,17 +17,8 @@ export function RedirectAuth() {
   );
 
   useEffect(() => {
-    if (params.id === `logIn`) {
-      setMessage(`You have logged in. Go to `);
-      setClickRedirect(`the home page`);
-    } else if (params.id === `signUp`) {
-      setMessage(`Profile has been created. Go to `);
-      setClickRedirect(`log in`);
-    } else if (params.id === `resetPassword`) {
-      setMessage(`The password has been successfully changed. Go to `);
-      setClickRedirect(`log in`);
-    } else if (params.id === `logOut`) {
-      setMessage(`You have been succesfully logged out. Go to `);
+    if (params.id === `new`) {
+      setMessage(`Ad is succesfully created. Go to `);
       setClickRedirect(`the home page`);
     } else {
       setMessage(`Something went wrong. Go to `);
@@ -36,9 +27,7 @@ export function RedirectAuth() {
   }, []);
 
   const handleClick = () => {
-    if (params.id === `signUp` || params.id === `resetPassword`)
-      navigate(`/logIn`);
-    else navigate(`/`);
+    navigate(`/`);
   };
 
   if (!isChecked) {
@@ -50,13 +39,13 @@ export function RedirectAuth() {
         <WaitingDots size={"md"} marginTop={8} />{" "}
       </main>
     );
-  } else if (data.username && params.id !== `logIn`) {
+  } else if (!data.username) {
     {
       /* If the user is already logged in */
     }
     return (
       <main>
-        <ErrorMessage text={"You are logged in!"} />
+        <ErrorMessage text={"You don't have permission to view this page!"} />
       </main>
     );
   } else {

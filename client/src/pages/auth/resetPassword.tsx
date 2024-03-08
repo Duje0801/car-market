@@ -93,7 +93,7 @@ export function ResetPassword() {
   if (!isChecked) {
     return (
       <main>
-        <WaitingDots size={"md"} />{" "}
+        <WaitingDots size={"md"} marginTop={8} />{" "}
       </main>
     );
   } else if (data.username) {
@@ -110,7 +110,7 @@ export function ResetPassword() {
       <main className="pb-4">
         {/* Waiting while the token is checked for validity */}
         {isSaving ? (
-          <WaitingDots size={"md"} />
+          <WaitingDots size={"md"} marginTop={8} />
         ) : (
           <>
             {error && <ErrorMessage text={error} />}

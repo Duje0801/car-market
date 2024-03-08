@@ -104,7 +104,7 @@ export function SignUp() {
     }
     return (
       <main>
-        <WaitingDots size={"md"} />{" "}
+        <WaitingDots size={"md"} marginTop={8} />{" "}
       </main>
     );
   } else if (data.username) {
@@ -120,7 +120,7 @@ export function SignUp() {
     return (
       <main className="pb-4">
         {isSigningUp ? (
-          <WaitingDots size={"md"} />
+          <WaitingDots size={"md"} marginTop={8} />
         ) : (
           <>
             {error && <ErrorMessage text={error} />}

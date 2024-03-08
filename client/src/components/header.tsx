@@ -24,7 +24,7 @@ export function Header() {
   const handleLogOut = () => {
     localStorage.removeItem("userData");
     dispatch(removeProfileData());
-    navigate(`redirect/auth/logOut`)
+    navigate(`redirect/auth/logOut`);
   };
 
   return (
@@ -62,9 +62,14 @@ export function Header() {
                   </Link>
                 ) : null}
                 {data.username && data.username !== `admin` ? (
-                  <Link to={`/profile/${data.username}`} className="my-auto">
-                    <li className="text-sm font-bold py-2">My Profile</li>
-                  </Link>
+                  <>
+                    <Link to={`/profile/${data.username}`} className="my-auto">
+                      <li className="text-sm font-bold py-2">My Profile</li>
+                    </Link>
+                    <Link to={`/newAd`} className="my-auto">
+                      <li className="text-sm font-bold py-2">New Ad</li>
+                    </Link>
+                  </>
                 ) : null}
               </ul>
             </div>

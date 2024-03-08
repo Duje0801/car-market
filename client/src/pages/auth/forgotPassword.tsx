@@ -68,7 +68,7 @@ export function ForgotPassword() {
   if (!isChecked) {
     return (
       <main>
-        <WaitingDots size={"md"} />{" "}
+        <WaitingDots size={"md"} marginTop={8} />{" "}
       </main>
     );
   } else if (data.username) {
@@ -100,7 +100,7 @@ export function ForgotPassword() {
       <main className="pb-4">
         {/* Waiting while code is sent to email */}
         {isSending ? (
-          <WaitingDots size={"md"} />
+          <WaitingDots size={"md"} marginTop={8} />
         ) : (
           <>
             {error && <ErrorMessage text={error} />}

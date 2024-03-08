@@ -8,7 +8,7 @@ import { makes as makesList } from "../../../data/makes";
 import { fuel as fuelList } from "../../../data/fuel";
 import { condition as conditionList } from "../../../data/condition";
 import { countries as countriesList } from "../../../data/countries";
-import { UploadAdImages } from "../../uploadAdImages";
+import { UploadAdImages } from "../../ad/new/uploadAdImages";
 import { Hourglass } from "react-loader-spinner";
 import axios from "axios";
 
