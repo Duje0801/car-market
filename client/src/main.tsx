@@ -12,14 +12,15 @@ import { Home } from "./pages/home.tsx";
 import { ShowAdsList } from "./components/showAdsList.tsx";
 import { AdView } from "./components/adView.tsx";
 import { EditAdData } from "./components/edit/ad/editAdData.tsx";
-import { UserProfile } from "./components/userProfile.tsx";
+import { Profile } from "./components/profile.tsx";
 import { SignUp } from "./pages/auth/signUp.tsx";
 import { LogIn } from "./pages/auth/logIn.tsx";
 import { ForgotPassword } from "./pages/auth/forgotPassword.tsx";
 import { ResetPassword } from "./pages/auth/resetPassword.tsx";
-import { NewAd } from "./pages/ad/createNewAd.tsx";
+import { NewAd } from "./pages/ad/new.tsx";
 import { RedirectAuth } from "./pages/redirect/redirectAuth.tsx";
 import { RedirectAd } from "./pages/redirect/redirectAd.tsx";
+import { RedirectAdmin } from "./pages/redirect/redirectAdmin.tsx";
 import { UserList } from "./components/userList.tsx";
 import "./index.css";
 
@@ -30,7 +31,7 @@ const router = createBrowserRouter(
       <Route path="/ads/:id?" element={<ShowAdsList />} />
       <Route path="/ad/:id?" element={<AdView />} />
       <Route path="/editAd/:id?" element={<EditAdData />} />
-      <Route path="/profile/:id" element={<UserProfile />} />
+      <Route path="/profile/:id" element={<Profile />} />
       <Route path="/signUp" element={<SignUp />} />
       <Route path="/logIn" element={<LogIn />} />
       <Route path="/forgotPassword" element={<ForgotPassword />} />
@@ -38,6 +39,7 @@ const router = createBrowserRouter(
       <Route path="/newAd" element={<NewAd />} />
       <Route path="/redirect/auth/:id" element={<RedirectAuth />} />
       <Route path="/redirect/ad/:id" element={<RedirectAd />} />
+      <Route path="/redirect/admin/:id" element={<RedirectAdmin />} />
       <Route path="/admin/userList" element={<UserList />} />
     </Route>
   )

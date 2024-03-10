@@ -1,30 +1,39 @@
 import React, { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { IUserData } from "../../../interfaces/IUserData";
-import { Hourglass } from "react-loader-spinner";
 import { store } from "../../../store";
-import axios from "axios";
 import { addProfileData } from "../../../store/slices/profile";
+import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
+import { MessageError } from "../../elements/messages/messageError";
+import { WaitingDots } from "../../elements/waitingDots";
+import { IUserData } from "../../../interfaces/IUserData";
 import { IProfileData } from "../../../interfaces/IProfileData";
+import axios from "axios";
 
 interface Props {
   email: string;
   setProfileData: Dispatch<SetStateAction<IUserData | null>>;
-  setOpenEditEmail: Dispatch<SetStateAction<boolean>>;
-  setError: Dispatch<SetStateAction<string>>;
+  editError: string;
+  setEditError: Dispatch<SetStateAction<string>>;
+  editMessage: string;
+  setEditMessage: Dispatch<SetStateAction<string>>;
+  handleClickX: () => void;
 }
 
 export function EditEmail({
   email,
   setProfileData,
-  setOpenEditEmail,
-  setError,
+  editError,
+  setEditError,
+  editMessage,
+  setEditMessage,
+  handleClickX,
 }: Props) {
+  //Form data states
   const [newEmail, setNewEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+  //Other states
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [editEmailError, setEditEmailError] = useState<string>("");
 
   const { data } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
@@ -72,70 +81,78 @@ export function EditEmail({
       localStorage.setItem("userData", JSON.stringify(profileData));
       dispatch(addProfileData(profileData));
       setProfileData(response.data.user);
-      setError(response.data.message);
-      setOpenEditEmail(false);
+      setEditMessage(response.data.message);
+      setEditError("");
     } catch (error: any) {
       if (
         error?.response?.data?.status === "fail" &&
         typeof error?.response?.data?.message === `string`
       ) {
-        setEditEmailError(error.response.data.message);
+        setEditError(error.response.data.message);
       } else {
-        setEditEmailError("Something went wrong, please try again later.");
+        setEditError("Something went wrong, please try again later.");
       }
     }
-    setNewEmail("")
+    setNewEmail("");
     setPassword("");
     setIsSaving(false);
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="border-2 border-black m-4">
-        <p>Edit Email Form</p>
-        {editEmailError && <p className="text-red-500">{editEmailError}</p>}
-        <div>
-          <label htmlFor="newEmailField">New Email:</label>
+      <form onSubmit={handleSubmit}>
+        {/* Messages */}
+        {editMessage && (
+          <div className="mb-2">
+            <MessageSuccessfully message={editMessage} />
+          </div>
+        )}
+        {isSaving && <WaitingDots size="sm" marginTop={0} />}
+        {editError && (
+          <div className="my-2">
+            <MessageError message={editError} />
+          </div>
+        )}
+        {/* New email input */}
+        <label className="form-control w-full max-w-xs">
+          <div className="label p-0">
+            <span className="label-text">New Email</span>
+          </div>
           <input
             type="email"
             maxLength={30}
-            id="newEmailField"
             value={newEmail}
             onChange={handleNewEmail}
-            className="border-2 border-black"
+            className="input input-bordered w-full max-w-xs"
             required
-          />{" "}
-        </div>
-        <div>
-          <label htmlFor="passwordField">Password:</label>
+          />
+        </label>
+        {/* Password input */}
+        <label className="form-control w-full max-w-xs mt-2">
+          <div className="label p-0">
+            <span className="label-text">Password</span>
+          </div>
           <input
             type="password"
             minLength={9}
             maxLength={20}
-            id="passwordField"
             value={password}
             onChange={handleChangePassword}
-            className="border-2 border-black"
+            className="input input-bordered w-full max-w-xs"
             required
-          />{" "}
-        </div>
-        <div>
-          <button type="submit" className="btn">
-            Submit
-          </button>
-        </div>
+          />
+        </label>
+        {/* Submit button */}
+        <button type="submit" className="btn mt-2 w-full">
+          Submit
+        </button>
       </form>
-      {isSaving && (
-        <Hourglass
-          visible={true}
-          height="80"
-          width="80"
-          ariaLabel="hourglass-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-          colors={["#306cce", "#72a1ed"]}
-        />
-      )}
+      {/* Close button */}
+      <form method="dialog">
+        <button onClick={handleClickX} className="btn btn-error mt-2 w-full">
+          Close
+        </button>
+      </form>{" "}
     </>
   );
 }

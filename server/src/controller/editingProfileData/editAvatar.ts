@@ -10,11 +10,18 @@ export const editAvatar: any = async function (req: ReqUser, res: Response) {
     const { email, avatarURL, uploadedAvatarURL, uploadedPublicID } = req.body;
 
     //Getting user
-    const user: IUser = await User.findOne({ email }).select(
-      `+active -updatedAt -__v`
-    );
+    const user: IUser | null = await User.findOne({ email })
+      .select(`+active -updatedAt -__v`)
+      .populate({
+        path: `ads`,
+        options: { sort: { createdAt: -1 } },
+        select: {
+          updatedAt: 0,
+          __v: 0,
+        },
+      });
 
-    //Checking does user exist and is user active
+    //Check if the user exists and if the user is active
     if (!user || !user.active) {
       return errorResponse(
         "This user is deactivated or does not exist.",
@@ -32,7 +39,7 @@ export const editAvatar: any = async function (req: ReqUser, res: Response) {
       );
     }
 
-    //Checking avatar links length
+    //Checking avatar link length
     if (
       avatarURL.length > 200 ||
       uploadedAvatarURL.length > 200 ||
@@ -41,7 +48,7 @@ export const editAvatar: any = async function (req: ReqUser, res: Response) {
       return errorResponse(
         "URL links are too long, the maximum number of characters in links is 200.",
         res,
-        401
+        400
       );
     }
 
@@ -55,27 +62,16 @@ export const editAvatar: any = async function (req: ReqUser, res: Response) {
       user.avatar.uploadedAvatar.imageUrl = uploadedAvatarURL;
       user.avatar.uploadedAvatar.publicID = uploadedPublicID;
     } else {
-      return errorResponse("Can't save images, please try again.", res, 401);
+      return errorResponse("Can't save images, please try again.", res, 400);
     }
 
     //Saving new avatar links
     await user.save({ validateBeforeSave: true });
 
-    const userToReturn: IUser | null = await User.findById(user._id)
-      .select("+active -updatedAt -__v")
-      .populate({
-        path: `ads`,
-        options: { sort: { createdAt: -1 } },
-        select: {
-          updatedAt: 0,
-          __v: 0,
-        },
-      });
-
     res.status(200).json({
       status: "success",
       message: "Avatar succesfully changed!",
-      user: userToReturn,
+      user,
     });
   } catch (error) {
     errorHandler(error, req, res);

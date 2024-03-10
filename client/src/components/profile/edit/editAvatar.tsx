@@ -1,38 +1,48 @@
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { useSelector } from "react-redux";
 import { IUserData } from "../../../interfaces/IUserData";
-import { Hourglass } from "react-loader-spinner";
 import { store } from "../../../store";
+import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
+import { MessageError } from "../../elements/messages/messageError";
+import { WaitingDots } from "../../elements/waitingDots";
 import axios from "axios";
 
 interface Props {
   email: string;
   oldUploadedImagePublicID: string | undefined;
   setProfileData: Dispatch<SetStateAction<IUserData | null>>;
-  setOpenEditAvatar: Dispatch<SetStateAction<boolean>>;
-  setError: Dispatch<SetStateAction<string>>;
+  editError: string;
+  setEditError: Dispatch<SetStateAction<string>>;
+  editMessage: string;
+  setEditMessage: Dispatch<SetStateAction<string>>;
+  handleClickX: () => void;
 }
 
 export function EditAvatar({
   email,
   oldUploadedImagePublicID,
   setProfileData,
-  setOpenEditAvatar,
-  setError,
+  editError,
+  setEditError,
+  editMessage,
+  setEditMessage,
+  handleClickX,
 }: Props) {
+  //Form data states
   const [avatarURL, setAvatarURL] = useState<string>("");
   const [uploadedImageURL, setUploadedImageURL] = useState<string>("");
   const [uploadedImagePublicID, setUploadedImagePublicID] =
     useState<string>("");
 
+  //Other states
   const [uploadImage, setUploadImage] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [editAvatarError, setEditAvatarError] = useState<string>("");
 
   const { data } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
+  //Form data states changes
   const handleChangeAvatarURL = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -64,25 +74,24 @@ export function EditAvatar({
       );
 
       //Deleting old avatar
-      const delAvatarMessage: string = await deleteAvatar();
-      
+      const deleteAvatarMessage: string = await deleteAvatar();
+      console.log(response.data.user);
       setProfileData(response.data.user);
-      setError(response.data.message + delAvatarMessage);
-      setOpenEditAvatar(false);
+      setEditMessage(response.data.message + deleteAvatarMessage);
     } catch (error: any) {
       if (
         error?.response?.data?.status === "fail" &&
         typeof error?.response?.data?.message === `string`
       ) {
-        setError(error.response.data.message);
+        setEditError(error.response.data.message);
       } else {
-        setError("Something went wrong, please try again later.");
+        setEditError("Something went wrong, please try again later.");
       }
-      setIsSaving(false);
     }
+    setIsSaving(false);
   };
 
-  //Delete avatar function (deleting from Cloudinary database, after deleting user profile)
+  //Delete avatar function (deleting from Cloudinary database, after deleting from profile)
   const deleteAvatar = async () => {
     if (oldUploadedImagePublicID) {
       try {
@@ -95,15 +104,15 @@ export function EditAvatar({
             },
           }
         );
-        return ". Old user avatar is succesfully deleted too.";
+        return " Old user avatar is succesfully deleted too.";
       } catch (error: any) {
         if (
           error?.response?.data?.status === "fail" &&
           typeof error?.response?.data?.message === `string`
         ) {
-          return `. ${error.response.data.message}`;
+          return ` ${error.response.data.message}`;
         } else {
-          return ". Old user's avatar is not deleted";
+          return " Old user's avatar is not deleted";
         }
       }
     } else return "";
@@ -115,7 +124,7 @@ export function EditAvatar({
       setUploadedImageURL("");
       setUploadedImagePublicID("");
       setUploadImage(false);
-      setError("");
+      setEditError("");
     } else {
       if (uploadedImageURL && uploadedImagePublicID) {
         setIsSaving(true);
@@ -129,29 +138,44 @@ export function EditAvatar({
               },
             }
           );
-          setError("Avatar removed");
+          setEditMessage("Avatar removed");
         } catch (error: any) {
           if (
             error?.response?.data?.status === "fail" &&
             typeof error?.response?.data?.message === `string`
           ) {
-            setError(error.response.data.message);
+            setEditError(error.response.data.message);
           } else {
-            setError("Removing avatar error, please try again later.");
+            setEditError("Removing avatar error, please try again later.");
           }
         }
       }
-      setAvatarURL(``);
+      setAvatarURL("");
       setUploadImage(true);
       setIsSaving(false);
     }
+    setEditMessage("");
   };
 
   //Avatar upload function
   const handleUploadAvatar = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
+      const file = e.target.files[0];
+
+      //Checking is uploaded file image
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const result = event.target?.result as string;
+          if (!result.startsWith("data:image/")) {
+            return setEditError("Uploaded file is not an image.");
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+
       const formData = new FormData();
-      formData.append("image", e.target.files[0]);
+      formData.append("image", file);
       setIsSaving(true);
 
       try {
@@ -167,70 +191,99 @@ export function EditAvatar({
         );
         setUploadedImageURL(response.data.image.imageUrl);
         setUploadedImagePublicID(response.data.image.publicID);
-        setError("Avatar successfully uploaded.");
+        setEditMessage("Avatar successfully uploaded.");
+        setEditError("");
       } catch (error: any) {
         if (
           error?.response?.data?.status === "fail" &&
           typeof error?.response?.data?.message === `string`
         ) {
-          setEditAvatarError(error.response.data.message);
+          setEditError(error.response.data.message);
+          setEditMessage("");
         } else {
-          setEditAvatarError("Uploading avatar error, please try again later.");
+          setEditError("Uploading avatar error.");
+          setEditMessage("");
         }
       } finally {
         setIsSaving(false);
       }
     } else {
-      setEditAvatarError("Please set valid image for upload.");
+      setEditError("Please set valid image for upload.");
+      setEditMessage("");
     }
   };
 
   return (
     <>
-      {editAvatarError && <div className="text-red-500">{editAvatarError}</div>}
       <form onSubmit={handleSubmit}>
+        {/* Messages */}
+        {editMessage && (
+          <div className="mb-2">
+            <MessageSuccessfully message={editMessage} />
+          </div>
+        )}
+        {isSaving && <WaitingDots size="sm" marginTop={2} />}
+        {editError && (
+          <div className="my-2">
+            <MessageError message={editError} />
+          </div>
+        )}
+        <p className="text-center text-sm mb-2">
+          The new avatar will be confirmed after clicking the submit button
+        </p>
+        {/* Image upload */}
         {uploadImage ? (
-          <>
-            <label htmlFor="avatarURL">Avatar URL:</label>
+          <label className="form-control w-full max-w-xs mt-2">
+            {/* Password input */}
+            <div className="label p-0">
+              <span className="label-text">URL</span>
+            </div>
             <input
               type="text"
               maxLength={200}
               id="avatarURL"
               value={avatarURL}
               onChange={handleChangeAvatarURL}
-              className="border-2 border-black"
+              className="input input-bordered w-full max-w-xs"
             />
-          </>
+          </label>
         ) : (
           <div>
+            {/* Image upload input */}
             {uploadedImageURL && (
-              <img src={uploadedImageURL} alt="avatar"></img>
+              <div className="avatar rounded flex justify-center my-2">
+                <div className="rounded">
+                  <img src={uploadedImageURL} alt="uploadedImage" />
+                </div>
+              </div>
             )}
-            <input type="file" onChange={handleUploadAvatar} />
+            <input
+              type="file"
+              className="file-input file-input-bordered w-full max-w-xs"
+              onChange={handleUploadAvatar}
+            />
           </div>
         )}
+        {/* Change Copy URL / upload image */}
         <div>
-          <button type="button" onClick={handleChangeUpload} className="btn">
-            {uploadImage ? "Upload avatar" : "Avatar URL"}
-          </button>
-          <div>
-            <button type="submit" className="btn">
-              Submit
-            </button>
-          </div>
+          <p className="text-center mt-2">
+            <a className="link" onClick={handleChangeUpload}>
+              {uploadImage ? "Upload avatar" : "Copy avatar URL"}
+            </a>
+          </p>
         </div>
+
+        {/* Submit button */}
+        <button type="submit" className="btn mt-2 w-full">
+          Submit
+        </button>
       </form>
-      {isSaving && (
-        <Hourglass
-          visible={true}
-          height="80"
-          width="80"
-          ariaLabel="hourglass-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-          colors={["#306cce", "#72a1ed"]}
-        />
-      )}
+      {/* Close button */}
+      <form method="dialog">
+        <button onClick={handleClickX} className="btn btn-error mt-2 w-full">
+          Close
+        </button>
+      </form>
     </>
   );
 }

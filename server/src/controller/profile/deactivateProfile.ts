@@ -11,14 +11,24 @@ export const deactivateProfile: any = async function (
   res: Response
 ) {
   try {
-    const user: IUser = await User.findById(req.params.id).select(
-      "+active -updatedAt -__v"
-    );
+    //Getting user from MongoDB
+    const user: IUser | null = await User.findById(req.params.id)
+      .select("+active -updatedAt -__v")
+      .populate({
+        path: `ads`,
+        options: { sort: { createdAt: -1 } },
+        select: {
+          updatedAt: 0,
+          __v: 0,
+        },
+      });
 
+    //Checking if the user exists
     if (!user) {
       return errorResponse("Can't find this user", res, 404);
     }
 
+    //If user is active (will be change to active: false)
     if (user.active) {
       if (req.user.role !== "admin" && req.user.username !== user.username) {
         return errorResponse(
@@ -43,7 +53,10 @@ export const deactivateProfile: any = async function (
           404
         );
       }
-    } else {
+    }
+    //If user is not active (will be change to active: true)
+    else {
+      //Only admin can change active from false to true
       if (req.user.role !== "admin") {
         return errorResponse(
           "You don't have permission for this operation",
@@ -62,7 +75,7 @@ export const deactivateProfile: any = async function (
 
       if (!ads) {
         return errorResponse(
-          "User has been activated, but his ads are still inactive and unvisible",
+          "Profile has been activated, but his ads are still inactive and unvisible",
           res,
           404
         );
@@ -71,7 +84,10 @@ export const deactivateProfile: any = async function (
 
     res.status(200).json({
       status: `success`,
-      message: `User has been successfully ${user.active ? "" : "de"}activated`,
+      message: `Profile has been successfully ${
+        user.active ? "" : "de"
+      }activated`,
+      user,
     });
   } catch (error) {
     errorHandler(error, req, res);

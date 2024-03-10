@@ -438,7 +438,7 @@ export function SearchAds() {
           className="btn bg-black text-white w-[39.5vw] max-w-xs"
           onClick={handleRedirect}
         >
-          {isLoading ? <WaitingDots size={"xs"} /> : `${resultsNo} Results`}{" "}
+          {isLoading ? <WaitingDots size={"xs"} marginTop={2} /> : `${resultsNo} Results`}{" "}
         </button>
       </form>
     </>

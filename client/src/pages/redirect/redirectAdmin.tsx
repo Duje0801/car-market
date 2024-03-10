@@ -5,7 +5,7 @@ import { store } from "../../store";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { ErrorMessage } from "../../components/elements/errorMessage";
 
-export function RedirectAuth() {
+export function RedirectAdmin() {
   const [message, setMessage] = useState<string>("");
   const [clickRedirect, setClickRedirect] = useState<string>("");
 
@@ -16,52 +16,51 @@ export function RedirectAuth() {
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
+  let paramsSplit: string[];
+  if (params.id) {
+    paramsSplit = params.id.split("-");
+  }
+
   useEffect(() => {
-    if (params.id === `logIn`) {
-      setMessage(`You have logged in. Go to `);
+    if (paramsSplit[0] === `deleteUser` && paramsSplit[1] === `allDeleted`) {
+      setMessage(
+        `User is succesfully deleted. All ads, ad images and avatar. Go to `
+      );
       setClickRedirect(`the home page`);
-    } else if (params.id === `signUp`) {
-      setMessage(`Profile has been created. Go to `);
-      setClickRedirect(`log in`);
-    } else if (params.id === `resetPassword`) {
-      setMessage(`The password has been successfully changed. Go to `);
-      setClickRedirect(`log in`);
-    } else if (params.id === `logOut`) {
-      setMessage(`You have been succesfully logged out. Go to `);
+    } else if (
+      paramsSplit[0] === `deleteUser` &&
+      paramsSplit[1] === `notAllDeleted`
+    ) {
+      setMessage(
+        `User is succesfully deleted. Maybe avatar and ad's images are not deleted. Go to `
+      );
       setClickRedirect(`the home page`);
-    } 
-    else if (params.id === `deactivate`) {
-      setMessage(`Your profile has been succesfully deactivated. Go to `);
-      setClickRedirect(`the home page`);
-    } 
-    else {
+    } else {
       setMessage(`Something went wrong. Go to `);
       setClickRedirect(`the home page`);
     }
   }, []);
 
   const handleClick = () => {
-    if (params.id === `signUp` || params.id === `resetPassword`)
-      navigate(`/logIn`);
-    else navigate(`/`);
+    navigate(`/`);
   };
 
   if (!isChecked) {
     {
-      /* Loading profile data */
+      /* Loading user data */
     }
     return (
       <main>
         <WaitingDots size={"md"} marginTop={8} />{" "}
       </main>
     );
-  } else if (data.username && params.id !== `logIn`) {
+  } else if (data.username !== `admin`) {
     {
-      /* If the profile is already logged in */
+      /* If the user is not admin */
     }
     return (
       <main>
-        <ErrorMessage text={"You are logged in!"} />
+        <ErrorMessage text={"You don't have permission to view this page!"} />
       </main>
     );
   } else {

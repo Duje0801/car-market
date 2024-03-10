@@ -1,31 +1,41 @@
 import React, { FormEvent, useState, Dispatch, SetStateAction } from "react";
 import { useSelector } from "react-redux";
-import { Hourglass } from "react-loader-spinner";
 import { store } from "../../../store";
+import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
+import { MessageError } from "../../elements/messages/messageError";
+import { WaitingDots } from "../../elements/waitingDots";
 import axios from "axios";
 
 interface Props {
-  setOpenEditPassword: Dispatch<SetStateAction<boolean>>;
-  setError: Dispatch<SetStateAction<string>>;
+  email: string;
+  editError: string;
+  setEditError: Dispatch<SetStateAction<string>>;
+  editMessage: string;
+  setEditMessage: Dispatch<SetStateAction<string>>;
+  handleClickX: () => void;
 }
 
-export function EditPassword({ setOpenEditPassword, setError }: Props) {
-  const [email, setEmail] = useState<string>("");
+export function EditPassword({
+  email,
+  editError,
+  setEditError,
+  editMessage,
+  setEditMessage,
+  handleClickX,
+}: Props) {
+  //Form data states
   const [oldPassword, setOldPassword] = useState<string>("");
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
 
+  //Other states
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [editPasswordError, setEditPasswordError] = useState<string>("");
 
   const { data } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
-  const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
-
+  //Form data states changes
   const handleChangeOldPassword = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -51,10 +61,11 @@ export function EditPassword({ setOpenEditPassword, setError }: Props) {
     setIsSaving(true);
 
     if (newPassword !== confirmNewPassword) {
+      setOldPassword("");
       setNewPassword("");
       setConfirmNewPassword("");
       setIsSaving(false);
-      setEditPasswordError("New passwords must be identical");
+      setEditError("New passwords must be identical");
       return;
     }
 
@@ -75,17 +86,16 @@ export function EditPassword({ setOpenEditPassword, setError }: Props) {
           },
         }
       );
-      setEmail("");
-      setError(response.data.message);
-      setOpenEditPassword(false);
+      setEditMessage(response.data.message);
+      setEditError("");
     } catch (error: any) {
       if (
         error?.response?.data?.status === "fail" &&
         typeof error?.response?.data?.message === `string`
       ) {
-        setEditPasswordError(error.response.data.message);
+        setEditError(error.response.data.message);
       } else {
-        setEditPasswordError("Something went wrong, please try again later.");
+        setEditError("Something went wrong, please try again later.");
       }
     }
     setOldPassword("");
@@ -96,79 +106,78 @@ export function EditPassword({ setOpenEditPassword, setError }: Props) {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="border-2 border-black m-4">
-        <p>Edit Password Form</p>
-        {editPasswordError && (
-          <p className="text-red-500">{editPasswordError}</p>
+      <form onSubmit={handleSubmit}>
+        {/* Messages */}
+        {editMessage && (
+          <div className="mb-2">
+            <MessageSuccessfully message={editMessage} />
+          </div>
         )}
-        <div>
-          <label htmlFor="emailField">Email:</label>
-          <input
-            type="email"
-            maxLength={40}
-            id="emailField"
-            value={email}
-            onChange={handleChangeEmail}
-            className="border-2 border-black"
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="passwordField">Old Password:</label>
+        {isSaving && <WaitingDots size="sm" marginTop={0} />}
+        {editError && (
+          <div className="my-2">
+            <MessageError message={editError} />
+          </div>
+        )}
+
+        {/* Old password input */}
+        <label className="form-control w-full max-w-xs">
+          <div className="label p-0">
+            <span className="label-text">Old Password</span>
+          </div>
           <input
             type="password"
             minLength={9}
             maxLength={20}
-            id="oldPasswordField"
             value={oldPassword}
             onChange={handleChangeOldPassword}
-            className="border-2 border-black"
+            className="input input-bordered w-full max-w-xs"
             required
-          />{" "}
-        </div>
-        <div>
-          <label htmlFor="confirmPasswordField">New Password:</label>
+          />
+        </label>
+
+        {/* New Password input */}
+        <label className="form-control w-full max-w-xs">
+          <div className="label p-0">
+            <span className="label-text">New Password</span>
+          </div>
           <input
             type="password"
             minLength={9}
             maxLength={20}
-            id="newPasswordField"
             value={newPassword}
             onChange={handleChangeNewPassword}
-            className="border-2 border-black"
+            className="input input-bordered w-full max-w-xs"
             required
-          />{" "}
-        </div>
-        <div>
-          <label htmlFor="confirmPasswordField">Confirm New Password:</label>
+          />
+        </label>
+
+        {/* New password confirm input */}
+        <label className="form-control w-full max-w-xs">
+          <div className="label p-0">
+            <span className="label-text">Confirm New Password</span>
+          </div>
           <input
             type="password"
             minLength={9}
             maxLength={20}
-            id="newPasswordField"
             value={confirmNewPassword}
             onChange={handleChangeConfirmNewPassword}
-            className="border-2 border-black"
+            className="input input-bordered w-full max-w-xs"
             required
-          />{" "}
-        </div>
-        <div>
-          <button type="submit" className="btn">
-            Submit
-          </button>
-        </div>
+          />
+        </label>
+        {/* Submit button */}
+        <button type="submit" className="btn mt-2 w-full">
+          Submit
+        </button>
       </form>
-      {isSaving && (
-        <Hourglass
-          visible={true}
-          height="80"
-          width="80"
-          ariaLabel="hourglass-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-          colors={["#306cce", "#72a1ed"]}
-        />
-      )}
+      {/* Close button */}
+      <form method="dialog">
+        <button onClick={handleClickX} className="btn btn-error mt-2 w-full">
+          Close
+        </button>
+      </form>{" "}
     </>
   );
 }

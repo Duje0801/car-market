@@ -2,9 +2,9 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { useSelector } from "react-redux";
 import { IImageData } from "../../../interfaces/IImageData";
 import { store } from "../../../store";
-import { UploadImageMessage } from "../../elements/imageUpload/uploadImageMessage";
-import { UploadImageWarning } from "../../elements/imageUpload/uploadImageWarning";
-import { UploadImageError } from "../../elements/imageUpload/uploadImageError";
+import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
+import { MessageError } from "../../elements/messages/messageError";
+import { MessageWarning } from "../../elements/messages/messageWarning";
 import { WaitingDots } from "../../elements/waitingDots";
 import { useCalcPhotosNumber } from "../../../hooks/useCalcPhotosNumber";
 import axios from "axios";
@@ -111,8 +111,8 @@ export function UploadAdImages({ setError, adImages, setAdImages }: Props) {
   return (
     <section className="flex flex-col gap-2">
       {/* Upload image messages (green and red) */}
-      {messageGreen && <UploadImageMessage message={messageGreen} />}
-      {messageRed && <UploadImageError message={messageRed} />}
+      {messageGreen && <MessageSuccessfully message={messageGreen} />}
+      {messageRed && <MessageError message={messageRed} />}
       {/* Show images (box) */}
       {adImages.length > 0 && (
         <div className="flex">
@@ -156,7 +156,7 @@ export function UploadAdImages({ setError, adImages, setAdImages }: Props) {
       )}
       {/* Upload image message */}
       {adImages.length === 0 ? (
-        <UploadImageWarning message={"Ad must have at least 1 image"} />
+        <MessageWarning message={"Ad must have at least 1 image"} />
       ) : null}
       {/* Three dots while saving image */}
       {isSaving && (
@@ -166,7 +166,7 @@ export function UploadAdImages({ setError, adImages, setAdImages }: Props) {
       )}
       {/* If maximum number of images (10) is reached / upload image input */}
       {adImages.length >= 10 ? (
-        <UploadImageWarning
+        <MessageWarning
           message={"You have reached maximum od 10 uploaded images per ad!"}
         />
       ) : (

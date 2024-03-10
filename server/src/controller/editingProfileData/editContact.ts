@@ -10,7 +10,7 @@ export const editContact: any = async function (req: ReqUser, res: Response) {
   try {
     const { email, newContact, password } = req.body;
 
-    //CHecking password length
+    //Checking password length
     if (password.length < 9) {
       return errorResponse(
         "Password must contain 9 or more characters",
@@ -20,9 +20,16 @@ export const editContact: any = async function (req: ReqUser, res: Response) {
     }
 
     //Getting user
-    const user: IUser = await User.findOne({ email }).select(
-      `+active +password -updatedAt -__v`
-    );
+    const user: IUser | null = await User.findOne({ email })
+      .select(`+active +password -updatedAt -__v`)
+      .populate({
+        path: `ads`,
+        options: { sort: { createdAt: -1 } },
+        select: {
+          updatedAt: 0,
+          __v: 0,
+        },
+      });
 
     //Checking does user exist, is user active and is password correct
     if (!user || !user.active) {
@@ -61,21 +68,10 @@ export const editContact: any = async function (req: ReqUser, res: Response) {
     //Saving new contact
     await user.save({ validateBeforeSave: true });
 
-    const userToReturn: IUser | null = await User.findById(user._id)
-      .select("+active -updatedAt -__v")
-      .populate({
-        path: `ads`,
-        options: { sort: { createdAt: -1 } },
-        select: {
-          updatedAt: 0,
-          __v: 0,
-        },
-      });
-
     res.status(200).json({
       status: "success",
       message: "Contact succesfully changed!",
-      user: userToReturn,
+      user,
     });
   } catch (error) {
     errorHandler(error, req, res);

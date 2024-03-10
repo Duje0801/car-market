@@ -1,33 +1,43 @@
 import React, { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { useSelector } from "react-redux";
 import { IUserData } from "../../../interfaces/IUserData";
-import { Hourglass } from "react-loader-spinner";
 import { store } from "../../../store";
+import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
+import { MessageError } from "../../elements/messages/messageError";
+import { WaitingDots } from "../../elements/waitingDots";
 import axios from "axios";
 
 interface Props {
   email: string;
   setProfileData: Dispatch<SetStateAction<IUserData | null>>;
-  setOpenEditContact: Dispatch<SetStateAction<boolean>>;
-  setError: Dispatch<SetStateAction<string>>;
+  editError: string;
+  setEditError: Dispatch<SetStateAction<string>>;
+  editMessage: string;
+  setEditMessage: Dispatch<SetStateAction<string>>;
+  handleClickX: () => void;
 }
 
 export function EditContact({
   email,
   setProfileData,
-  setOpenEditContact,
-  setError,
+  editError,
+  setEditError,
+  editMessage,
+  setEditMessage,
+  handleClickX,
 }: Props) {
+  //Form data states
   const [newContact, setNewContact] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
+  //Other states
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [editContactError, setEditContactError] = useState<string>("");
 
   const { data } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
+  //Form data states changes
   const handleNewContact = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewContact(event.target.value);
   };
@@ -59,69 +69,78 @@ export function EditContact({
         }
       );
       setProfileData(response.data.user);
-      setError(response.data.message);
-      setOpenEditContact(false);
+      setEditMessage(response.data.message);
+      setEditError("");
     } catch (error: any) {
       if (
         error?.response?.data?.status === "fail" &&
         typeof error?.response?.data?.message === `string`
       ) {
-        setEditContactError(error.response.data.message);
+        setEditError(error.response.data.message);
       } else {
-        setEditContactError("Something went wrong, please try again later.");
+        setEditError("Something went wrong, please try again later.");
       }
     }
+    setNewContact("");
     setPassword("");
     setIsSaving(false);
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="border-2 border-black m-4">
-        <p>Edit Contact Form</p>
-        {editContactError && <p className="text-red-500">{editContactError}</p>}
-        <div>
-          <label htmlFor="newContactField">New Contact:</label>
+      <form onSubmit={handleSubmit}>
+        {/* Messages */}
+        {editMessage && (
+          <div className="mb-2">
+            <MessageSuccessfully message={editMessage} />
+          </div>
+        )}
+        {isSaving && <WaitingDots size="sm" marginTop={0} />}
+        {editError && (
+          <div className="my-2">
+            <MessageError message={editError} />
+          </div>
+        )}
+        {/* New contact input */}
+        <label className="form-control w-full max-w-xs">
+          <div className="label p-0">
+            <span className="label-text">New Contact</span>
+          </div>
           <input
             type="text"
             maxLength={30}
-            id="newContactField"
             value={newContact}
             onChange={handleNewContact}
-            className="border-2 border-black"
+            className="input input-bordered w-full max-w-xs"
             required
-          />{" "}
-        </div>
-        <div>
-          <label htmlFor="passwordField">Password:</label>
+          />
+        </label>
+        {/* Password input */}
+        <label className="form-control w-full max-w-xs mt-2">
+          <div className="label p-0">
+            <span className="label-text">Password</span>
+          </div>
           <input
             type="password"
             minLength={9}
             maxLength={20}
-            id="passwordField"
             value={password}
             onChange={handleChangePassword}
-            className="border-2 border-black"
+            className="input input-bordered w-full max-w-xs"
             required
-          />{" "}
-        </div>
-        <div>
-          <button type="submit" className="btn">
-            Submit
-          </button>
-        </div>
+          />
+        </label>
+        {/* Submit button */}
+        <button type="submit" className="btn mt-2 w-full">
+          Submit
+        </button>
       </form>
-      {isSaving && (
-        <Hourglass
-          visible={true}
-          height="80"
-          width="80"
-          ariaLabel="hourglass-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-          colors={["#306cce", "#72a1ed"]}
-        />
-      )}
+      {/* Close button */}
+      <form method="dialog">
+        <button onClick={handleClickX} className="btn btn-error mt-2 w-full">
+          Close
+        </button>
+      </form>{" "}
     </>
   );
 }
