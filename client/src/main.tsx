@@ -12,7 +12,7 @@ import { Home } from "./pages/home.tsx";
 import { ShowAdsList } from "./components/showAdsList.tsx";
 import { AdView } from "./components/adView.tsx";
 import { EditAdData } from "./components/edit/ad/editAdData.tsx";
-import { Profile } from "./components/profile.tsx";
+import { Profile } from "./pages/profile/profile.tsx";
 import { SignUp } from "./pages/auth/signUp.tsx";
 import { LogIn } from "./pages/auth/logIn.tsx";
 import { ForgotPassword } from "./pages/auth/forgotPassword.tsx";

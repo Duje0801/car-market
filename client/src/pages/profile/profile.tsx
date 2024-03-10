@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { store } from "../store";
-import { removeProfileData } from "../store/slices/profile";
-import { WaitingDots } from "./elements/waitingDots";
-import { MessageError } from "./elements/messages/messageError";
-import { MessageWarning } from "./elements/messages/messageWarning";
-import { ProfileModals } from "./profile/profileModals";
-import { ProfileEditDropdown } from "./profile/profileEditDropdown";
-import { ProfileAds } from "./profile/profileAds";
-import { ProfileInfoBox } from "./profile/profileInfoBox";
-import { ProfileMessages } from "./profile/profileMessages";
-import { IUserData } from "../interfaces/IUserData";
+import { store } from "../../store";
+import { removeProfileData } from "../../store/slices/profile";
+import { WaitingDots } from "../../components/elements/waitingDots";
+import { MessageError } from "../../components/elements/messages/messageError";
+import { MessageWarning } from "../../components/elements/messages/messageWarning";
+import { ProfileModals } from "../../components/profile/profileModals";
+import { ProfileEditDropdown } from "../../components/profile/profileEditDropdown";
+import { ProfileAds } from "../../components/profile/profileAds";
+import { ProfileInfoBox } from "../../components/profile/profileInfoBox";
+import { ProfileMessages } from "../../components/profile/profileMessages";
+import { IUserData } from "../../interfaces/IUserData";
 import axios from "axios";
 
 export function Profile() {
