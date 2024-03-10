@@ -49,12 +49,10 @@ export function EditAvatar({
     setAvatarURL(event.target.value);
   };
 
-  //Submit avatar function
+  //Submit avatar
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     setIsSaving(true);
-
     try {
       const formData = new FormData();
       formData.append("email", email);
@@ -74,10 +72,9 @@ export function EditAvatar({
       );
 
       //Deleting old avatar
-      const deleteAvatarMessage: string = await deleteAvatar();
-      console.log(response.data.user);
+      const deleteAvatarText: string = await deleteOldAvatarMessage();
       setProfileData(response.data.user);
-      setEditMessage(response.data.message + deleteAvatarMessage);
+      setEditMessage(response.data.message + deleteAvatarText);
     } catch (error: any) {
       if (
         error?.response?.data?.status === "fail" &&
@@ -91,33 +88,6 @@ export function EditAvatar({
     setIsSaving(false);
   };
 
-  //Delete avatar function (deleting from Cloudinary database, after deleting from profile)
-  const deleteAvatar = async () => {
-    if (oldUploadedImagePublicID) {
-      try {
-        //Deleting avatar from Cloudinary database
-        await axios.delete(
-          `http://localhost:4000/api/v1/user/deleteImage/${oldUploadedImagePublicID}`,
-          {
-            headers: {
-              authorization: `Bearer ${data?.token}`,
-            },
-          }
-        );
-        return " Old user avatar is succesfully deleted too.";
-      } catch (error: any) {
-        if (
-          error?.response?.data?.status === "fail" &&
-          typeof error?.response?.data?.message === `string`
-        ) {
-          return ` ${error.response.data.message}`;
-        } else {
-          return " Old user's avatar is not deleted";
-        }
-      }
-    } else return "";
-  };
-
   //Changing from copy/paste avatar URL to upload avatar (and vice versa)
   const handleChangeUpload = async () => {
     if (uploadImage) {
@@ -126,33 +96,12 @@ export function EditAvatar({
       setUploadImage(false);
       setEditError("");
     } else {
+      setIsSaving(true);
       if (uploadedImageURL && uploadedImagePublicID) {
-        setIsSaving(true);
-        try {
-          await axios.delete(
-            `http://localhost:4000/api/v1/user/deleteImage/${uploadedImagePublicID}`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                authorization: `Bearer ${data?.token}`,
-              },
-            }
-          );
-          setEditMessage("Avatar removed");
-        } catch (error: any) {
-          if (
-            error?.response?.data?.status === "fail" &&
-            typeof error?.response?.data?.message === `string`
-          ) {
-            setEditError(error.response.data.message);
-          } else {
-            setEditError("Removing avatar error, please try again later.");
-          }
-        }
+        await removeAvatar();
       }
       setAvatarURL("");
       setUploadImage(true);
-      setIsSaving(false);
     }
     setEditMessage("");
   };
@@ -189,10 +138,10 @@ export function EditAvatar({
             },
           }
         );
+        setEditError("");
         setUploadedImageURL(response.data.image.imageUrl);
         setUploadedImagePublicID(response.data.image.publicID);
         setEditMessage("Avatar successfully uploaded.");
-        setEditError("");
       } catch (error: any) {
         if (
           error?.response?.data?.status === "fail" &&
@@ -204,18 +153,73 @@ export function EditAvatar({
           setEditError("Uploading avatar error.");
           setEditMessage("");
         }
-      } finally {
-        setIsSaving(false);
       }
+      setIsSaving(false);
     } else {
       setEditError("Please set valid image for upload.");
       setEditMessage("");
     }
   };
 
+  //Avatar remove function (after remove avatar button is clicked or after Copy avatar URL text is clicked)
+  const removeAvatar = async () => {
+    setIsSaving(true);
+    try {
+      await axios.delete(
+        `http://localhost:4000/api/v1/user/deleteImage/${uploadedImagePublicID}`,
+        {
+          headers: {
+            authorization: `Bearer ${data?.token}`,
+          },
+        }
+      );
+      setUploadedImageURL("");
+      setUploadedImagePublicID("");
+      setEditMessage("Avatar removed");
+    } catch (error: any) {
+      if (
+        error?.response?.data?.status === "fail" &&
+        typeof error?.response?.data?.message === `string`
+      ) {
+        setEditError(error.response.data.message);
+      } else {
+        setEditError("Removing avatar error, please try again later.");
+      }
+    }
+    setIsSaving(false);
+  };
+
+  //Delete avatar function (deleting old avatar from Cloudinary database, after deleting from profile)
+  const deleteOldAvatarMessage = async () => {
+    if (oldUploadedImagePublicID) {
+      try {
+        //Deleting avatar from Cloudinary database
+        await axios.delete(
+          `http://localhost:4000/api/v1/user/deleteImage/${oldUploadedImagePublicID}`,
+          {
+            headers: {
+              authorization: `Bearer ${data?.token}`,
+            },
+          }
+        );
+        return " Old user avatar is succesfully deleted too.";
+      } catch (error: any) {
+        if (
+          error?.response?.data?.status === "fail" &&
+          typeof error?.response?.data?.message === `string`
+        ) {
+          return ` ${error.response.data.message}`;
+        } else {
+          return " Old user's avatar is not deleted";
+        }
+      }
+    } else return "";
+  };
+
   return (
     <>
       <form onSubmit={handleSubmit}>
+
         {/* Messages */}
         {editMessage && (
           <div className="mb-2">
@@ -228,13 +232,14 @@ export function EditAvatar({
             <MessageError message={editError} />
           </div>
         )}
-        <p className="text-center text-sm mb-2">
+        {uploadedImageURL && <p className="text-center text-sm mb-2">
           The new avatar will be confirmed after clicking the submit button
-        </p>
+        </p>}
+
         {/* Image upload */}
         {uploadImage ? (
           <label className="form-control w-full max-w-xs mt-2">
-            {/* Password input */}
+            {/* Avatar URL input */}
             <div className="label p-0">
               <span className="label-text">URL</span>
             </div>
@@ -251,19 +256,30 @@ export function EditAvatar({
           <div>
             {/* Image upload input */}
             {uploadedImageURL && (
-              <div className="avatar rounded flex justify-center my-2">
-                <div className="rounded">
-                  <img src={uploadedImageURL} alt="uploadedImage" />
+              <>
+                <div className="avatar rounded flex justify-center my-2">
+                  <div className="rounded">
+                    <img src={uploadedImageURL} alt="uploadedImage" />
+                  </div>
                 </div>
-              </div>
+                {/* Remove avatar button */}
+                <button
+                  type="button"
+                  onClick={removeAvatar}
+                  className="btn btn-error mt-2 w-full"
+                >
+                  Remove uploaded avatar
+                </button>
+              </>
             )}
             <input
               type="file"
-              className="file-input file-input-bordered w-full max-w-xs"
+              className="file-input file-input-bordered w-full max-w-xs mt-2"
               onChange={handleUploadAvatar}
             />
           </div>
         )}
+
         {/* Change Copy URL / upload image */}
         <div>
           <p className="text-center mt-2">
@@ -278,6 +294,7 @@ export function EditAvatar({
           Submit
         </button>
       </form>
+
       {/* Close button */}
       <form method="dialog">
         <button onClick={handleClickX} className="btn btn-error mt-2 w-full">
