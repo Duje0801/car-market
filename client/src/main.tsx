@@ -10,7 +10,7 @@ import { store } from "./store/index.tsx";
 import { App } from "./App.tsx";
 import { Home } from "./pages/home.tsx";
 import { ShowAdsList } from "./components/showAdsList.tsx";
-import { AdView } from "./components/adView.tsx";
+import { AdView } from "./pages/ad/ad.tsx";
 import { EditAdData } from "./components/edit/ad/editAdData.tsx";
 import { Profile } from "./pages/profile/profile.tsx";
 import { SignUp } from "./pages/auth/signUp.tsx";

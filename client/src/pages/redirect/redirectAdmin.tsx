@@ -24,7 +24,7 @@ export function RedirectAdmin() {
   useEffect(() => {
     if (paramsSplit[0] === `deleteUser` && paramsSplit[1] === `allDeleted`) {
       setMessage(
-        `User is succesfully deleted. All ads, ad images and avatar. Go to `
+        `User is succesfully deleted. All ads, ad images and avatar too. Go to `
       );
       setClickRedirect(`the home page`);
     } else if (

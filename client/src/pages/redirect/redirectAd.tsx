@@ -16,9 +16,31 @@ export function RedirectAd() {
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
+  let paramsSplit: string[];
+  if (params.id) {
+    paramsSplit = params.id.split("-");
+  }
+
   useEffect(() => {
     if (params.id === `new`) {
       setMessage(`Ad is succesfully created. Go to `);
+      setClickRedirect(`the home page`);
+    } else if (params.id === `deactivate`) {
+      setMessage(`Ad has been succesfully deactivated. Go to `);
+      setClickRedirect(`the home page`);
+    } else if (
+      paramsSplit[0] === `deleteAd` &&
+      paramsSplit[1] === `allDeleted`
+    ) {
+      setMessage(`Ad is succesfully deleted. All ad images too. Go to `);
+      setClickRedirect(`the home page`);
+    } else if (
+      paramsSplit[0] === `deleteAd` &&
+      paramsSplit[1] === `notAllDeleted`
+    ) {
+      setMessage(
+        `Ad is succesfully deleted. Maybe some ad's images are not deleted. Go to `
+      );
       setClickRedirect(`the home page`);
     } else {
       setMessage(`Something went wrong. Go to `);
