@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { store } from "../store";
-import { WaitingDots } from "./elements/waitingDots";
-import { MessageError } from "./elements/messages/messageError";
+import { store } from "../../store";
+import { WaitingDots } from "../../components/elements/waitingDots";
+import { MessageError } from "../../components/elements/messages/messageError";
 import { MdNewReleases } from "react-icons/md";
 import { FaCalendarAlt } from "react-icons/fa";
 import { FaRoad } from "react-icons/fa";
 import { ImPriceTags } from "react-icons/im";
-import { IAd } from "../interfaces/IAd";
+import { IAd } from "../../interfaces/IAd";
 import axios from "axios";
 
-export function ShowAdsList() {
+export function AdsList() {
   const [adInfo, setAdInfo] = useState<IAd[]>([]);
   const [error, setError] = useState<string>("");
   const [isLoaded, setIsLoaded] = useState<boolean>(false);

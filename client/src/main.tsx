@@ -9,7 +9,7 @@ import { Provider } from "react-redux";
 import { store } from "./store/index.tsx";
 import { App } from "./App.tsx";
 import { Home } from "./pages/home.tsx";
-import { ShowAdsList } from "./components/showAdsList.tsx";
+import { AdsList } from "./pages/ad/adsList.tsx";
 import { AdView } from "./pages/ad/ad.tsx";
 import { Profile } from "./pages/profile/profile.tsx";
 import { SignUp } from "./pages/auth/signUp.tsx";
@@ -27,7 +27,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route path="/" element={<Home />} />
-      <Route path="/ads/:id?" element={<ShowAdsList />} />
+      <Route path="/ads/:id?" element={<AdsList />} />
       <Route path="/ad/:id?" element={<AdView />} />
       <Route path="/profile/:id" element={<Profile />} />
       <Route path="/signUp" element={<SignUp />} />
