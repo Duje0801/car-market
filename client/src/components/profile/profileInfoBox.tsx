@@ -2,11 +2,11 @@ import { Dispatch, SetStateAction } from "react";
 import { useSelector } from "react-redux";
 import { useCreateAtToString } from "../../hooks/useCreateAtToString";
 import { useProfileAvatar } from "../../hooks/useProfileAvatar";
-import { IUserData } from "../../interfaces/IUserData";
+import { IProfile } from "../../interfaces/IProfile";
 import { store } from "../../store";
 
 interface Props {
-  profileData: IUserData;
+  profileData: IProfile;
   setError: Dispatch<SetStateAction<string>>;
   handleOpenModal: (id: string) => void;
 }

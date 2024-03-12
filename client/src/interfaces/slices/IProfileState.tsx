@@ -1,5 +1,5 @@
-import { IUserData } from "../IUserData";
+import { IProfile } from "../IProfile";
 
 export interface IProfileState {
-  profileData: IUserData | null;
+  profileData: IProfile | null;
 }

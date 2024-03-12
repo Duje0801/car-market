@@ -1,6 +1,6 @@
 import { IAd } from "./IAd";
 
-export interface IUserData {
+export interface IProfile {
   _id: string;
   username: string;
   email: string;

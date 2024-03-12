@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { IUserData } from "../../interfaces/IUserData";
+import { IProfile } from "../../interfaces/IProfile";
 import { store } from "../../store";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import axios from "axios";
 
 export function UserList() {
-  const [users, setUsers] = useState<IUserData[]>([]);
+  const [users, setUsers] = useState<IProfile[]>([]);
   const [userSearchText, setUserSearchText] = useState<string>("");
   const [onlyActive, setOnlyActive] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -54,7 +54,7 @@ export function UserList() {
           },
         }
       );
-      const users = response.data.users.sort((a: IUserData, b: IUserData) => {
+      const users = response.data.users.sort((a: IProfile, b: IProfile) => {
         if (a.createdAt < b.createdAt) return -1;
         if (a.createdAt > b.createdAt) return 1;
         return 0;

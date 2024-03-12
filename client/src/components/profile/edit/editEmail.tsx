@@ -6,7 +6,7 @@ import { addProfileData } from "../../../store/slices/profile";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageError } from "../../elements/messages/messageError";
 import { WaitingDots } from "../../elements/waitingDots";
-import { IProfileData } from "../../../interfaces/IProfileData";
+import { ILoggedProfile } from "../../../interfaces/ILoggedProfile";
 import axios from "axios";
 
 interface Props {
@@ -69,7 +69,7 @@ export function EditEmail({
         }
       );
 
-      const profileData: IProfileData = {
+      const profileData: ILoggedProfile = {
         ...loggedProfileData,
         email: response.data.user.email,
       };

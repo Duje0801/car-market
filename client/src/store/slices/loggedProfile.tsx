@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { ILoggedProfileState } from "../../interfaces/slices/ILoggedProfileState";
-import { IProfileData } from "../../interfaces/IProfileData";
+import { ILoggedProfile } from "../../interfaces/ILoggedProfile";
 
 export const getProfileData = createAsyncThunk(
   "profile/getProfileData",
@@ -25,7 +25,7 @@ export const loggedProfileSlice = createSlice({
   name: "profileData",
   initialState,
   reducers: {
-    addLoggedProfileData(state, action: PayloadAction<IProfileData>) {
+    addLoggedProfileData(state, action: PayloadAction<ILoggedProfile>) {
       state.loggedProfileData = { ...action.payload };
     },
     removeLoggedProfileData(state) {

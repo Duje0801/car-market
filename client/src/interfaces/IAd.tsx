@@ -1,4 +1,4 @@
-import { IUserData } from "./IUserData";
+import { IProfile } from "./IProfile";
 
 export interface IAd {
   _id: string;
@@ -22,7 +22,7 @@ export interface IAd {
     id: string;
     _id: string;
   }[];
-  user?: IUserData[];
+  user?: IProfile[];
   active: boolean;
   visible: boolean
 }

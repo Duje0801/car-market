@@ -1,7 +1,7 @@
-import { IProfileData } from "../IProfileData";
+import { ILoggedProfile } from "../ILoggedProfile";
 
 export interface ILoggedProfileState {
-  loggedProfileData: IProfileData;
+  loggedProfileData: ILoggedProfile;
   error: string | null;
   isChecked: boolean;
 }

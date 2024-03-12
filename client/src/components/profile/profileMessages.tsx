@@ -1,9 +1,9 @@
 import { MessageSuccessfully } from "../elements/messages/messageSuccessfully";
 import { MessageError } from "../elements/messages/messageError";
-import { IUserData } from "../../interfaces/IUserData";
+import { IProfile } from "../../interfaces/IProfile";
 
 interface Props {
-  profileData: IUserData;
+  profileData: IProfile;
   error: string;
   message: string;
 }

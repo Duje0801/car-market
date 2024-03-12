@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addAdData } from "../../../store/slices/ad";
 import { store } from "../../../store";
-import { IImageData } from "../../../interfaces/IImageData";
+import { IImage } from "../../../interfaces/IImage";
 import { yearsData } from "../../../data/years";
 import { makes as makesList } from "../../../data/makes";
 import { fuel as fuelList } from "../../../data/fuel";
@@ -37,7 +37,7 @@ export function EditAd({ adData }: Props) {
   const [description, setDescription] = useState<string>(
     String(adData?.description || "")
   );
-  const [adImages, setAdImages] = useState<IImageData[]>(adData?.images || []);
+  const [adImages, setAdImages] = useState<IImage[]>(adData?.images || []);
 
   //Other states
   const [imgToShow, setImgToShow] = useState<number>(0);

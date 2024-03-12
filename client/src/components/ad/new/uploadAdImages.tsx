@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { useSelector } from "react-redux";
-import { IImageData } from "../../../interfaces/IImageData";
+import { IImage } from "../../../interfaces/IImage";
 import { store } from "../../../store";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageError } from "../../elements/messages/messageError";
@@ -11,8 +11,8 @@ import axios from "axios";
 
 interface Props {
   setError: Dispatch<SetStateAction<string>>;
-  adImages: IImageData[];
-  setAdImages: Dispatch<SetStateAction<IImageData[]>>;
+  adImages: IImage[];
+  setAdImages: Dispatch<SetStateAction<IImage[]>>;
   imgToShow: number;
   setImgToShow: Dispatch<SetStateAction<number>>;
 }

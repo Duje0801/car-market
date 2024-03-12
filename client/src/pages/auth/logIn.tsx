@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addLoggedProfileData } from "../../store/slices/loggedProfile";
 import { store } from "../../store";
-import { IProfileData } from "../../interfaces/IProfileData";
+import { ILoggedProfile } from "../../interfaces/ILoggedProfile";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { ErrorMessage } from "../../components/elements/errorMessage";
 import axios from "axios";
@@ -53,7 +53,7 @@ export function LogIn() {
           },
         }
       );
-      const profileData: IProfileData = response.data.data;
+      const profileData: ILoggedProfile = response.data.data;
       localStorage.setItem("userData", JSON.stringify(profileData));
       dispatch(addLoggedProfileData(profileData));
       navigate("/redirect/auth/logIn");

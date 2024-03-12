@@ -1,12 +1,12 @@
 import { MessageError } from "../elements/messages/messageError";
-import { IUserData } from "../../interfaces/IUserData";
+import { IProfile } from "../../interfaces/IProfile";
 import { MdNewReleases } from "react-icons/md";
 import { FaCalendarAlt } from "react-icons/fa";
 import { FaRoad } from "react-icons/fa";
 import { ImPriceTags } from "react-icons/im";
 
 interface Props {
-  profileData: IUserData;
+  profileData: IProfile;
   handleSeeMoreClick: (id: string) => void;
 }
 

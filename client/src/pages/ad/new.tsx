@@ -1,7 +1,7 @@
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { IImageData } from "../../interfaces/IImageData";
+import { IImage } from "../../interfaces/IImage";
 import { store } from "../../store";
 import { yearsData } from "../../data/years";
 import { makes as makesList } from "../../data/makes";
@@ -28,7 +28,7 @@ export function NewAd() {
   const [power, setPower] = useState<string>("");
   const [price, setPrice] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [adImages, setAdImages] = useState<IImageData[]>([]);
+  const [adImages, setAdImages] = useState<IImage[]>([]);
 
   //Other states
   const [imgToShow, setImgToShow] = useState<number>(0);
