@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { ILoggedProfileState } from "../../interfaces/ILoggedProfileState";
+import { ILoggedProfileState } from "../../interfaces/slices/ILoggedProfileState";
 import { IProfileData } from "../../interfaces/IProfileData";
 
 export const getProfileData = createAsyncThunk(

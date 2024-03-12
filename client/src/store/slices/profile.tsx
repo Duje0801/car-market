@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { IProfileState } from "../../interfaces/IProfileState";
+import { IProfileState } from "../../interfaces/slices/IProfileState";
 import { IUserData } from "../../interfaces/IUserData";
 
 const initialState: IProfileState = {

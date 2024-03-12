@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { IAdState } from "../../interfaces/IAdState";
+import { IAdState } from "../../interfaces/slices/IAdState";
 import { IAd } from "../../interfaces/IAd";
 
 const initialState: IAdState = {

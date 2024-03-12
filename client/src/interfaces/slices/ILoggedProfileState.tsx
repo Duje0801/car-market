@@ -1,4 +1,4 @@
-import { IProfileData } from "./IProfileData";
+import { IProfileData } from "../IProfileData";
 
 export interface ILoggedProfileState {
   loggedProfileData: IProfileData;
