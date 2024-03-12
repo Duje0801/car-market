@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { IUserData } from "../interfaces/IUserData";
-import { store } from "../store";
-import { MessageError } from "./elements/messages/messageError";
-import { WaitingDots } from "./elements/waitingDots";
+import { IUserData } from "../../interfaces/IUserData";
+import { store } from "../../store";
+import { MessageError } from "../../components/elements/messages/messageError";
+import { WaitingDots } from "../../components/elements/waitingDots";
 import axios from "axios";
 
 export function UserList() {

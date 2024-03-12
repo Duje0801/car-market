@@ -20,7 +20,7 @@ import { NewAd } from "./pages/ad/new.tsx";
 import { RedirectAuth } from "./pages/redirect/redirectAuth.tsx";
 import { RedirectAd } from "./pages/redirect/redirectAd.tsx";
 import { RedirectAdmin } from "./pages/redirect/redirectAdmin.tsx";
-import { UserList } from "./components/userList.tsx";
+import { UserList } from "./pages/admin/userList.tsx";
 import "./index.css";
 
 const router = createBrowserRouter(
