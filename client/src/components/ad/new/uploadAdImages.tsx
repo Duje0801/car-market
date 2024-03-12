@@ -13,14 +13,21 @@ interface Props {
   setError: Dispatch<SetStateAction<string>>;
   adImages: IImageData[];
   setAdImages: Dispatch<SetStateAction<IImageData[]>>;
+  imgToShow: number;
+  setImgToShow: Dispatch<SetStateAction<number>>;
 }
 
-export function UploadAdImages({ setError, adImages, setAdImages }: Props) {
+export function UploadAdImages({
+  setError,
+  adImages,
+  setAdImages,
+  imgToShow,
+  setImgToShow,
+}: Props) {
   //States
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [messageGreen, setMessageGreen] = useState<string>("");
   const [messageRed, setMessageRed] = useState<string>("");
-  const [imgToShow, setImgToShow] = useState<number>(0);
 
   const photoNumbers = useCalcPhotosNumber(imgToShow, adImages.length);
 
@@ -76,36 +83,12 @@ export function UploadAdImages({ setError, adImages, setAdImages }: Props) {
   };
 
   //Deleting image (from adImages array and Cloudinary DB)
-  const handleDeleteImage = async (image: IImageData, index: number) => {
-    setIsSaving(true);
-    try {
-      const response = await axios.delete(
-        `http://localhost:4000/api/v1/ad/deleteImage/${image.publicID}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${data?.token}`,
-          },
-        }
-      );
-      setMessageGreen(response.data.message);
-      setMessageRed("");
-      //Removing image from images array (adImages)
-      const updatedadImagesArray = [...adImages];
-      updatedadImagesArray.splice(index, 1);
-      setAdImages(updatedadImagesArray);
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setMessageRed(error.response.data.message);
-      } else {
-        setMessageRed("Image removing error.");
-      }
-      setMessageGreen("");
-    }
-    setIsSaving(false);
+  const handleDeleteImage = async (index: number) => {
+    //Removing image from images array (adImages)
+    const updatedadImagesArray = [...adImages];
+    updatedadImagesArray.splice(index, 1);
+    setAdImages(updatedadImagesArray);
+    setImgToShow(0);
   };
 
   return (
@@ -127,9 +110,7 @@ export function UploadAdImages({ setError, adImages, setAdImages }: Props) {
               <button
                 type="button"
                 className="btn btn-error w-full"
-                onClick={() =>
-                  handleDeleteImage(adImages[imgToShow], imgToShow)
-                }
+                onClick={() => handleDeleteImage(imgToShow)}
               >
                 Delete
               </button>

@@ -80,6 +80,7 @@ export const editAd: any = async function (req: ReqUser, res: Response) {
     res.status(200).json({
       status: `success`,
       message: "The ad has been successfully edited",
+      ad
     });
   } catch (error) {
     errorHandler(error, req, res);

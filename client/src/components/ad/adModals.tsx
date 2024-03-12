@@ -1,11 +1,14 @@
+import { Dispatch, SetStateAction } from "react";
 import { IAd } from "../../interfaces/IAd";
+import { EditAd } from "./edit/editAd";
 
 interface Props {
   adInfo: IAd;
+  setAdInfo: Dispatch<SetStateAction<IAd | null>>;
   handleBtnClick: (operation: string) => void;
 }
 
-export function AdModals({ adInfo, handleBtnClick }: Props) {
+export function AdModals({ adInfo, setAdInfo, handleBtnClick }: Props) {
   return (
     <>
       {/* Hide ad modal */}
@@ -61,7 +64,7 @@ export function AdModals({ adInfo, handleBtnClick }: Props) {
           </div>
         </div>
       </dialog>
-      {/* Delete profile modal */}
+      {/* Delete ad modal */}
       <dialog id="deleteAdModal" className="modal">
         <div className="modal-box">
           <form method="dialog">
@@ -86,6 +89,10 @@ export function AdModals({ adInfo, handleBtnClick }: Props) {
             </form>
           </div>
         </div>
+      </dialog>
+      {/* Edit ad modal */}
+      <dialog id="editAdModal" className="modal">
+        <EditAd adInfo={adInfo} setAdInfo={setAdInfo} />
       </dialog>
     </>
   );

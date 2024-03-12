@@ -31,6 +31,7 @@ export function NewAd() {
   const [adImages, setAdImages] = useState<IImageData[]>([]);
 
   //Other states
+  const [imgToShow, setImgToShow] = useState<number>(0);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
@@ -397,6 +398,8 @@ export function NewAd() {
                   setError={setError}
                   adImages={adImages}
                   setAdImages={setAdImages}
+                  imgToShow={imgToShow} 
+                  setImgToShow={setImgToShow}
                 />
                 {/* Clear all button */}
                 <div className="card-actions justify-end">

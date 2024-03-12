@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCalcPhotosNumber } from "../../hooks/useCalcPhotosNumber";
 import { IAd } from "../../interfaces/IAd";
 import { MdNewReleases } from "react-icons/md";
@@ -19,6 +19,10 @@ export function AdInfoBox({ adInfo }: Props) {
   const [imgToShow, setImgToShow] = useState<number>(0);
 
   const photoNumbers = useCalcPhotosNumber(imgToShow, adInfo.images.length);
+
+  useEffect(() => {
+    setImgToShow(0);
+  }, [adInfo.images.length]);
 
   //Changing visible image (in uploaded images box)
   const handleChangeImage = (iteration: number) => {

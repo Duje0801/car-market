@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
-import { AdButtons } from "../../components/ad/adButtons";
 import { AdActivity } from "../../components/ad/adActivity";
 import { AdOwnerInfo } from "../../components/ad/adOwnerInfo";
 import { AdInfoBox } from "../../components/ad/adInfoBox";
@@ -10,6 +9,7 @@ import { AdModals } from "../../components/ad/adModals";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { MessageSuccessfully } from "../../components/elements/messages/messageSuccessfully";
+import { AdDropdowns } from "../../components/ad/adDropdowns";
 import { IAd } from "../../interfaces/IAd";
 import axios from "axios";
 
@@ -154,12 +154,15 @@ export function AdView() {
           {/*Ad activity (hidden/deactivated info)*/}
           <AdActivity adInfo={adInfo} />
           {/* Ad messages (errors) */}
-          {error && <MessageError message={error} />} {/* Ad display */}
+          {error && <MessageError message={error} />}
+          {/*Dropdown menu*/}
+          {data.username === adInfo.username || data.username === `admin` ? (
+            <AdDropdowns adInfo={adInfo} handleOpenModal={handleOpenModal} />
+          ) : null}
+          {/* Ad display */}
           <div className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 mb-4 rounded-lg w-[90vw]">
             {/* Info, if succesfully changed something about ad (activity...) */}
             {message && <MessageSuccessfully message={message} />}
-            {/* Top buttons (only visible to admin and ad owner) */}
-            <AdButtons adInfo={adInfo} handleOpenModal={handleOpenModal} />
             {/* Ad Info */}
             <AdInfoBox adInfo={adInfo} />
           </div>
@@ -167,7 +170,11 @@ export function AdView() {
           <AdOwnerInfo adInfo={adInfo} />
         </main>
         {/* Ad modals */}
-        <AdModals adInfo={adInfo} handleBtnClick={handleBtnClick} />
+        <AdModals
+          adInfo={adInfo}
+          setAdInfo={setAdInfo}
+          handleBtnClick={handleBtnClick}
+        />
       </>
     );
   }
