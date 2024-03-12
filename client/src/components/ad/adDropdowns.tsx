@@ -1,15 +1,17 @@
 import { useSelector } from "react-redux";
 import { store } from "../../store";
-import { IAd } from "../../interfaces/IAd";
 
 interface Props {
-  adInfo: IAd;
   handleOpenModal: (id: string) => void;
 }
 
-export function AdDropdowns({ adInfo, handleOpenModal }: Props) {
-  const { data } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+export function AdDropdowns({ handleOpenModal }: Props) {
+  const { loggedProfileData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
+  );
+
+  const { adData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.ad
   );
 
   return (
@@ -28,13 +30,13 @@ export function AdDropdowns({ adInfo, handleOpenModal }: Props) {
           className="dropdown-content z-[1] menu p-2 shadow border-[0.8px] border-white bg-black rounded-box w-52"
         >
           {/* Hide ad */}
-          {data.username === adInfo.username ? (
+          {adData && loggedProfileData.username === adData.username ? (
             <li>
               <a
                 onClick={() => handleOpenModal(`hideAd`)}
                 className="text-sm font-bold py-2 text-white"
               >
-                {adInfo.visible ? "Hide Ad" : "Show Ad"}
+                {adData.visible ? "Hide Ad" : "Show Ad"}
               </a>
             </li>
           ) : null}
@@ -44,10 +46,10 @@ export function AdDropdowns({ adInfo, handleOpenModal }: Props) {
               onClick={() => handleOpenModal(`deactivateAd`)}
               className="text-sm font-bold py-2 text-white"
             >
-              {adInfo.active ? `Deactivate` : `Activate`} Ad
+              {adData && adData.active ? `Deactivate` : `Activate`} Ad
             </a>
           </li>
-          {data.username === "admin" ? (
+          {loggedProfileData.username === "admin" ? (
             <li>
               <a
                 onClick={() => handleOpenModal(`deleteAd`)}
@@ -58,7 +60,7 @@ export function AdDropdowns({ adInfo, handleOpenModal }: Props) {
             </li>
           ) : null}
           {/* Edit ad */}
-          {data.username === adInfo.username ? (
+          {adData && loggedProfileData.username === adData.username ? (
             <li>
               <a
                 onClick={() => handleOpenModal(`editAd`)}

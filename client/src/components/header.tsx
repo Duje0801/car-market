@@ -1,15 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useCheckProfileText } from "../hooks/useCheckProfileText";
-import { removeProfileData } from "../store/slices/profile";
+import { removeLoggedProfileData } from "../store/slices/loggedProfile";
 import { Link } from "react-router-dom";
 import { store } from "../store";
 import logoImage from "../assets/images/logo-image.png";
 import logoTitle from "../assets/images/logo-title.png";
 
 export function Header() {
-  const { data, isChecked } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData, isChecked } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ export function Header() {
 
   const handleLogOut = () => {
     localStorage.removeItem("userData");
-    dispatch(removeProfileData());
+    dispatch(removeLoggedProfileData());
     navigate(`redirect/auth/logOut`);
   };
 
@@ -33,7 +33,7 @@ export function Header() {
       <div className="flex justify-between bg-black text-white p-2 min-h-12">
         {/* Header 1st row - Left */}
         <div className="flex gap-2">
-          {!data.username ? (
+          {!loggedProfileData.username ? (
             <button
               className="btn btn-sm my-auto bg-black text-white text-sm font-bold ml-2"
               onClick={() => handleRedirect(``)}
@@ -56,14 +56,18 @@ export function Header() {
                 <Link to={`/`} className="my-auto">
                   <li className="text-sm font-bold py-2">Home</li>
                 </Link>
-                {data.username === `admin` ? (
+                {loggedProfileData.username === `admin` ? (
                   <Link to="/admin/userList" className="my-auto">
                     <li className="text-sm font-bold py-2"> User List</li>
                   </Link>
                 ) : null}
-                {data.username && data.username !== `admin` ? (
+                {loggedProfileData.username &&
+                loggedProfileData.username !== `admin` ? (
                   <>
-                    <Link to={`/profile/${data.username}`} className="my-auto">
+                    <Link
+                      to={`/profile/${loggedProfileData.username}`}
+                      className="my-auto"
+                    >
                       <li className="text-sm font-bold py-2">My Profile</li>
                     </Link>
                     <Link to={`/newAd`} className="my-auto">
@@ -78,7 +82,7 @@ export function Header() {
         {/* Header 1st row - Right */}
         <div className="flex">
           <p className="my-auto text-sm font-bold">{checkProfileText}</p>
-          {isChecked && data.username ? (
+          {isChecked && loggedProfileData.username ? (
             <button
               className="btn btn-sm my-auto bg-black text-white text-sm font-bold ml-2"
               onClick={() => handleLogOut()}
@@ -86,7 +90,7 @@ export function Header() {
               Log out
             </button>
           ) : null}
-          {isChecked && !data.username ? (
+          {isChecked && !loggedProfileData.username ? (
             <button
               className="btn btn-sm my-auto bg-black text-white text-sm font-bold ml-2"
               onClick={() => handleRedirect(`logIn`)}

@@ -7,7 +7,6 @@ import { WaitingDots } from "../../elements/waitingDots";
 import axios from "axios";
 
 interface Props {
-  email: string;
   editError: string;
   setEditError: Dispatch<SetStateAction<string>>;
   editMessage: string;
@@ -16,7 +15,6 @@ interface Props {
 }
 
 export function EditPassword({
-  email,
   editError,
   setEditError,
   editMessage,
@@ -31,8 +29,8 @@ export function EditPassword({
   //Other states
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
-  const { data } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   //Form data states changes
@@ -71,7 +69,7 @@ export function EditPassword({
 
     try {
       const formData = new FormData();
-      formData.append("email", email);
+      formData.append("email", loggedProfileData.email);
       formData.append("oldPassword", oldPassword);
       formData.append("newPassword", newPassword);
       formData.append("confirmNewPassword", confirmNewPassword);
@@ -82,7 +80,7 @@ export function EditPassword({
         {
           headers: {
             "Content-Type": "application/json",
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );

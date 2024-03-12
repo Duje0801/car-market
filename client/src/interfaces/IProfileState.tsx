@@ -1,7 +1,5 @@
-import { IProfileData } from "./IProfileData";
+import { IUserData } from "./IUserData";
 
 export interface IProfileState {
-  data: IProfileData;
-  error: string | null;
-  isChecked: boolean;
+  profileData: IUserData | null;
 }

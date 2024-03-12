@@ -12,8 +12,8 @@ export function RedirectAdmin() {
   const params = useParams();
   const navigate = useNavigate();
 
-  const { data, isChecked } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData, isChecked } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   let paramsSplit: string[];
@@ -54,7 +54,7 @@ export function RedirectAdmin() {
         <WaitingDots size={"md"} marginTop={8} />{" "}
       </main>
     );
-  } else if (data.username !== `admin`) {
+  } else if (loggedProfileData.username !== `admin`) {
     {
       /* If the user is not admin */
     }

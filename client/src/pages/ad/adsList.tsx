@@ -19,8 +19,8 @@ export function AdsList() {
   const params = useParams();
   const navigate = useNavigate();
 
-  const { data, isChecked } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData, isChecked } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   //Automatically fetches ad list data on page load
@@ -36,7 +36,7 @@ export function AdsList() {
         `http://localhost:4000/api/v1/ad/search/?${params.id}`,
         {
           headers: {
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );

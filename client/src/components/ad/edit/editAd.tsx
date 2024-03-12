@@ -1,6 +1,7 @@
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addAdData } from "../../../store/slices/ad";
 import { store } from "../../../store";
 import { IImageData } from "../../../interfaces/IImageData";
 import { yearsData } from "../../../data/years";
@@ -11,33 +12,32 @@ import { countries as countriesList } from "../../../data/countries";
 import { UploadAdImages } from "../new/uploadAdImages";
 import { WaitingDots } from "../../elements/waitingDots";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
+import { MessageWarning } from "../../elements/messages/messageWarning";
 import { IAd } from "../../../interfaces/IAd";
 import axios from "axios";
-import { MessageWarning } from "../../elements/messages/messageWarning";
 
 interface Props {
-  adInfo: IAd;
-  setAdInfo: Dispatch<SetStateAction<IAd | null>>;
+  adData: IAd | null;
 }
 
-export function EditAd({ adInfo, setAdInfo }: Props) {
+export function EditAd({ adData }: Props) {
   //Form data states
-  const [title, setTitle] = useState<string>(adInfo.title);
-  const [condition, setCondition] = useState<string>(adInfo.condition);
-  const [country, setCountry] = useState<string>(adInfo.country);
-  const [make, setMake] = useState<string>(adInfo.make);
-  const [model, setModel] = useState<string>(adInfo.model);
+  const [title, setTitle] = useState<string>(adData?.title || "");
+  const [condition, setCondition] = useState<string>(adData?.condition || "");
+  const [country, setCountry] = useState<string>(adData?.country || "");
+  const [make, setMake] = useState<string>(adData?.make || "");
+  const [model, setModel] = useState<string>(adData?.model || "");
   const [firstRegistration, setFirstRegistration] = useState<number | string>(
-    adInfo.firstRegistration
+    adData?.firstRegistration || ""
   );
-  const [mileage, setMileage] = useState<string>(String(adInfo.mileage));
-  const [fuel, setFuel] = useState<string>(adInfo.fuel);
-  const [power, setPower] = useState<string>(String(adInfo.power));
-  const [price, setPrice] = useState<string>(String(adInfo.price));
+  const [mileage, setMileage] = useState<string>(String(adData?.mileage || ""));
+  const [fuel, setFuel] = useState<string>(adData?.fuel || "");
+  const [power, setPower] = useState<string>(String(adData?.power || ""));
+  const [price, setPrice] = useState<string>(String(adData?.price || ""));
   const [description, setDescription] = useState<string>(
-    String(adInfo.description)
+    String(adData?.description || "")
   );
-  const [adImages, setAdImages] = useState<IImageData[]>(adInfo.images);
+  const [adImages, setAdImages] = useState<IImageData[]>(adData?.images || []);
 
   //Other states
   const [imgToShow, setImgToShow] = useState<number>(0);
@@ -45,11 +45,12 @@ export function EditAd({ adInfo, setAdInfo }: Props) {
   const [message, setMessage] = useState<string>("");
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
-  const { data } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   const params = useParams();
+  const dispatch = useDispatch()
 
   const years = yearsData();
 
@@ -141,14 +142,14 @@ export function EditAd({ adInfo, setAdInfo }: Props) {
         formData,
         {
           headers: {
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
             "Content-Type": "application/json",
           },
         }
       );
       const deletedImagesMessage = await deleteImage();
       setMessage(response.data.message + ". " + deletedImagesMessage);
-      setAdInfo(response.data.ad);
+      dispatch(addAdData(response.data.ad))
       setImgToShow(0);
     } catch (error: any) {
       if (
@@ -168,7 +169,7 @@ export function EditAd({ adInfo, setAdInfo }: Props) {
     let imagesDeleteList: string[] = [];
 
     const adImagesMapped = adImages.map((img) => img.publicID);
-    adInfo.images.forEach((img) => {
+    adData?.images.forEach((img) => {
       if (!adImagesMapped.includes(img.publicID)) {
         imagesDeleteList.push(img.publicID);
       }
@@ -182,7 +183,7 @@ export function EditAd({ adInfo, setAdInfo }: Props) {
         `http://localhost:4000/api/v1/user/deleteImage/${publicID}`,
         {
           headers: {
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       )
@@ -424,7 +425,7 @@ export function EditAd({ adInfo, setAdInfo }: Props) {
                   cols={75}
                 ></textarea>
               </label>
-              {adImages.length !== adInfo.images.length && (
+              {adImages.length !== adData?.images.length && (
                 <div className="mx-auto w-full">
                   <MessageWarning
                     message={
@@ -453,7 +454,9 @@ export function EditAd({ adInfo, setAdInfo }: Props) {
             </form>
             {/* Cancel button */}
             <form method="dialog">
-              <button onClick={handleClickX} className="btn w-full">Cancel</button>
+              <button onClick={handleClickX} className="btn w-full mt-2">
+                Cancel
+              </button>
             </form>
           </>
         )}

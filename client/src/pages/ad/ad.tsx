@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { store } from "../../store";
 import { AdActivity } from "../../components/ad/adActivity";
 import { AdOwnerInfo } from "../../components/ad/adOwnerInfo";
@@ -10,20 +10,24 @@ import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { MessageSuccessfully } from "../../components/elements/messages/messageSuccessfully";
 import { AdDropdowns } from "../../components/ad/adDropdowns";
-import { IAd } from "../../interfaces/IAd";
+import { addAdData } from "../../store/slices/ad";
 import axios from "axios";
 
 export function AdView() {
-  const [adInfo, setAdInfo] = useState<IAd | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
 
   const params = useParams();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { data, isChecked } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData, isChecked } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
+  );
+
+  const { adData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.ad
   );
 
   useEffect(() => {
@@ -39,11 +43,11 @@ export function AdView() {
         `http://localhost:4000/api/v1/ad/find/${params.id}`,
         {
           headers: {
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );
-      setAdInfo(response.data.ad);
+      dispatch(addAdData({...response.data.ad}))
     } catch (error: any) {
       if (
         error?.response?.data?.status === "fail" &&
@@ -75,7 +79,7 @@ export function AdView() {
         `http://localhost:4000/api/v1/ad/${operation}/${params.id}`,
         {
           headers: {
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );
@@ -84,11 +88,14 @@ export function AdView() {
         const deleteImageMessage: string = await deleteImage();
         navigate(`/redirect/ad/deleteAd-${deleteImageMessage}`);
       }
-      if (operation === "deactivate" && data.username !== `admin`) {
+      if (
+        operation === "deactivate" &&
+        loggedProfileData.username !== `admin`
+      ) {
         navigate(`/redirect/ad/deactivate`);
       } else {
         setMessage(response.data.message);
-        setAdInfo(response.data.ad);
+        addAdData(response.data.ad);
       }
     } catch (error: any) {
       if (
@@ -107,7 +114,7 @@ export function AdView() {
     let imagesDeleteList: string[] = [];
 
     //Adding all ad`s images
-    adInfo?.images?.forEach((img) => {
+    adData?.images?.forEach((img) => {
       imagesDeleteList.push(img.publicID);
     });
 
@@ -115,7 +122,7 @@ export function AdView() {
     const promises = imagesDeleteList.map((publicID) =>
       axios.delete(`http://localhost:4000/api/v1/ad/deleteImage/${publicID}`, {
         headers: {
-          authorization: `Bearer ${data?.token}`,
+          authorization: `Bearer ${loggedProfileData?.token}`,
         },
       })
     );
@@ -138,7 +145,7 @@ export function AdView() {
         <WaitingDots size={"md"} marginTop={8} />{" "}
       </main>
     );
-  } else if (!adInfo && isChecked && isLoaded) {
+  } else if (!adData && isChecked && isLoaded) {
     {
       /* Problems with loading ad info */
     }
@@ -147,34 +154,31 @@ export function AdView() {
         <MessageError message={error} />
       </main>
     );
-  } else if (adInfo && adInfo.user && isLoaded) {
+  } else if (adData && adData.user && isChecked && isLoaded) {
     return (
       <>
         <main className="p-2">
           {/*Ad activity (hidden/deactivated info)*/}
-          <AdActivity adInfo={adInfo} />
+          <AdActivity />
           {/* Ad messages (errors) */}
           {error && <MessageError message={error} />}
           {/*Dropdown menu*/}
-          {data.username === adInfo.username || data.username === `admin` ? (
-            <AdDropdowns adInfo={adInfo} handleOpenModal={handleOpenModal} />
+          {loggedProfileData.username === adData.username ||
+          loggedProfileData.username === `admin` ? (
+            <AdDropdowns handleOpenModal={handleOpenModal} />
           ) : null}
           {/* Ad display */}
           <div className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 mb-4 rounded-lg w-[90vw]">
             {/* Info, if succesfully changed something about ad (activity...) */}
             {message && <MessageSuccessfully message={message} />}
             {/* Ad Info */}
-            <AdInfoBox adInfo={adInfo} />
+            <AdInfoBox />
           </div>
           {/* Ad owner data */}
-          <AdOwnerInfo adInfo={adInfo} />
+          <AdOwnerInfo />
         </main>
         {/* Ad modals */}
-        <AdModals
-          adInfo={adInfo}
-          setAdInfo={setAdInfo}
-          handleBtnClick={handleBtnClick}
-        />
+        <AdModals handleBtnClick={handleBtnClick} />
       </>
     );
   }

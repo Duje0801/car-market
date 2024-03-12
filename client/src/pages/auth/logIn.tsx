@@ -1,7 +1,7 @@
 import React, { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addProfileData } from "../../store/slices/profile";
+import { addLoggedProfileData } from "../../store/slices/loggedProfile";
 import { store } from "../../store";
 import { IProfileData } from "../../interfaces/IProfileData";
 import { WaitingDots } from "../../components/elements/waitingDots";
@@ -17,8 +17,8 @@ export function LogIn() {
   const [isLogging, setIsLogging] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  const { data, isChecked } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData, isChecked } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   const dispatch = useDispatch();
@@ -55,7 +55,7 @@ export function LogIn() {
       );
       const profileData: IProfileData = response.data.data;
       localStorage.setItem("userData", JSON.stringify(profileData));
-      dispatch(addProfileData(profileData));
+      dispatch(addLoggedProfileData(profileData));
       navigate("/redirect/auth/logIn");
     } catch (error: any) {
       if (
@@ -85,7 +85,7 @@ export function LogIn() {
         <WaitingDots size={"md"} marginTop={8} />{" "}
       </main>
     );
-  } else if (data.username) {
+  } else if (loggedProfileData.username) {
     {
       /* If the user is already logged in */
     }

@@ -12,8 +12,8 @@ export function RedirectAd() {
   const params = useParams();
   const navigate = useNavigate();
 
-  const { data, isChecked } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData, isChecked } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   let paramsSplit: string[];
@@ -61,7 +61,7 @@ export function RedirectAd() {
         <WaitingDots size={"md"} marginTop={8} />{" "}
       </main>
     );
-  } else if (!data.username) {
+  } else if (!loggedProfileData.username) {
     {
       /* If the user is already logged in */
     }

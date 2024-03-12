@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { store } from "../../store";
-import { removeProfileData } from "../../store/slices/profile";
+import { addProfileData, removeProfileData } from "../../store/slices/profile";
+import { removeLoggedProfileData } from "../../store/slices/loggedProfile";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { MessageWarning } from "../../components/elements/messages/messageWarning";
@@ -11,11 +12,9 @@ import { ProfileEditDropdown } from "../../components/profile/profileEditDropdow
 import { ProfileAds } from "../../components/profile/profileAds";
 import { ProfileInfoBox } from "../../components/profile/profileInfoBox";
 import { ProfileMessages } from "../../components/profile/profileMessages";
-import { IUserData } from "../../interfaces/IUserData";
 import axios from "axios";
 
 export function Profile() {
-  const [profileData, setProfileData] = useState<IUserData | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -24,7 +23,11 @@ export function Profile() {
 
   const params = useParams();
 
-  const { data, isChecked } = useSelector(
+  const { loggedProfileData, isChecked } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
+  );
+
+  const { profileData } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
@@ -44,11 +47,11 @@ export function Profile() {
         `http://localhost:4000/api/v1/user/profile/${params.id}`,
         {
           headers: {
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );
-      setProfileData(response.data.user);
+      dispatch(addProfileData(response.data.user));
     } catch (error: any) {
       if (
         error?.response?.data?.status === "fail" &&
@@ -69,16 +72,16 @@ export function Profile() {
         `http://localhost:4000/api/v1/user/deactivate/${profileData?.id}`,
         {
           headers: {
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );
-      if (data.username === `admin`) {
+      if (loggedProfileData.username === `admin`) {
         setMessage(response.data.message);
-        setProfileData(response.data.user);
+        dispatch(removeProfileData(response.data.user))
       } else {
         localStorage.removeItem("userData");
-        dispatch(removeProfileData());
+        dispatch(removeLoggedProfileData());
         navigate(`/redirect/auth/deactivate`);
       }
     } catch (error: any) {
@@ -100,7 +103,7 @@ export function Profile() {
         `http://localhost:4000/api/v1/user/delete/${profileData?.id}`,
         {
           headers: {
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );
@@ -141,7 +144,7 @@ export function Profile() {
         `http://localhost:4000/api/v1/user/deleteImage/${publicID}`,
         {
           headers: {
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       )
@@ -197,7 +200,8 @@ export function Profile() {
       <>
         <main className="pb-2">
           {/*Dropdown menu*/}
-          {data.username === params.id && data.username !== `admin` ? (
+          {loggedProfileData.username === params.id &&
+          loggedProfileData.username !== `admin` ? (
             <ProfileEditDropdown handleOpenModal={handleOpenModal} />
           ) : null}
 
@@ -231,8 +235,6 @@ export function Profile() {
         {/* Modals */}
         {profileData && (
           <ProfileModals
-            profileData={profileData}
-            setProfileData={setProfileData}
             editError={editError}
             setEditError={setEditError}
             editMessage={editMessage}

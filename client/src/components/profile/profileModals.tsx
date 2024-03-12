@@ -1,13 +1,12 @@
 import { Dispatch, SetStateAction } from "react";
+import { useSelector } from "react-redux";
+import { store } from "../../store";
 import { EditAvatar } from "./edit/editAvatar";
 import { EditContact } from "./edit/editContact";
 import { EditEmail } from "./edit/editEmail";
 import { EditPassword } from "./edit/editPassword";
-import { IUserData } from "../../interfaces/IUserData";
 
 interface Props {
-  profileData: IUserData;
-  setProfileData: Dispatch<SetStateAction<IUserData | null>>;
   editError: string;
   setEditError: Dispatch<SetStateAction<string>>;
   editMessage: string;
@@ -18,8 +17,6 @@ interface Props {
 }
 
 export function ProfileModals({
-  profileData,
-  setProfileData,
   editError,
   setEditError,
   editMessage,
@@ -28,6 +25,11 @@ export function ProfileModals({
   handleDeactivateProfile,
   handleDeleteProfile,
 }: Props) {
+
+  const { profileData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.profile
+  );
+
   return (
     <>
       {/* Edit Avatar modal */}
@@ -43,11 +45,6 @@ export function ProfileModals({
           </form>
           <h3 className="font-bold text-lg mb-2">Edit Avatar</h3>
           <EditAvatar
-            email={profileData.email}
-            oldUploadedImagePublicID={
-              profileData.avatar.uploadedAvatar.publicID
-            }
-            setProfileData={setProfileData}
             editError={editError}
             setEditError={setEditError}
             editMessage={editMessage}
@@ -70,8 +67,6 @@ export function ProfileModals({
           </form>
           <h3 className="font-bold text-lg mb-2">Edit Email</h3>
           <EditEmail
-            email={profileData.email}
-            setProfileData={setProfileData}
             editError={editError}
             setEditError={setEditError}
             editMessage={editMessage}
@@ -94,8 +89,6 @@ export function ProfileModals({
           </form>
           <h3 className="font-bold text-lg mb-2">Edit Contact</h3>
           <EditContact
-            email={profileData.email}
-            setProfileData={setProfileData}
             editError={editError}
             setEditError={setEditError}
             editMessage={editMessage}
@@ -118,7 +111,6 @@ export function ProfileModals({
           </form>
           <h3 className="font-bold text-lg mb-2">Edit Password</h3>
           <EditPassword
-            email={profileData.email}
             editError={editError}
             setEditError={setEditError}
             editMessage={editMessage}
@@ -140,8 +132,8 @@ export function ProfileModals({
             </button>
           </form>
           <h3 className="font-bold text-lg mb-2">
-            Are you sure you want to {profileData.active ? "de" : ""}
-            activate {profileData.username}?
+            Are you sure you want to {profileData?.active ? "de" : ""}
+            activate {profileData?.username}?
           </h3>
           <div className="flex flex-col gap-2">
             <form method="dialog">
@@ -173,7 +165,7 @@ export function ProfileModals({
             </button>
           </form>
           <h3 className="font-bold text-lg mb-2">
-            Are you sure you want to delete {profileData.username}?
+            Are you sure you want to delete {profileData?.username}?
           </h3>
           <div className="flex flex-col gap-2">
             <form method="dialog">

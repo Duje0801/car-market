@@ -14,8 +14,8 @@ export function UserList() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  const { data, isChecked } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData, isChecked } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   const navigate = useNavigate();
@@ -50,7 +50,7 @@ export function UserList() {
         }`,
         {
           headers: {
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );
@@ -86,7 +86,7 @@ export function UserList() {
         <WaitingDots size={"md"} marginTop={8} />{" "}
       </main>
     );
-  } else if (isChecked && isLoaded && data.username !== `admin`) {
+  } else if (isChecked && isLoaded && loggedProfileData.username !== `admin`) {
     {
       /* User don't have permission */
     }
@@ -104,7 +104,7 @@ export function UserList() {
         <MessageError message={error} />
       </main>
     );
-  } else if (isChecked && isLoaded && data.username === `admin`) {
+  } else if (isChecked && isLoaded && loggedProfileData.username === `admin`) {
     {
       /* User list with filters */
     }

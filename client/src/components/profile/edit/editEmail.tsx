@@ -1,17 +1,15 @@
 import React, { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { store } from "../../../store";
+import { addLoggedProfileData } from "../../../store/slices/loggedProfile";
 import { addProfileData } from "../../../store/slices/profile";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageError } from "../../elements/messages/messageError";
 import { WaitingDots } from "../../elements/waitingDots";
-import { IUserData } from "../../../interfaces/IUserData";
 import { IProfileData } from "../../../interfaces/IProfileData";
 import axios from "axios";
 
 interface Props {
-  email: string;
-  setProfileData: Dispatch<SetStateAction<IUserData | null>>;
   editError: string;
   setEditError: Dispatch<SetStateAction<string>>;
   editMessage: string;
@@ -20,8 +18,6 @@ interface Props {
 }
 
 export function EditEmail({
-  email,
-  setProfileData,
   editError,
   setEditError,
   editMessage,
@@ -35,8 +31,8 @@ export function EditEmail({
   //Other states
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
-  const { data } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   const dispatch = useDispatch();
@@ -58,7 +54,7 @@ export function EditEmail({
 
     try {
       const formData = new FormData();
-      formData.append("oldEmail", email);
+      formData.append("oldEmail", loggedProfileData.email);
       formData.append("newEmail", newEmail);
       formData.append("password", password);
 
@@ -68,19 +64,19 @@ export function EditEmail({
         {
           headers: {
             "Content-Type": "application/json",
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );
 
       const profileData: IProfileData = {
-        ...data,
+        ...loggedProfileData,
         email: response.data.user.email,
       };
 
       localStorage.setItem("userData", JSON.stringify(profileData));
-      dispatch(addProfileData(profileData));
-      setProfileData(response.data.user);
+      dispatch(addLoggedProfileData(profileData));
+      dispatch(addProfileData(response.data.user));
       setEditMessage(response.data.message);
       setEditError("");
     } catch (error: any) {

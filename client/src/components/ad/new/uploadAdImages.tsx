@@ -31,8 +31,8 @@ export function UploadAdImages({
 
   const photoNumbers = useCalcPhotosNumber(imgToShow, adImages.length);
 
-  const { data } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   //Changing visible image (in uploaded images box)
@@ -57,13 +57,14 @@ export function UploadAdImages({
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              authorization: `Bearer ${data?.token}`,
+              authorization: `Bearer ${loggedProfileData?.token}`,
             },
           }
         );
         setAdImages([...adImages, response.data.image]);
         setMessageGreen(response.data.message);
         setMessageRed("");
+        setImgToShow(adImages.length)
       } catch (error: any) {
         if (
           error?.response?.data?.status === "fail" &&
@@ -87,7 +88,7 @@ export function UploadAdImages({
     //Removing image from images array (adImages)
     const updatedadImagesArray = [...adImages];
     updatedadImagesArray.splice(index, 1);
-    setAdImages(updatedadImagesArray);
+    setAdImages([...updatedadImagesArray]);        
     setImgToShow(0);
   };
 

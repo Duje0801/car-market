@@ -38,8 +38,8 @@ export function SearchAds() {
   const [resultsNo, setResultsNo] = useState<number>(0);
   const [searchId, setSearchId] = useState<string>("");
 
-  const { data } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   const navigate = useNavigate();
@@ -205,7 +205,7 @@ export function SearchAds() {
         `http://localhost:4000/api/v1/ad/searchNo/?${url}`,
         {
           headers: {
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );
@@ -438,7 +438,11 @@ export function SearchAds() {
           className="btn bg-black text-white w-[39.5vw] max-w-xs"
           onClick={handleRedirect}
         >
-          {isLoading ? <WaitingDots size={"xs"} marginTop={2} /> : `${resultsNo} Results`}{" "}
+          {isLoading ? (
+            <WaitingDots size={"xs"} marginTop={2} />
+          ) : (
+            `${resultsNo} Results`
+          )}{" "}
         </button>
       </form>
     </>

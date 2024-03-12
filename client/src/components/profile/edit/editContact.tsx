@@ -1,15 +1,14 @@
 import React, { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { IUserData } from "../../../interfaces/IUserData";
 import { store } from "../../../store";
+import { addProfileData } from "../../../store/slices/profile";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageError } from "../../elements/messages/messageError";
 import { WaitingDots } from "../../elements/waitingDots";
 import axios from "axios";
 
 interface Props {
-  email: string;
-  setProfileData: Dispatch<SetStateAction<IUserData | null>>;
   editError: string;
   setEditError: Dispatch<SetStateAction<string>>;
   editMessage: string;
@@ -18,8 +17,6 @@ interface Props {
 }
 
 export function EditContact({
-  email,
-  setProfileData,
   editError,
   setEditError,
   editMessage,
@@ -33,9 +30,11 @@ export function EditContact({
   //Other states
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
-  const { data } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
+
+  const dispatch = useDispatch()
 
   //Form data states changes
   const handleNewContact = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +53,7 @@ export function EditContact({
 
     try {
       const formData = new FormData();
-      formData.append("email", email);
+      formData.append("email", loggedProfileData.email);
       formData.append("newContact", newContact);
       formData.append("password", password);
 
@@ -64,11 +63,11 @@ export function EditContact({
         {
           headers: {
             "Content-Type": "application/json",
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );
-      setProfileData(response.data.user);
+      dispatch(addProfileData(response.data.user))
       setEditMessage(response.data.message);
       setEditError("");
     } catch (error: any) {

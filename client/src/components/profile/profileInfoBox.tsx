@@ -12,8 +12,8 @@ interface Props {
 }
 
 export function ProfileInfoBox({ profileData, handleOpenModal }: Props) {
-  const { data } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   const createdAt = useCreateAtToString(profileData?.createdAt);
@@ -57,8 +57,8 @@ export function ProfileInfoBox({ profileData, handleOpenModal }: Props) {
             <p className="text-center text-md">{profileData.contact}</p>
           )}
         </div>
-        {(data.username === `admin` ||
-          data.username === profileData.username) &&
+        {(loggedProfileData.username === `admin` ||
+          loggedProfileData.username === profileData.username) &&
           profileData.username !== `admin` && (
             <button
               className="btn btn-error w-full"
@@ -67,14 +67,15 @@ export function ProfileInfoBox({ profileData, handleOpenModal }: Props) {
               {profileData.active ? "Dea" : "A"}ctivate profile
             </button>
           )}
-        {data.username === `admin` && profileData.username !== `admin` && (
-          <button
-            className="btn btn-error"
-            onClick={() => handleOpenModal(`deleteProfile`)}
-          >
-            Delete profile
-          </button>
-        )}
+        {loggedProfileData.username === `admin` &&
+          profileData.username !== `admin` && (
+            <button
+              className="btn btn-error"
+              onClick={() => handleOpenModal(`deleteProfile`)}
+            >
+              Delete profile
+            </button>
+          )}
       </div>
     </div>
   );

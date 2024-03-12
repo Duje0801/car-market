@@ -1,50 +1,22 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { IProfileState } from "../../interfaces/IProfileState";
-import { IProfileData } from "../../interfaces/IProfileData";
-
-export const getProfileData = createAsyncThunk(
-  "profile/getProfileData",
-  async () => {
-    const response = JSON.parse(localStorage.getItem("userData") || "null");
-    return {
-      username: response.username,
-      email: response.email,
-      token: response.token,
-    };
-  }
-);
+import { IUserData } from "../../interfaces/IUserData";
 
 const initialState: IProfileState = {
-  data: { username: "", email: "", token: "" },
-  error: null,
-  isChecked: false,
+  profileData: null,
 };
 
 export const profileSlice = createSlice({
   name: "profileData",
   initialState,
   reducers: {
-    addProfileData(state, action: PayloadAction<IProfileData>) {
-      state.data = { ...action.payload };
+    addProfileData(state, action: PayloadAction<IUserData>) {
+      state.profileData = { ...action.payload };
     },
     removeProfileData(state) {
-      state.data = { username: "", email: "", token: "" };
+      state.profileData = null;
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(getProfileData.pending, (state) => {
-        state.error = null;
-      })
-      .addCase(getProfileData.fulfilled, (state, action) => {
-        state.isChecked = true;
-        state.data = { ...action.payload };
-      })
-      .addCase(getProfileData.rejected, (state, action) => {
-        state.isChecked = true;
-        state.error = action.error.message ?? "An error occurred";
-      });
   },
 });
 

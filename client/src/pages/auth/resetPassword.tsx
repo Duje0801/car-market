@@ -17,8 +17,8 @@ export function ResetPassword() {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  const { data, isChecked } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData, isChecked } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   const navigate = useNavigate();
@@ -96,7 +96,7 @@ export function ResetPassword() {
         <WaitingDots size={"md"} marginTop={8} />{" "}
       </main>
     );
-  } else if (data.username) {
+  } else if (loggedProfileData.username) {
     {
       /* If the user is already logged in */
     }

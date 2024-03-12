@@ -1,14 +1,16 @@
-import { Dispatch, SetStateAction } from "react";
-import { IAd } from "../../interfaces/IAd";
+import { useSelector } from "react-redux";
+import { store } from "../../store";
 import { EditAd } from "./edit/editAd";
 
 interface Props {
-  adInfo: IAd;
-  setAdInfo: Dispatch<SetStateAction<IAd | null>>;
   handleBtnClick: (operation: string) => void;
 }
 
-export function AdModals({ adInfo, setAdInfo, handleBtnClick }: Props) {
+export function AdModals({ handleBtnClick }: Props) {
+  const { adData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.ad
+  );
+
   return (
     <>
       {/* Hide ad modal */}
@@ -20,7 +22,7 @@ export function AdModals({ adInfo, setAdInfo, handleBtnClick }: Props) {
             </button>
           </form>
           <h3 className="font-bold text-lg mb-2">
-            Are you sure you want to {adInfo.active ? "hide" : "show"} this ad?
+            Are you sure you want to {adData?.active ? "hide" : "show"} this ad?
           </h3>
           <div className="flex flex-col gap-2">
             <form method="dialog">
@@ -46,7 +48,7 @@ export function AdModals({ adInfo, setAdInfo, handleBtnClick }: Props) {
             </button>
           </form>
           <h3 className="font-bold text-lg mb-2">
-            Are you sure you want to {adInfo.active ? "de" : ""}
+            Are you sure you want to {adData?.active ? "de" : ""}
             activate this ad?
           </h3>
           <div className="flex flex-col gap-2">
@@ -92,7 +94,7 @@ export function AdModals({ adInfo, setAdInfo, handleBtnClick }: Props) {
       </dialog>
       {/* Edit ad modal */}
       <dialog id="editAdModal" className="modal">
-        <EditAd adInfo={adInfo} setAdInfo={setAdInfo} />
+        <EditAd adData={adData} />
       </dialog>
     </>
   );

@@ -12,8 +12,8 @@ export function RedirectAuth() {
   const params = useParams();
   const navigate = useNavigate();
 
-  const { data, isChecked } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData, isChecked } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   useEffect(() => {
@@ -29,12 +29,10 @@ export function RedirectAuth() {
     } else if (params.id === `logOut`) {
       setMessage(`You have been succesfully logged out. Go to `);
       setClickRedirect(`the home page`);
-    } 
-    else if (params.id === `deactivate`) {
+    } else if (params.id === `deactivate`) {
       setMessage(`Your profile has been succesfully deactivated. Go to `);
       setClickRedirect(`the home page`);
-    } 
-    else {
+    } else {
       setMessage(`Something went wrong. Go to `);
       setClickRedirect(`the home page`);
     }
@@ -55,7 +53,7 @@ export function RedirectAuth() {
         <WaitingDots size={"md"} marginTop={8} />{" "}
       </main>
     );
-  } else if (data.username && params.id !== `logIn`) {
+  } else if (loggedProfileData.username && params.id !== `logIn`) {
     {
       /* If the profile is already logged in */
     }

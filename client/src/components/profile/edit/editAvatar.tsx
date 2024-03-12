@@ -1,16 +1,13 @@
 import { Dispatch, FormEvent, SetStateAction, useState } from "react";
-import { useSelector } from "react-redux";
-import { IUserData } from "../../../interfaces/IUserData";
+import { useSelector, useDispatch } from "react-redux";
 import { store } from "../../../store";
+import { addProfileData } from "../../../store/slices/profile";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageError } from "../../elements/messages/messageError";
 import { WaitingDots } from "../../elements/waitingDots";
 import axios from "axios";
 
 interface Props {
-  email: string;
-  oldUploadedImagePublicID: string | undefined;
-  setProfileData: Dispatch<SetStateAction<IUserData | null>>;
   editError: string;
   setEditError: Dispatch<SetStateAction<string>>;
   editMessage: string;
@@ -19,9 +16,6 @@ interface Props {
 }
 
 export function EditAvatar({
-  email,
-  oldUploadedImagePublicID,
-  setProfileData,
   editError,
   setEditError,
   editMessage,
@@ -38,7 +32,13 @@ export function EditAvatar({
   const [uploadImage, setUploadImage] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
-  const { data } = useSelector(
+  const dispatch = useDispatch();
+
+  const { loggedProfileData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
+  );
+
+  const { profileData } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
@@ -55,7 +55,7 @@ export function EditAvatar({
     setIsSaving(true);
     try {
       const formData = new FormData();
-      formData.append("email", email);
+      formData.append("email", loggedProfileData.email);
       formData.append("avatarURL", avatarURL);
       formData.append("uploadedAvatarURL", uploadedImageURL);
       formData.append("uploadedPublicID", uploadedImagePublicID);
@@ -66,14 +66,14 @@ export function EditAvatar({
         {
           headers: {
             "Content-Type": "application/json",
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );
 
       //Deleting old avatar
       const deleteAvatarText: string = await deleteOldAvatarMessage();
-      setProfileData(response.data.user);
+      dispatch(addProfileData(response.data.user));
       setEditMessage(response.data.message + deleteAvatarText);
     } catch (error: any) {
       if (
@@ -134,7 +134,7 @@ export function EditAvatar({
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              authorization: `Bearer ${data?.token}`,
+              authorization: `Bearer ${loggedProfileData?.token}`,
             },
           }
         );
@@ -169,7 +169,7 @@ export function EditAvatar({
         `http://localhost:4000/api/v1/user/deleteImage/${uploadedImagePublicID}`,
         {
           headers: {
-            authorization: `Bearer ${data?.token}`,
+            authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );
@@ -191,14 +191,14 @@ export function EditAvatar({
 
   //Delete avatar function (deleting old avatar from Cloudinary database, after deleting from profile)
   const deleteOldAvatarMessage = async () => {
-    if (oldUploadedImagePublicID) {
+    if (profileData?.avatar.uploadedAvatar.publicID) {
       try {
         //Deleting avatar from Cloudinary database
         await axios.delete(
-          `http://localhost:4000/api/v1/user/deleteImage/${oldUploadedImagePublicID}`,
+          `http://localhost:4000/api/v1/user/deleteImage/${profileData?.avatar.uploadedAvatar.publicID}`,
           {
             headers: {
-              authorization: `Bearer ${data?.token}`,
+              authorization: `Bearer ${loggedProfileData?.token}`,
             },
           }
         );
@@ -219,7 +219,6 @@ export function EditAvatar({
   return (
     <>
       <form onSubmit={handleSubmit}>
-
         {/* Messages */}
         {editMessage && (
           <div className="mb-2">
@@ -232,9 +231,11 @@ export function EditAvatar({
             <MessageError message={editError} />
           </div>
         )}
-        {uploadedImageURL && <p className="text-center text-sm mb-2">
-          The new avatar will be confirmed after clicking the submit button
-        </p>}
+        {uploadedImageURL && (
+          <p className="text-center text-sm mb-2">
+            The new avatar will be confirmed after clicking the submit button
+          </p>
+        )}
 
         {/* Image upload */}
         {uploadImage ? (

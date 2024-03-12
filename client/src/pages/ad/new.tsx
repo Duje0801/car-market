@@ -35,8 +35,8 @@ export function NewAd() {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
-  const { data, isChecked } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
+  const { loggedProfileData, isChecked } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   const navigate = useNavigate();
@@ -129,7 +129,7 @@ export function NewAd() {
       await axios.post("http://localhost:4000/api/v1/ad/new", formData, {
         headers: {
           "Content-Type": "application/json",
-          authorization: `Bearer ${data?.token}`,
+          authorization: `Bearer ${loggedProfileData?.token}`,
         },
       });
       navigate("/redirect/ad/new");
@@ -172,7 +172,7 @@ export function NewAd() {
         <WaitingDots size={"md"} marginTop={8} />{" "}
       </main>
     );
-  } else if (!data.username) {
+  } else if (!loggedProfileData.username) {
     {
       /* If the user is not logged in */
     }
@@ -398,7 +398,7 @@ export function NewAd() {
                   setError={setError}
                   adImages={adImages}
                   setAdImages={setAdImages}
-                  imgToShow={imgToShow} 
+                  imgToShow={imgToShow}
                   setImgToShow={setImgToShow}
                 />
                 {/* Clear all button */}

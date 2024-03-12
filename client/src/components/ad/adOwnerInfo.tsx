@@ -1,22 +1,23 @@
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { store } from "../../store";
 import { useCreateAtToString } from "../../hooks/useCreateAtToString";
-import { IAd } from "../../interfaces/IAd";
 
-interface Props {
-  adInfo: IAd;
-}
+export function AdOwnerInfo() {
+  const { adData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.ad
+  );
 
-export function AdOwnerInfo({ adInfo }: Props) {
   const navigate = useNavigate();
-  const createdAt = useCreateAtToString(adInfo.createdAt);
+  const createdAt = useCreateAtToString(adData?.createdAt);
 
-  const handleRedirectToProfile = (username: string) => {
-    navigate(`/profile/${username}`);
+  const handleRedirectToProfile = () => {
+    navigate(`/profile/${adData?.username}`);
   };
 
   const handleClickSendMail = () => {
-    if (adInfo.user) {
-      window.location.href = `mailto:${adInfo.user[0].email}`;
+    if (adData?.user) {
+      window.location.href = `mailto:${adData?.user[0].email}`;
     }
   };
 
@@ -24,21 +25,21 @@ export function AdOwnerInfo({ adInfo }: Props) {
     <div className="card bg-base-200 p-4 shadow-xl mx-auto mt-2 mb-4 rounded-lg w-[90vw]">
       {/* Username */}
       <p
-        onClick={() => handleRedirectToProfile(adInfo.username)}
+        onClick={() => handleRedirectToProfile()}
         className="text-xl font-bold text-center"
       >
-        {adInfo.user && adInfo.user[0].username}
+        {adData?.user && adData?.user[0].username}
       </p>
       <p className="text-center">Active since: {createdAt}</p>
       {/* Email */}
-      {adInfo.user && adInfo.user[0].email ? (
+      {adData?.user && adData?.user[0].email ? (
         <p className="text-center" onClick={handleClickSendMail}>
-          {adInfo.user[0].email}
+          {adData?.user[0].email}
         </p>
       ) : null}
       {/* Contact */}
-      {adInfo.user && adInfo.user[0].contact ? (
-        <p className="text-center">{adInfo.user[0].contact}</p>
+      {adData?.user && adData?.user[0].contact ? (
+        <p className="text-center">{adData?.user[0].contact}</p>
       ) : null}
     </div>
   );
