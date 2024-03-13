@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { store } from "../../store";
-import { addProfileData, removeProfileData } from "../../store/slices/profile";
+import {
+  addProfileData,
+  removeProfileData,
+  addProfileAds,
+} from "../../store/slices/profile";
 import { removeLoggedProfileData } from "../../store/slices/loggedProfile";
 import { catchErrors } from "../../utilis/catchErrors";
 import { WaitingDots } from "../../components/elements/waitingDots";
@@ -21,6 +25,8 @@ export function Profile() {
   const [error, setError] = useState<string>("");
   const [editError, setEditError] = useState<string>("");
   const [editMessage, setEditMessage] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [adInfoTotalNo, setAdInfoTotalNo] = useState<number>(0);
 
   const params = useParams();
 
@@ -28,7 +34,7 @@ export function Profile() {
     (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
-  const { profileData } = useSelector(
+  const { profileData, profileAds } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
@@ -40,19 +46,23 @@ export function Profile() {
     if (isChecked) {
       fetchData();
     }
-  }, [isChecked]);
+  }, [isChecked, page]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/v1/user/profile/${params.id}`,
+        `http://localhost:4000/api/v1/user/profile/${params.id}/?page=${
+          (page - 1) * 5
+        }`,
         {
           headers: {
             authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );
-      dispatch(addProfileData(response.data.user));
+      dispatch(addProfileData({ ...response.data.user, ads: undefined }));
+      dispatch(addProfileAds(response.data.user.ads));
+      setAdInfoTotalNo(response.data.adsNo);
     } catch (error) {
       catchErrors(error, setError);
     }
@@ -113,7 +123,7 @@ export function Profile() {
     }
 
     //Adding all ad`s images
-    profileData?.ads?.forEach((ad) => {
+    profileAds.forEach((ad) => {
       ad.images.forEach((img) => {
         imagesDeleteList.push(img.publicID);
       });
@@ -201,16 +211,31 @@ export function Profile() {
           />
 
           {/* Profile ads */}
-          {profileData.ads && profileData.ads.length > 0 ? (
+          {/* Pofile has ads */}
+          {profileAds &&
+          profileAds.length > 0 &&
+          profileAds.length < 9999999 ? (
             <ProfileAds
-              profileData={profileData}
+              page={page}
+              setPage={setPage}
+              adInfoTotalNo={adInfoTotalNo}
               handleSeeMoreClick={handleSeeMoreClick}
             />
-          ) : (
+          ) : null}
+          {/* Profile has no ads */}
+          {adInfoTotalNo === 0 ? (
             <div className="mx-auto w-[90vw]">
               <MessageWarning message={"This user has no ads"} />
             </div>
-          )}
+          ) : null}
+          {/* Can't get the total number of profile ads */}
+          {adInfoTotalNo === 9999999 ? (
+            <div className="mx-auto w-[90vw]">
+              <MessageWarning
+                message={"Can't get all ads data, please try again."}
+              />
+            </div>
+          ) : null}
         </main>
 
         {/* Modals */}

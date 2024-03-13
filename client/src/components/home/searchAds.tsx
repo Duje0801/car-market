@@ -172,46 +172,47 @@ export function SearchAds() {
   const fetchData = async () => {
     setIsLoading(true);
 
-    let url = "";
-    if (make && make !== "Make") url += `make=${make}&`;
-    if (model) url += `model=${model}&`;
+    let queries = "";
+    if (make && make !== "Make") queries += `make=${make}&`;
+    if (model) queries += `model=${model}&`;
     if (
       firstRegistrationFrom &&
       firstRegistrationFrom !== "First registration from"
     ) {
-      url += `firstRegistrationFrom=${firstRegistrationFrom}&`;
+      queries += `firstRegistrationFrom=${firstRegistrationFrom}&`;
     }
     if (
       firstRegistrationTo &&
       firstRegistrationTo !== "First registration to"
     ) {
-      url += `firstRegistrationTo=${firstRegistrationTo}&`;
+      queries += `firstRegistrationTo=${firstRegistrationTo}&`;
     }
-    if (country && country !== "Pick country") url += `country=${country}&`;
-    if (mileageFrom) url += `mileageFrom=${mileageFrom}&`;
-    if (mileageTo) url += `mileageTo=${mileageTo}&`;
-    if (condition && condition !== "New/Used") url += `condition=${condition}&`;
-    if (fuel && fuel !== "Fuel") url += `fuel=${fuel}&`;
-    if (minPower) url += `minPower=${minPower}&`;
-    if (maxPower) url += `maxPower=${maxPower}&`;
-    if (priceFrom) url += `priceFrom=${priceFrom}&`;
-    if (priceTo) url += `priceTo=${priceTo}`;
+    if (country && country !== "Pick country") queries += `country=${country}&`;
+    if (mileageFrom) queries += `mileageFrom=${mileageFrom}&`;
+    if (mileageTo) queries += `mileageTo=${mileageTo}&`;
+    if (condition && condition !== "New/Used")
+      queries += `condition=${condition}&`;
+    if (fuel && fuel !== "Fuel") queries += `fuel=${fuel}&`;
+    if (minPower) queries += `minPower=${minPower}&`;
+    if (maxPower) queries += `maxPower=${maxPower}&`;
+    if (priceFrom) queries += `priceFrom=${priceFrom}&`;
+    if (priceTo) queries += `priceTo=${priceTo}`;
 
-    if (url.slice(-1) === "&" || url.slice(-1) === "?") {
-      url = url.slice(0, -1);
+    if (queries.slice(-1) === "&" || queries.slice(-1) === "?") {
+      queries = queries.slice(0, -1);
     }
 
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/v1/ad/searchNo/?${url}`,
+        `http://localhost:4000/api/v1/ad/searchNo/?${queries}`,
         {
           headers: {
             authorization: `Bearer ${loggedProfileData?.token}`,
           },
         }
       );
-      setResultsNo(response.data.ads);
-      setSearchId(url);
+      setResultsNo(response.data.adsNo);
+      setSearchId(queries);
     } catch (error) {
       catchErrors(error, setError);
     }

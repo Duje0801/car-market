@@ -2,9 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { IProfileState } from "../../interfaces/slices/IProfileState";
 import { IProfile } from "../../interfaces/IProfile";
+import { IAd } from "../../interfaces/IAd";
 
 const initialState: IProfileState = {
   profileData: null,
+  profileAds: [],
 };
 
 export const profileSlice = createSlice({
@@ -17,7 +19,18 @@ export const profileSlice = createSlice({
     removeProfileData(state) {
       state.profileData = null;
     },
+    addProfileAds(state, action: PayloadAction<IAd[]>) {
+      state.profileAds = [...action.payload];
+    },
+    removeProfileAds(state) {
+      state.profileAds = [];
+    },
   },
 });
 
-export const { addProfileData, removeProfileData } = profileSlice.actions;
+export const {
+  addProfileData,
+  removeProfileData,
+  addProfileAds,
+  removeProfileAds,
+} = profileSlice.actions;

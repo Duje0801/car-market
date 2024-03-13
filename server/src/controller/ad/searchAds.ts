@@ -97,14 +97,15 @@ export const searchAds: any = async function (req: Request, res: Response) {
 
     //Returning empty array if adsCheck object is empty (/searchNo)
     if (Object.keys(adsCheck).length === 0) {
-      const ads = req.originalUrl.includes("/searchNo") ? 0 : [];
+      const adsNo = req.originalUrl.includes("/searchNo") ? 0 : [];
       return res.status(200).json({
         status: `success`,
-        ads,
+        adsNo,
       });
     }
 
-    let ads: IAd[] | number;
+    let ads: IAd[];
+    let adsNo: number;
     let activeVisible: {} = { active: true, visible: true };
 
     //Only admin can see hidden and unvisible ads
@@ -114,17 +115,27 @@ export const searchAds: any = async function (req: Request, res: Response) {
 
     //In response user can get number of matching ads (inside button at home page) - /searchNo
     //or ads with all information - /search
-    if (req.originalUrl.includes("/searchNo"))
-      ads = await Ad.countDocuments({ ...adsCheck, ...activeVisible });
-    else
-      ads = await Ad.find({ ...adsCheck, ...activeVisible }).select(
-        "-updatedAt -__v"
-      );
+    if (req.originalUrl.includes("/searchNo")) {
+      adsNo = await Ad.countDocuments({ ...adsCheck, ...activeVisible });
 
-    res.status(200).json({
-      status: `success`,
-      ads,
-    });
+      res.status(200).json({
+        status: `success`,
+        adsNo,
+      });
+    } else {
+      adsNo = await Ad.countDocuments({ ...adsCheck, ...activeVisible });
+      ads = await Ad.find({ ...adsCheck, ...activeVisible })
+        .select("-updatedAt -__v")
+        .sort(`createdAt`)
+        .skip(Number(req.query.page))
+        .limit(5);
+
+      res.status(200).json({
+        status: `success`,
+        adsNo,
+        ads,
+      });
+    }
   } catch (error) {
     errorHandler(error, req, res);
   }

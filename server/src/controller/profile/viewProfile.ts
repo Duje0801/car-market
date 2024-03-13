@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { IUser } from "../../interfaces/user";
+import { Ad } from "../../models/adModel";
 import { User } from "../../models/userModel";
 import { checkUser } from "../../utilis/checkUser";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
@@ -22,12 +23,19 @@ export const viewProfile: any = async function (req: Request, res: Response) {
       visible = {};
     }
 
-    const user: IUser | null = await User.findOne({ username: params, ...active })
+    const user: IUser | null = await User.findOne({
+      username: params,
+      ...active,
+    })
       .select("+active -updatedAt -__v")
       .populate({
         path: `ads`,
         match: { ...active, ...visible },
-        options: { sort: { createdAt: -1 } },
+        options: {
+          sort: { createdAt: -1 },
+          skip: Number(req.query.page),
+          limit: 5,
+        },
         select: "-updatedAt -__v",
       });
 
@@ -35,9 +43,19 @@ export const viewProfile: any = async function (req: Request, res: Response) {
       return errorResponse("Can't find user with this username", res, 404);
     }
 
+    let userCountAds: number | null = await Ad.countDocuments({
+      username: params,
+      ...active,
+    });
+
+    if (!userCountAds && userCountAds !== 0) {
+      userCountAds = 9999999;
+    }
+
     res.status(200).json({
       status: `success`,
       user,
+      adsNo: userCountAds,
     });
   } catch (error) {
     errorHandler(error, req, res);

@@ -1,30 +1,50 @@
+import { Dispatch, SetStateAction } from "react";
+import { useSelector } from "react-redux";
+import { store } from "../../store";
 import { MessageError } from "../elements/messages/messageError";
-import { IProfile } from "../../interfaces/IProfile";
+import { Pagination } from "../elements/pagination";
 import { MdNewReleases } from "react-icons/md";
 import { FaCalendarAlt } from "react-icons/fa";
 import { FaRoad } from "react-icons/fa";
 import { ImPriceTags } from "react-icons/im";
 
 interface Props {
-  profileData: IProfile;
+  page: number;
+  setPage: Dispatch<SetStateAction<number>>;
+  adInfoTotalNo: number;
   handleSeeMoreClick: (id: string) => void;
 }
 
-export function ProfileAds({ profileData, handleSeeMoreClick }: Props) {
+export function ProfileAds({
+  page,
+  setPage,
+  adInfoTotalNo,
+  handleSeeMoreClick,
+}: Props) {
+  const { profileData, profileAds } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.profile
+  );
+
   return (
-    <div className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto my-8 rounded-lg w-[90vw]">
+    <div className="card bg-base-200 gap-2 pt-2 pb-4 shadow-xl mx-auto mt-6 mb-2 rounded-lg w-[90vw]">
       {/* Ads (mapped) */}
-      <div className="card-body p-4">
-        <p className="text-center text-lg font-bold mb-4">
-          {profileData.username}'s ads:
+      <div className="card-body p-2">
+        <p className="text-center text-lg font-bold">
+          {profileData?.username}'s ads:
         </p>
-        <div>
-          {profileData.ads &&
-            profileData.ads.map((ad, i) => {
+          {/* Pagination */}
+          <Pagination
+            totalLength={adInfoTotalNo}
+            itemsPerPage={5}
+            page={page}
+            setPage={setPage}
+          />
+          {profileAds &&
+            profileAds.map((ad, i) => {
               return (
                 <div
                   key={i}
-                  className="card w-fit bg-base-100 shadow-xl p-2 mb-4"
+                  className="card w-full bg-base-100 shadow-xl p-2 mb-4"
                 >
                   {" "}
                   {/* Ad image */}
@@ -88,7 +108,14 @@ export function ProfileAds({ profileData, handleSeeMoreClick }: Props) {
               );
             })}
         </div>
+                  {/* Pagination */}
+                  <Pagination
+            totalLength={adInfoTotalNo}
+            itemsPerPage={5}
+            page={page}
+            setPage={setPage}
+          />
+
       </div>
-    </div>
   );
 }

@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
+import { Pagination } from "../../components/elements/pagination";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
+import { MessageWarning } from "../../components/elements/messages/messageWarning";
 import { catchErrors } from "../../utilis/catchErrors";
 import { MdNewReleases } from "react-icons/md";
 import { FaCalendarAlt } from "react-icons/fa";
@@ -14,8 +16,10 @@ import axios from "axios";
 
 export function AdsList() {
   const [adInfo, setAdInfo] = useState<IAd[]>([]);
+  const [adInfoTotalNo, setAdInfoTotalNo] = useState<number>(0);
   const [error, setError] = useState<string>("");
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -24,17 +28,19 @@ export function AdsList() {
     (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
-  //Automatically fetches ad list data on page load
+  //Automatically fetches ad list data on page load and page change
   useEffect(() => {
     if (params.id && isChecked) {
       fetchData();
     }
-  }, [isChecked]);
+  }, [isChecked, page]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/v1/ad/search/?${params.id}`,
+        `http://localhost:4000/api/v1/ad/search/?sort=new&page=${
+          (page - 1) * 5
+        }&${params.id}`,
         {
           headers: {
             authorization: `Bearer ${loggedProfileData?.token}`,
@@ -42,6 +48,7 @@ export function AdsList() {
         }
       );
       setAdInfo(response.data.ads);
+      setAdInfoTotalNo(response.data.adsNo);
     } catch (error) {
       catchErrors(error, setError);
     }
@@ -77,23 +84,30 @@ export function AdsList() {
     }
     return (
       <main className="mx-auto w-[90vw]">
-        <MessageError message={"Can't find any matching ad"} />
+        <MessageWarning message={"Can't find any matching ad"} />
       </main>
     );
   } else if (adInfo) {
     return (
-      <main className="p-2">
-        <div className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto my-8 rounded-lg w-[90vw]">
-          {/* Ads (mapped) */}
-          <p className="text-center text-lg font-bold">Ads List:</p>
-          <div className="card-body p-4">
+      <main className="pb-2">
+        <p className="text-center text-lg font-bold">Ads:</p>
+        {/* Ads (mapped) */}
+        <div className="card bg-base-200 gap-2 py-2 shadow-xl mx-auto mb-2 rounded-lg w-[90vw]">
+          {/* Pagination */}
+          <Pagination
+            totalLength={adInfoTotalNo}
+            itemsPerPage={5}
+            page={page}
+            setPage={setPage}
+          />
+          <div className="card-body p-2">
             <div>
               {adInfo &&
                 adInfo.map((ad, i) => {
                   return (
                     <div
                       key={i}
-                      className="card w-fit bg-base-100 shadow-xl p-2 mb-4"
+                      className="card w-full bg-base-100 shadow-xl p-2 mb-4"
                     >
                       {/* Visibility message */}
                       {!ad.visible && (
@@ -157,6 +171,13 @@ export function AdsList() {
                 })}
             </div>
           </div>
+          {/* Pagination */}
+          <Pagination
+            totalLength={adInfoTotalNo}
+            itemsPerPage={5}
+            page={page}
+            setPage={setPage}
+          />
         </div>
       </main>
     );
