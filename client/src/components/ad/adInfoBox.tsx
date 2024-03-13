@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
-import { useCalcPhotosNumber } from "../../hooks/useCalcPhotosNumber";
+import { AdImagesCarousel } from "./adImagesCarousel";
 import { MdNewReleases } from "react-icons/md";
 import { FaFlag } from "react-icons/fa";
 import { FaCar } from "react-icons/fa";
@@ -13,54 +12,13 @@ import { ImPower } from "react-icons/im";
 import { ImPriceTags } from "react-icons/im";
 
 export function AdInfoBox() {
-  const [imgToShow, setImgToShow] = useState<number>(0);
-
   const { adData } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.ad
   );
 
-  const photoNumbers = useCalcPhotosNumber(imgToShow, adData?.images.length!);
-
-  useEffect(() => {
-    setImgToShow(0);
-  }, [adData?.images.length]);
-
-  //Changing visible image (in uploaded images box)
-  const handleChangeImage = (iteration: number) => {
-    setImgToShow(iteration);
-  };
-
   return (
     <div>
-      {/* Show images (box) */}
-      {adData && adData.images.length > 0 && (
-        <div className="flex">
-          <div className="carousel carousel-item h-[33vh] w-full bg-black rounded-lg relative">
-            <img
-              src={adData.images[imgToShow].imageUrl}
-              className="w-auto h-full m-auto"
-            />
-            <div className="absolute top-2 right-2 text-3xl bg-slate-100 rounded-md cursor-pointer transition-transform"></div>
-            {/* Changing visible image (left and right arrows) */}
-            {adData.images.length > 1 && (
-              <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                <a
-                  onClick={() => handleChangeImage(photoNumbers.before)}
-                  className="btn btn-circle bg-slate-100"
-                >
-                  ❮
-                </a>
-                <a
-                  onClick={() => handleChangeImage(photoNumbers.after)}
-                  className="btn btn-circle bg-slate-100"
-                >
-                  ❯
-                </a>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      <AdImagesCarousel />
       {/* Ad data (title, country, price...) */}
       <p className="text-2xl font-bold text-center my-4">
         {adData && adData.title}
