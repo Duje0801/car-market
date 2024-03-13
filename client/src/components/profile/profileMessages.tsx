@@ -12,17 +12,17 @@ export function ProfileMessages({ error, profileData, message }: Props) {
   return (
     <>
       {error && (
-        <div className="mx-auto w-[90vw]">
-          <MessageSuccessfully message={error} />
+        <div className="mx-auto w-[90vw] mb-2">
+          <MessageError message={error} />
         </div>
       )}
       {!profileData.active && (
-        <div className="mx-auto w-[90vw]">
+        <div className="mx-auto w-[90vw] mb-2">
           <MessageError message={"This profile is deactivated"} />
         </div>
       )}
       {message && (
-        <div className="mx-auto w-[90vw]">
+        <div className="mx-auto w-[90vw] mb-2">
           <MessageSuccessfully message={message} />
         </div>
       )}

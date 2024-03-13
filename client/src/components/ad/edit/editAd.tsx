@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addAdData } from "../../../store/slices/ad";
 import { store } from "../../../store";
-import { IImage } from "../../../interfaces/IImage";
+import { catchErrors } from "../../../utilis/catchErrors";
 import { yearsData } from "../../../data/years";
 import { makes as makesList } from "../../../data/makes";
 import { fuel as fuelList } from "../../../data/fuel";
@@ -14,6 +14,7 @@ import { WaitingDots } from "../../elements/waitingDots";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageWarning } from "../../elements/messages/messageWarning";
 import { IAd } from "../../../interfaces/IAd";
+import { IImage } from "../../../interfaces/IImage";
 import axios from "axios";
 
 interface Props {
@@ -50,7 +51,7 @@ export function EditAd({ adData }: Props) {
   );
 
   const params = useParams();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const years = yearsData();
 
@@ -149,17 +150,10 @@ export function EditAd({ adData }: Props) {
       );
       const deletedImagesMessage = await deleteImage();
       setMessage(response.data.message + ". " + deletedImagesMessage);
-      dispatch(addAdData(response.data.ad))
+      dispatch(addAdData(response.data.ad));
       setImgToShow(0);
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setMessage(error.response.data.message);
-      } else {
-        setMessage("Something went wrong.");
-      }
+    } catch (error) {
+      catchErrors(error, setMessage);
     }
     setIsSaving(false);
   };
@@ -193,7 +187,7 @@ export function EditAd({ adData }: Props) {
       //Deleting images
       await Promise.all(promises);
       return "All ad images designated for deletion have been deleted";
-    } catch (error: any) {
+    } catch (error) {
       return "Some of the ad images designated for deletion have not been deleted";
     }
   };

@@ -8,6 +8,7 @@ import { MessageWarning } from "../../elements/messages/messageWarning";
 import { WaitingDots } from "../../elements/waitingDots";
 import { useCalcPhotosNumber } from "../../../hooks/useCalcPhotosNumber";
 import axios from "axios";
+import { catchErrors } from "../../../utilis/catchErrors";
 
 interface Props {
   setError: Dispatch<SetStateAction<string>>;
@@ -64,16 +65,9 @@ export function UploadAdImages({
         setAdImages([...adImages, response.data.image]);
         setMessageGreen(response.data.message);
         setMessageRed("");
-        setImgToShow(adImages.length)
-      } catch (error: any) {
-        if (
-          error?.response?.data?.status === "fail" &&
-          typeof error?.response?.data?.message === `string`
-        ) {
-          setMessageRed(error.response.data.message);
-        } else {
-          setMessageRed("Image uploading error, please try again later.");
-        }
+        setImgToShow(adImages.length);
+      } catch (error) {
+        catchErrors(error, setMessageRed);
         setMessageGreen("");
       }
     } else {
@@ -88,7 +82,7 @@ export function UploadAdImages({
     //Removing image from images array (adImages)
     const updatedadImagesArray = [...adImages];
     updatedadImagesArray.splice(index, 1);
-    setAdImages([...updatedadImagesArray]);        
+    setAdImages([...updatedadImagesArray]);
     setImgToShow(0);
   };
 

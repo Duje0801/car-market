@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addLoggedProfileData } from "../../store/slices/loggedProfile";
 import { store } from "../../store";
-import { ILoggedProfile } from "../../interfaces/ILoggedProfile";
+import { catchErrors } from "../../utilis/catchErrors";
 import { WaitingDots } from "../../components/elements/waitingDots";
-import { ErrorMessage } from "../../components/elements/errorMessage";
+import { MessageError } from "../../components/elements/messages/messageError";
+import { ILoggedProfile } from "../../interfaces/ILoggedProfile";
 import axios from "axios";
 
 export function LogIn() {
@@ -57,15 +58,8 @@ export function LogIn() {
       localStorage.setItem("userData", JSON.stringify(profileData));
       dispatch(addLoggedProfileData(profileData));
       navigate("/redirect/auth/logIn");
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setError(error.response.data.message);
-      } else {
-        setError("Something went wrong, please try again later.");
-      }
+    } catch (error) {
+      catchErrors(error, setError);
       setPassword("");
       setIsLogging(false);
     }
@@ -90,8 +84,8 @@ export function LogIn() {
       /* If the user is already logged in */
     }
     return (
-      <main>
-        <ErrorMessage text={"You are already logged in!"} />{" "}
+      <main className="mx-auto w-[90vw]">
+        <MessageError message={"You are already logged in!"} />
       </main>
     );
   } else {
@@ -104,7 +98,11 @@ export function LogIn() {
           <WaitingDots size={"md"} marginTop={8} />
         ) : (
           <>
-            {error && <ErrorMessage text={error} />}
+            {error && (
+              <main className="mx-auto w-[90vw]">
+                <MessageError message={error} />
+              </main>
+            )}
             <form
               onSubmit={handleSubmit}
               className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw]"

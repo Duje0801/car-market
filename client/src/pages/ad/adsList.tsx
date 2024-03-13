@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { store } from "../../store";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
+import { catchErrors } from "../../utilis/catchErrors";
 import { MdNewReleases } from "react-icons/md";
 import { FaCalendarAlt } from "react-icons/fa";
 import { FaRoad } from "react-icons/fa";
@@ -41,15 +42,8 @@ export function AdsList() {
         }
       );
       setAdInfo(response.data.ads);
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setError(error.response.data.message);
-      } else {
-        setError("Something went wrong, please try again later.");
-      }
+    } catch (error) {
+      catchErrors(error, setError);
     }
     setIsLoaded(true);
   };

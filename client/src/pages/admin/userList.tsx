@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { IProfile } from "../../interfaces/IProfile";
 import { store } from "../../store";
+import { catchErrors } from "../../utilis/catchErrors";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import axios from "axios";
@@ -60,15 +61,8 @@ export function UserList() {
         return 0;
       });
       setUsers(users);
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setError(error.response.data.message);
-      } else {
-        setError("Something went wrong, please try again later.");
-      }
+    } catch (error) {
+      catchErrors(error, setError);
     }
     setIsLoaded(true);
   };

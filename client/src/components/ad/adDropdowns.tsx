@@ -21,7 +21,7 @@ export function AdDropdowns({ handleOpenModal }: Props) {
         <div
           tabIndex={0}
           role="button"
-          className="btn btn-sm my-2 bg-black text-white text-sm font-bold"
+          className="btn btn-sm bg-black text-white text-sm font-bold"
         >
           Ad options
         </div>

@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
+import { catchErrors } from "../../utilis/catchErrors";
 import { makes as makesList } from "../../data/makes";
 import { countries as countriesList } from "../../data/countries";
 import { yearsData } from "../../data/years";
 import { condition as conditionList } from "../../data/condition";
 import { fuel as fuelList } from "../../data/fuel";
 import { WaitingDots } from "../elements/waitingDots";
-import { ErrorMessage } from "../elements/errorMessage";
+import { MessageError } from "../elements/messages/messageError";
 import axios from "axios";
 
 export function SearchAds() {
@@ -211,15 +212,8 @@ export function SearchAds() {
       );
       setResultsNo(response.data.ads);
       setSearchId(url);
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setError(error.response.data.message);
-      } else {
-        setError("Something went wrong. Please try again later.");
-      }
+    } catch (error) {
+      catchErrors(error, setError);
     }
     setIsLoading(false);
   };
@@ -252,7 +246,11 @@ export function SearchAds() {
   return (
     <>
       {/*Error box*/}
-      {error && <ErrorMessage text={error} />}
+      {error && (
+        <main className="mx-auto w-[90vw]">
+          <MessageError message={error} />
+        </main>
+      )}
       {/* Search form */}
       <form className="flex flex-wrap justify-between bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw]">
         {/* Make select */}

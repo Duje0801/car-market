@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
 import { WaitingDots } from "../../components/elements/waitingDots";
-import { ErrorMessage } from "../../components/elements/errorMessage";
+import { MessageError } from "../../components/elements/messages/messageError";
 
 export function RedirectAuth() {
   const [message, setMessage] = useState<string>("");
@@ -58,8 +58,8 @@ export function RedirectAuth() {
       /* If the profile is already logged in */
     }
     return (
-      <main>
-        <ErrorMessage text={"You are logged in!"} />
+      <main className="mx-auto w-[90vw]">
+        <MessageError message={"You are logged in!"} />
       </main>
     );
   } else {

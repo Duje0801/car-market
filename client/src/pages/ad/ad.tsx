@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { store } from "../../store";
-import { AdActivity } from "../../components/ad/adActivity";
 import { AdOwnerInfo } from "../../components/ad/adOwnerInfo";
+import { AdMessages } from "../../components/ad/adMessages";
 import { AdInfoBox } from "../../components/ad/adInfoBox";
 import { AdModals } from "../../components/ad/adModals";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
-import { MessageSuccessfully } from "../../components/elements/messages/messageSuccessfully";
 import { AdDropdowns } from "../../components/ad/adDropdowns";
-import { addAdData } from "../../store/slices/ad";
+import { addAdData, removeAdData } from "../../store/slices/ad";
+import { catchErrors } from "../../utilis/catchErrors";
 import axios from "axios";
 
 export function AdView() {
@@ -47,16 +47,9 @@ export function AdView() {
           },
         }
       );
-      dispatch(addAdData({...response.data.ad}))
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setError(error.response.data.message);
-      } else {
-        setError("Something went wrong.");
-      }
+      dispatch(addAdData(response.data.ad));
+    } catch (error) {
+      catchErrors(error, setError);
     }
     setIsLoaded(true);
   };
@@ -95,17 +88,11 @@ export function AdView() {
         navigate(`/redirect/ad/deactivate`);
       } else {
         setMessage(response.data.message);
-        addAdData(response.data.ad);
+        dispatch(removeAdData())
+        dispatch(addAdData(response.data.ad))
       }
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setError(error.response.data.message);
-      } else {
-        setError("Something went wrong.");
-      }
+    } catch (error) {
+      catchErrors(error, setError);
     }
     setIsLoaded(true);
   };
@@ -131,7 +118,7 @@ export function AdView() {
       //Deleting images
       await Promise.all(promises);
       return "allDeleted";
-    } catch (error: any) {
+    } catch (error) {
       return "notAllDeleted";
     }
   };
@@ -157,20 +144,18 @@ export function AdView() {
   } else if (adData && adData.user && isChecked && isLoaded) {
     return (
       <>
-        <main className="p-2">
-          {/*Ad activity (hidden/deactivated info)*/}
-          <AdActivity />
-          {/* Ad messages (errors) */}
-          {error && <MessageError message={error} />}
+        <main className="pb-2">
+          {/* Profile top messages */}
+          <AdMessages error={error} adData={adData} message={message} />
+
           {/*Dropdown menu*/}
           {loggedProfileData.username === adData.username ||
           loggedProfileData.username === `admin` ? (
             <AdDropdowns handleOpenModal={handleOpenModal} />
           ) : null}
+
           {/* Ad display */}
           <div className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 mb-4 rounded-lg w-[90vw]">
-            {/* Info, if succesfully changed something about ad (activity...) */}
-            {message && <MessageSuccessfully message={message} />}
             {/* Ad Info */}
             <AdInfoBox />
           </div>

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { store } from "../../store";
 import { addProfileData, removeProfileData } from "../../store/slices/profile";
 import { removeLoggedProfileData } from "../../store/slices/loggedProfile";
+import { catchErrors } from "../../utilis/catchErrors";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { MessageWarning } from "../../components/elements/messages/messageWarning";
@@ -52,15 +53,8 @@ export function Profile() {
         }
       );
       dispatch(addProfileData(response.data.user));
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setError(error.response.data.message);
-      } else {
-        setError("Something went wrong, please try again later.");
-      }
+    } catch (error) {
+      catchErrors(error, setError);
     }
     setIsLoaded(true);
   };
@@ -78,21 +72,15 @@ export function Profile() {
       );
       if (loggedProfileData.username === `admin`) {
         setMessage(response.data.message);
-        dispatch(removeProfileData(response.data.user))
+        dispatch(removeProfileData());
+        dispatch(addProfileData(response.data.user));
       } else {
         localStorage.removeItem("userData");
         dispatch(removeLoggedProfileData());
         navigate(`/redirect/auth/deactivate`);
       }
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setError(error.response.data.message);
-      } else {
-        setError("Something went wrong.");
-      }
+    } catch (error) {
+      catchErrors(error, setError);
     }
   };
 
@@ -110,15 +98,8 @@ export function Profile() {
       //Deleting all images associated with profile (avatar and ads images)
       const deleteImageMessage: string = await deleteImage();
       navigate(`/redirect/admin/deleteUser-${deleteImageMessage}`);
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setError(error.response.data.message);
-      } else {
-        setError("Something went wrong.");
-      }
+    } catch (error) {
+      catchErrors(error, setError);
     }
   };
 
@@ -154,7 +135,7 @@ export function Profile() {
       //Deleting images
       await Promise.all(promises);
       return "allDeleted";
-    } catch (error: any) {
+    } catch (error) {
       return "notAllDeleted";
     }
   };
@@ -191,26 +172,26 @@ export function Profile() {
     );
   } else if (!profileData && isLoaded) {
     return (
-      <div className="mx-auto w-[90vw]">
+      <main className="mx-auto w-[90vw]">
         <MessageError message={error} />
-      </div>
+      </main>
     );
   } else if (profileData && isLoaded) {
     return (
       <>
         <main className="pb-2">
-          {/*Dropdown menu*/}
-          {loggedProfileData.username === params.id &&
-          loggedProfileData.username !== `admin` ? (
-            <ProfileEditDropdown handleOpenModal={handleOpenModal} />
-          ) : null}
-
           {/* Profile deactivated message */}
           <ProfileMessages
             error={error}
             profileData={profileData}
             message={message}
           />
+
+          {/*Dropdown menu*/}
+          {loggedProfileData.username === params.id &&
+          loggedProfileData.username !== `admin` ? (
+            <ProfileEditDropdown handleOpenModal={handleOpenModal} />
+          ) : null}
 
           {/* Profile info box */}
           <ProfileInfoBox

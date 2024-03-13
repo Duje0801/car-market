@@ -1,6 +1,7 @@
 import React, { FormEvent, useState, Dispatch, SetStateAction } from "react";
 import { useSelector } from "react-redux";
 import { store } from "../../../store";
+import { catchErrors } from "../../../utilis/catchErrors";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageError } from "../../elements/messages/messageError";
 import { WaitingDots } from "../../elements/waitingDots";
@@ -86,15 +87,8 @@ export function EditPassword({
       );
       setEditMessage(response.data.message);
       setEditError("");
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setEditError(error.response.data.message);
-      } else {
-        setEditError("Something went wrong, please try again later.");
-      }
+    } catch (error) {
+      catchErrors(error, setEditError);
     }
     setOldPassword("");
     setNewPassword("");

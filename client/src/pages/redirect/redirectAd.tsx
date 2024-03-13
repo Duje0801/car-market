@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
 import { WaitingDots } from "../../components/elements/waitingDots";
-import { ErrorMessage } from "../../components/elements/errorMessage";
+import { MessageError } from "../../components/elements/messages/messageError";
 
 export function RedirectAd() {
   const [message, setMessage] = useState<string>("");
@@ -66,8 +66,10 @@ export function RedirectAd() {
       /* If the user is already logged in */
     }
     return (
-      <main>
-        <ErrorMessage text={"You don't have permission to view this page!"} />
+      <main className="mx-auto w-[90vw]">
+        <MessageError
+          message={"You don't have permission to view this page!"}
+        />
       </main>
     );
   } else {

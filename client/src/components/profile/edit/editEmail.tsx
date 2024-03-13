@@ -1,6 +1,7 @@
 import React, { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { store } from "../../../store";
+import { catchErrors } from "../../../utilis/catchErrors";
 import { addLoggedProfileData } from "../../../store/slices/loggedProfile";
 import { addProfileData } from "../../../store/slices/profile";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
@@ -79,15 +80,8 @@ export function EditEmail({
       dispatch(addProfileData(response.data.user));
       setEditMessage(response.data.message);
       setEditError("");
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setEditError(error.response.data.message);
-      } else {
-        setEditError("Something went wrong, please try again later.");
-      }
+    } catch (error) {
+      catchErrors(error, setEditError);
     }
     setNewEmail("");
     setPassword("");

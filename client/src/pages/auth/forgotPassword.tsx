@@ -2,8 +2,9 @@ import React, { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
+import { catchErrors } from "../../utilis/catchErrors";
 import { WaitingDots } from "../../components/elements/waitingDots";
-import { ErrorMessage } from "../../components/elements/errorMessage";
+import { MessageError } from "../../components/elements/messages/messageError";
 import axios from "axios";
 
 export function ForgotPassword() {
@@ -46,18 +47,10 @@ export function ForgotPassword() {
         }
       );
       setCodeSended(true);
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setError(error.response.data.message);
-      } else {
-        setError("Something went wrong, please try again later.");
-      }
-    } finally {
-      setIsSending(false);
+    } catch (error) {
+      catchErrors(error, setError);
     }
+    setIsSending(false);
   };
 
   //Click to next step, password restarting
@@ -76,8 +69,8 @@ export function ForgotPassword() {
       /* If the user is already logged in */
     }
     return (
-      <main>
-        <ErrorMessage text={"You are already logged in!"} />
+      <main className="mx-auto w-[90vw]">
+        <MessageError message={"You are already logged in!"} />
       </main>
     );
   } else if (codeSended) {
@@ -103,7 +96,11 @@ export function ForgotPassword() {
           <WaitingDots size={"md"} marginTop={8} />
         ) : (
           <>
-            {error && <ErrorMessage text={error} />}
+            {error && (
+              <main className="mx-auto w-[90vw]">
+                <MessageError message={error} />
+              </main>
+            )}
             {/* Forgot password form */}
             <form
               onSubmit={handleSubmit}

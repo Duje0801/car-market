@@ -1,8 +1,8 @@
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { IImage } from "../../interfaces/IImage";
 import { store } from "../../store";
+import { catchErrors } from "../../utilis/catchErrors";
 import { yearsData } from "../../data/years";
 import { makes as makesList } from "../../data/makes";
 import { fuel as fuelList } from "../../data/fuel";
@@ -10,7 +10,8 @@ import { condition as conditionList } from "../../data/condition";
 import { countries as countriesList } from "../../data/countries";
 import { UploadAdImages } from "../../components/ad/new/uploadAdImages";
 import { WaitingDots } from "../../components/elements/waitingDots";
-import { ErrorMessage } from "../../components/elements/errorMessage";
+import { MessageError } from "../../components/elements/messages/messageError";
+import { IImage } from "../../interfaces/IImage";
 import axios from "axios";
 
 export function NewAd() {
@@ -133,15 +134,8 @@ export function NewAd() {
         },
       });
       navigate("/redirect/ad/new");
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setError(error.response.data.message);
-      } else {
-        setError("Something went wrong, please try again later.");
-      }
+    } catch (error) {
+      catchErrors(error, setError);
     }
     setIsSaving(false);
   };
@@ -177,8 +171,8 @@ export function NewAd() {
       /* If the user is not logged in */
     }
     return (
-      <main>
-        <ErrorMessage text={"Only logged users can see this page!"} />{" "}
+      <main className="mx-auto w-[90vw]">
+        <MessageError message={"You are already logged in!"} />
       </main>
     );
   } else {
@@ -188,7 +182,11 @@ export function NewAd() {
           <WaitingDots size={"md"} marginTop={8} />
         ) : (
           <>
-            {error && <ErrorMessage text={error} />}
+            {error && (
+              <main className="mx-auto w-[90vw]">
+                <MessageError message={error} />
+              </main>
+            )}
             <form
               className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw]"
               onSubmit={handleSubmit}

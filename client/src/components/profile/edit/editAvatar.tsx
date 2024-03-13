@@ -6,6 +6,7 @@ import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully
 import { MessageError } from "../../elements/messages/messageError";
 import { WaitingDots } from "../../elements/waitingDots";
 import axios from "axios";
+import { catchErrors } from "../../../utilis/catchErrors";
 
 interface Props {
   editError: string;
@@ -75,15 +76,8 @@ export function EditAvatar({
       const deleteAvatarText: string = await deleteOldAvatarMessage();
       dispatch(addProfileData(response.data.user));
       setEditMessage(response.data.message + deleteAvatarText);
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setEditError(error.response.data.message);
-      } else {
-        setEditError("Something went wrong, please try again later.");
-      }
+    } catch (error) {
+      catchErrors(error, setEditError);
     }
     setIsSaving(false);
   };
@@ -143,16 +137,8 @@ export function EditAvatar({
         setUploadedImagePublicID(response.data.image.publicID);
         setEditMessage("Avatar successfully uploaded.");
       } catch (error: any) {
-        if (
-          error?.response?.data?.status === "fail" &&
-          typeof error?.response?.data?.message === `string`
-        ) {
-          setEditError(error.response.data.message);
-          setEditMessage("");
-        } else {
-          setEditError("Uploading avatar error.");
-          setEditMessage("");
-        }
+        catchErrors(error, setEditError);
+        setEditMessage("");
       }
       setIsSaving(false);
     } else {
@@ -176,15 +162,8 @@ export function EditAvatar({
       setUploadedImageURL("");
       setUploadedImagePublicID("");
       setEditMessage("Avatar removed");
-    } catch (error: any) {
-      if (
-        error?.response?.data?.status === "fail" &&
-        typeof error?.response?.data?.message === `string`
-      ) {
-        setEditError(error.response.data.message);
-      } else {
-        setEditError("Removing avatar error, please try again later.");
-      }
+    } catch (error) {
+      catchErrors(error, setEditError);
     }
     setIsSaving(false);
   };
