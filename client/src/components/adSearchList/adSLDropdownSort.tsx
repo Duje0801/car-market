@@ -2,9 +2,8 @@ interface Props {
   handleSorting: (id: string) => void;
 }
 
-export function AdSLDropdowns({ handleSorting }: Props) {
+export function AdSLDropdownSort({ handleSorting }: Props) {
   return (
-    <div className="flex justify-end mx-auto w-[90vw]">
       <div className="dropdown dropdown-end">
         <div
           tabIndex={0}
@@ -59,6 +58,5 @@ export function AdSLDropdowns({ handleSorting }: Props) {
           </li>
         </ul>
       </div>
-    </div>
   );
 }

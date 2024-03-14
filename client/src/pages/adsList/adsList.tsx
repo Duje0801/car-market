@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
-import { AdSLDropdowns } from "../../components/adSearchList/adSLDropdowns";
-import { Ads } from "../../components/adSearchList/ads";
+import { AdSLDropdownSort } from "../../components/adSearchList/adSLDropdownSort";
+import { AdSLModal } from "../../components/adSearchList/adSLModal";
+import { AdSL } from "../../components/adSearchList/adSL";
 import { Pagination } from "../../components/elements/pagination";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
@@ -59,6 +60,16 @@ export function AdsList() {
     setPage(1);
   };
 
+  //Open modal
+  const handleOpenModal = (id: string) => {
+    const modal = document.getElementById(
+      `${id}Modal`
+    ) as HTMLDialogElement | null;
+    if (modal) {
+      modal.showModal();
+    }
+  };
+
   if (!isChecked || !isLoaded) {
     {
       /* Loading ad data */
@@ -88,36 +99,47 @@ export function AdsList() {
     );
   } else if (adInfo) {
     return (
-      <main className="pb-2">
-        <p className="text-center text-lg font-bold">Ads:</p>
-        {/* Ads dropdown */}
-        <div className="mb-2">
-          <AdSLDropdowns handleSorting={handleSorting} />
-        </div>
-        {/* Ads (mapped) */}
-        <div className="card bg-base-200 gap-2 py-4 shadow-xl mx-auto mb-2 rounded-lg w-[90vw]">
-          {/* Pagination */}
-          <Pagination
-            totalLength={adInfoTotalNo}
-            itemsPerPage={5}
-            page={page}
-            setPage={setPage}
-          />
-
-          {/*Ads list*/}
-          <div className="card-body p-2">
-            <Ads adInfo={adInfo} />
+      <>
+        <main className="pb-2">
+          {/* Ads dropdown */}
+          <div className="flex justify-between w-[90vw] mx-auto mb-2">
+            <button
+              onClick={() => handleOpenModal(`filterSearch`)}
+              className="btn btn-sm bg-black text-white text-sm font-bold"
+            >
+              Filter
+            </button>
+            <p className="flex text-lg font-bold">
+              Total: {adInfoTotalNo} ad{adInfoTotalNo > 1 ? "s" : ""}
+            </p>
+            <AdSLDropdownSort handleSorting={handleSorting} />
           </div>
+          {/* Ads (mapped) */}
+          <div className="card bg-base-200 gap-2 py-4 shadow-xl mx-auto mb-2 rounded-lg w-[90vw]">
+            {/* Pagination */}
+            <Pagination
+              totalLength={adInfoTotalNo}
+              itemsPerPage={5}
+              page={page}
+              setPage={setPage}
+            />
 
-          {/* Pagination */}
-          <Pagination
-            totalLength={adInfoTotalNo}
-            itemsPerPage={5}
-            page={page}
-            setPage={setPage}
-          />
-        </div>
-      </main>
+            {/*Ads list*/}
+            <div className="card-body p-2">
+              <AdSL adInfo={adInfo} />
+            </div>
+
+            {/* Pagination */}
+            <Pagination
+              totalLength={adInfoTotalNo}
+              itemsPerPage={5}
+              page={page}
+              setPage={setPage}
+            />
+          </div>
+        </main>
+        <AdSLModal />
+      </>
     );
   }
 }

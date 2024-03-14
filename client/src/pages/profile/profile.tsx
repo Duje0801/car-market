@@ -9,7 +9,7 @@ import {
 } from "../../store/slices/profile";
 import { removeLoggedProfileData } from "../../store/slices/loggedProfile";
 import { catchErrors } from "../../utilis/catchErrors";
-import { AdSLDropdowns } from "../../components/adSearchList/adSLDropdowns";
+import { AdSLDropdownSort } from "../../components/adSearchList/adSLDropdownSort";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { MessageWarning } from "../../components/elements/messages/messageWarning";
@@ -219,9 +219,10 @@ export function Profile() {
           />
 
           {/* Profile ads */}
-
-        <div className="my-2">
-          <AdSLDropdowns handleSorting={handleSorting} />
+          <div className="my-2 w-[90vw] mx-auto">
+            <div className="w-fit ml-auto">
+              <AdSLDropdownSort handleSorting={handleSorting} />
+            </div>
           </div>
 
           {/* Prfile has ads */}

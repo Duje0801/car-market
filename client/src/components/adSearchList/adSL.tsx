@@ -12,7 +12,7 @@ interface Props {
   adInfo: IAd[];
 }
 
-export function Ads({ adInfo }: Props) {
+export function AdSL({ adInfo }: Props) {
   const navigate = useNavigate();
 
   //Redirect to ad (after clicking `See more` button)

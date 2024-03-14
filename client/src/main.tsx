@@ -9,7 +9,7 @@ import { Provider } from "react-redux";
 import { store } from "./store/index.tsx";
 import { App } from "./App.tsx";
 import { Home } from "./pages/home.tsx";
-import { AdsList } from "./pages/ad/adsList.tsx";
+import { AdsList } from "./pages/adsList/adsList.tsx";
 import { AdView } from "./pages/ad/ad.tsx";
 import { Profile } from "./pages/profile/profile.tsx";
 import { SignUp } from "./pages/auth/signUp.tsx";
