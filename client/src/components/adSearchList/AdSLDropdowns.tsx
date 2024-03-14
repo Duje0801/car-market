@@ -20,7 +20,7 @@ export function AdSLDropdowns({ handleSorting }: Props) {
           <li>
             <a
               className="text-sm font-bold py-2 text-white"
-              onClick={() => handleSorting("createdAt")}
+              onClick={() => handleSorting("-createdAt")}
             >
               Lastest offers first
             </a>

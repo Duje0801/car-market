@@ -88,8 +88,8 @@ export function AdView() {
         navigate(`/redirect/ad/deactivate`);
       } else {
         setMessage(response.data.message);
-        dispatch(removeAdData())
-        dispatch(addAdData(response.data.ad))
+        dispatch(removeAdData());
+        dispatch(addAdData(response.data.ad));
       }
     } catch (error) {
       catchErrors(error, setError);
@@ -146,7 +146,7 @@ export function AdView() {
       <>
         <main className="pb-2">
           {/* Profile top messages */}
-          <AdMessages error={error} adData={adData} message={message} />
+          <AdMessages error={error} message={message} />
 
           {/*Dropdown menu*/}
           {loggedProfileData.username === adData.username ||

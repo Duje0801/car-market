@@ -106,25 +106,32 @@ export const searchAds: any = async function (req: Request, res: Response) {
 
     let ads: IAd[];
     let adsNo: number;
-    let activeVisible: {} = { active: true, visible: true };
+    let filters: {} = {
+      active: true,
+      visible: true,
+      createdAt: {
+        $gt: new Date(Date.now() - 15552000000),
+      },
+    };
 
-    //Only admin can see hidden and unvisible ads
+    //Only admin can see old, hidden and unvisible ads
     if (user?.role === `admin`) {
-      activeVisible = {};
+      filters = {};
     }
 
     //In response user can get number of matching ads (inside button at home page) - /searchNo
     //or ads with all information - /search
     if (req.originalUrl.includes("/searchNo")) {
-      adsNo = await Ad.countDocuments({ ...adsCheck, ...activeVisible });
+      adsNo = await Ad.countDocuments({ ...adsCheck, ...filters });
 
       res.status(200).json({
         status: `success`,
         adsNo,
       });
     } else {
-      adsNo = await Ad.countDocuments({ ...adsCheck, ...activeVisible });
-      ads = await Ad.find({ ...adsCheck, ...activeVisible })
+      adsNo = await Ad.countDocuments({ ...adsCheck, ...filters });
+
+      ads = await Ad.find({ ...adsCheck, ...filters })
         .select("-updatedAt -__v")
         .sort(String(req.query.sort))
         .skip(Number(req.query.page))

@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
-import { AdSLDropdowns } from "../../components/adSearchList/AdSLDropdowns";
+import { AdSLDropdowns } from "../../components/adSearchList/adSLDropdowns";
+import { Ads } from "../../components/adSearchList/ads";
 import { Pagination } from "../../components/elements/pagination";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { MessageWarning } from "../../components/elements/messages/messageWarning";
 import { catchErrors } from "../../utilis/catchErrors";
-import { MdNewReleases } from "react-icons/md";
-import { FaCalendarAlt } from "react-icons/fa";
-import { FaRoad } from "react-icons/fa";
-import { ImPriceTags } from "react-icons/im";
 import { IAd } from "../../interfaces/IAd";
 import axios from "axios";
 
@@ -21,10 +18,9 @@ export function AdsList() {
   const [error, setError] = useState<string>("");
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [sort, setSort] = useState<string>("createdAt");
+  const [sort, setSort] = useState<string>("-createdAt");
 
   const params = useParams();
-  const navigate = useNavigate();
 
   const { loggedProfileData, isChecked } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.loggedProfile
@@ -63,11 +59,6 @@ export function AdsList() {
     setPage(1);
   };
 
-  //Redirect to ad (after clicking `See more` button)
-  const handleSeeMoreClick = (id: string) => {
-    navigate(`/ad/${id}`);
-  };
-
   if (!isChecked || !isLoaded) {
     {
       /* Loading ad data */
@@ -104,7 +95,7 @@ export function AdsList() {
           <AdSLDropdowns handleSorting={handleSorting} />
         </div>
         {/* Ads (mapped) */}
-        <div className="card bg-base-200 gap-2 py-2 shadow-xl mx-auto mb-2 rounded-lg w-[90vw]">
+        <div className="card bg-base-200 gap-2 py-4 shadow-xl mx-auto mb-2 rounded-lg w-[90vw]">
           {/* Pagination */}
           <Pagination
             totalLength={adInfoTotalNo}
@@ -112,77 +103,12 @@ export function AdsList() {
             page={page}
             setPage={setPage}
           />
+
+          {/*Ads list*/}
           <div className="card-body p-2">
-            <div>
-              {adInfo &&
-                adInfo.map((ad, i) => {
-                  return (
-                    <div
-                      key={i}
-                      className="card w-full bg-base-100 shadow-xl p-2 mb-4"
-                    >
-                      {/* Visibility message */}
-                      {!ad.visible && (
-                        <div className="mt-2 mx-auto w-full">
-                          <MessageError
-                            message={"This ad is hidden from other users"}
-                          />
-                        </div>
-                      )}
-                      {/* Deactivated message */}
-                      {!ad.active && (
-                        <div className="mt-2 mx-auto w-full">
-                          <MessageError message={"This ad is deactivated"} />
-                        </div>
-                      )}
-                      {/* Ad image */}
-                      <figure className="p-2 border-b-black border-b-2">
-                        <img
-                          src={ad.images[0].imageUrl}
-                          alt="AdImage"
-                          width={250}
-                          height={250}
-                          className="rounded-xl"
-                        />
-                      </figure>
-                      {/* Ad description */}
-                      <div className="card-body items-center text-center p-2 gap-1">
-                        <h2 className="card-title">{ad.title}</h2>
-                        <div className="flex gap-10">
-                          <p className="ml-auto flex gap-2">
-                            <MdNewReleases className="m-auto" /> {ad.condition}
-                          </p>
-                          <p className="ml-auto flex gap-2">
-                            <FaRoad className="m-auto" /> {ad.mileage} km
-                          </p>
-                        </div>
-                        <div className="flex gap-10">
-                          <p className="ml-auto flex gap-2">
-                            <FaCalendarAlt className="m-auto" />{" "}
-                            {ad.firstRegistration === 1999
-                              ? "<2000"
-                              : ad.firstRegistration}
-                            .
-                          </p>
-                          <p className="ml-auto flex gap-2">
-                            <ImPriceTags className="m-auto" /> {ad.price} €
-                          </p>
-                        </div>
-                        {/* See more button */}
-                        <div className="card-actions w-full">
-                          <button
-                            onClick={() => handleSeeMoreClick(ad.id)}
-                            className="btn bg-black text-white ml-auto"
-                          >
-                            See details
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-            </div>
+            <Ads adInfo={adInfo} />
           </div>
+
           {/* Pagination */}
           <Pagination
             totalLength={adInfoTotalNo}

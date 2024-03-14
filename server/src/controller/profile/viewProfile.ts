@@ -14,6 +14,11 @@ export const viewProfile: any = async function (req: Request, res: Response) {
 
     let active: {} = { active: true };
     let visible: {} = { visible: true };
+    let oldAd: {} = {
+      createdAt: {
+        $gt: new Date(Date.now() - 15552000000),
+      },
+    };
 
     if (loggedUser?.role === `admin`) {
       active = {};
@@ -21,6 +26,7 @@ export const viewProfile: any = async function (req: Request, res: Response) {
 
     if (loggedUser?.role === `admin` || params === loggedUser?.username) {
       visible = {};
+      oldAd = {};
     }
 
     const user: IUser | null = await User.findOne({
@@ -30,7 +36,7 @@ export const viewProfile: any = async function (req: Request, res: Response) {
       .select("+active -updatedAt -__v")
       .populate({
         path: `ads`,
-        match: { ...active, ...visible },
+        match: { ...active, ...visible, ...oldAd },
         options: {
           sort: String(req.query.sort),
           skip: Number(req.query.page),
@@ -46,6 +52,7 @@ export const viewProfile: any = async function (req: Request, res: Response) {
     let userCountAds: number | null = await Ad.countDocuments({
       username: params,
       ...active,
+      ...oldAd,
     });
 
     if (!userCountAds && userCountAds !== 0) {

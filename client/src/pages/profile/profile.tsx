@@ -9,7 +9,7 @@ import {
 } from "../../store/slices/profile";
 import { removeLoggedProfileData } from "../../store/slices/loggedProfile";
 import { catchErrors } from "../../utilis/catchErrors";
-import { AdSLDropdowns } from "../../components/adSearchList/AdSLDropdowns";
+import { AdSLDropdowns } from "../../components/adSearchList/adSLDropdowns";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { MessageWarning } from "../../components/elements/messages/messageWarning";
@@ -28,7 +28,7 @@ export function Profile() {
   const [editMessage, setEditMessage] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [adInfoTotalNo, setAdInfoTotalNo] = useState<number>(0);
-  const [sort, setSort] = useState<string>("createdAt");
+  const [sort, setSort] = useState<string>("-createdAt");
 
   const params = useParams();
 
