@@ -1,15 +1,11 @@
 import { AdSLFilter } from "./adSLFilter";
 
 export function AdSLModal() {
-
   return (
     <dialog id="filterSearchModal" className="modal">
       <div className="modal-box">
         <form method="dialog">
-          <button
-            /*             onClick={handleClickX}
-             */ className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-          >
+          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
             ✕
           </button>
         </form>
