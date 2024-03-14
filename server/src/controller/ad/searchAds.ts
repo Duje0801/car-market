@@ -126,7 +126,7 @@ export const searchAds: any = async function (req: Request, res: Response) {
       adsNo = await Ad.countDocuments({ ...adsCheck, ...activeVisible });
       ads = await Ad.find({ ...adsCheck, ...activeVisible })
         .select("-updatedAt -__v")
-        .sort(`createdAt`)
+        .sort(String(req.query.sort))
         .skip(Number(req.query.page))
         .limit(5);
 

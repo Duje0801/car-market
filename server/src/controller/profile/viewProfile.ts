@@ -32,7 +32,7 @@ export const viewProfile: any = async function (req: Request, res: Response) {
         path: `ads`,
         match: { ...active, ...visible },
         options: {
-          sort: { createdAt: -1 },
+          sort: String(req.query.sort),
           skip: Number(req.query.page),
           limit: 5,
         },

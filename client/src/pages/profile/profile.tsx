@@ -9,6 +9,7 @@ import {
 } from "../../store/slices/profile";
 import { removeLoggedProfileData } from "../../store/slices/loggedProfile";
 import { catchErrors } from "../../utilis/catchErrors";
+import { AdSLDropdowns } from "../../components/adSearchList/AdSLDropdowns";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { MessageWarning } from "../../components/elements/messages/messageWarning";
@@ -27,6 +28,7 @@ export function Profile() {
   const [editMessage, setEditMessage] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [adInfoTotalNo, setAdInfoTotalNo] = useState<number>(0);
+  const [sort, setSort] = useState<string>("createdAt");
 
   const params = useParams();
 
@@ -46,14 +48,14 @@ export function Profile() {
     if (isChecked) {
       fetchData();
     }
-  }, [isChecked, page]);
+  }, [isChecked, page, sort]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/v1/user/profile/${params.id}/?page=${
-          (page - 1) * 5
-        }`,
+        `http://localhost:4000/api/v1/user/profile/${
+          params.id
+        }/?sort=${sort}&page=${(page - 1) * 5}`,
         {
           headers: {
             authorization: `Bearer ${loggedProfileData?.token}`,
@@ -171,6 +173,12 @@ export function Profile() {
     navigate(`/ad/${id}`);
   };
 
+  //Sorting ads list
+  const handleSorting = (id: string) => {
+    setSort(id);
+    setPage(1);
+  };
+
   if (!isChecked || !isLoaded) {
     {
       /* Loading user data */
@@ -211,7 +219,12 @@ export function Profile() {
           />
 
           {/* Profile ads */}
-          {/* Pofile has ads */}
+
+        <div className="my-2">
+          <AdSLDropdowns handleSorting={handleSorting} />
+          </div>
+
+          {/* Prfile has ads */}
           {profileAds &&
           profileAds.length > 0 &&
           profileAds.length < 9999999 ? (

@@ -26,7 +26,7 @@ export function ProfileAds({
   );
 
   return (
-    <div className="card bg-base-200 gap-2 pt-2 pb-4 shadow-xl mx-auto mt-6 mb-2 rounded-lg w-[90vw]">
+    <div className="card bg-base-200 gap-2 pt-2 pb-4 shadow-xl mx-auto mb-2 rounded-lg w-[90vw]">
       {/* Ads (mapped) */}
       <div className="card-body p-2">
         <p className="text-center text-lg font-bold">

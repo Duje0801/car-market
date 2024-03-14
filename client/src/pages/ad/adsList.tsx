@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
+import { AdSLDropdowns } from "../../components/adSearchList/AdSLDropdowns";
 import { Pagination } from "../../components/elements/pagination";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
@@ -20,6 +21,7 @@ export function AdsList() {
   const [error, setError] = useState<string>("");
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
+  const [sort, setSort] = useState<string>("createdAt");
 
   const params = useParams();
   const navigate = useNavigate();
@@ -33,12 +35,12 @@ export function AdsList() {
     if (params.id && isChecked) {
       fetchData();
     }
-  }, [isChecked, page]);
+  }, [isChecked, page, sort]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/v1/ad/search/?sort=new&page=${
+        `http://localhost:4000/api/v1/ad/search/?sort=${sort}&page=${
           (page - 1) * 5
         }&${params.id}`,
         {
@@ -53,6 +55,12 @@ export function AdsList() {
       catchErrors(error, setError);
     }
     setIsLoaded(true);
+  };
+
+  //Sorting ads list
+  const handleSorting = (id: string) => {
+    setSort(id);
+    setPage(1);
   };
 
   //Redirect to ad (after clicking `See more` button)
@@ -91,6 +99,10 @@ export function AdsList() {
     return (
       <main className="pb-2">
         <p className="text-center text-lg font-bold">Ads:</p>
+        {/* Ads dropdown */}
+        <div className="mb-2">
+          <AdSLDropdowns handleSorting={handleSorting} />
+        </div>
         {/* Ads (mapped) */}
         <div className="card bg-base-200 gap-2 py-2 shadow-xl mx-auto mb-2 rounded-lg w-[90vw]">
           {/* Pagination */}
