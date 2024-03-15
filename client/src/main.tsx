@@ -21,6 +21,11 @@ import { RedirectAuth } from "./pages/redirect/redirectAuth.tsx";
 import { RedirectAd } from "./pages/redirect/redirectAd.tsx";
 import { RedirectAdmin } from "./pages/redirect/redirectAdmin.tsx";
 import { UserList } from "./pages/admin/userList.tsx";
+import { AboutUs } from "./pages/info/aboutUs.tsx";
+import { Contact } from "./pages/info/contact.tsx";
+import { Jobs } from "./pages/info/jobs.tsx";
+import { PrivacyPolicy } from "./pages/info/privacyPolicy.tsx";
+import { TermsOfUse } from "./pages/info/termsOfUse.tsx";
 import "./index.css";
 
 const router = createBrowserRouter(
@@ -39,6 +44,11 @@ const router = createBrowserRouter(
       <Route path="/redirect/ad/:id" element={<RedirectAd />} />
       <Route path="/redirect/admin/:id" element={<RedirectAdmin />} />
       <Route path="/admin/userList" element={<UserList />} />
+      <Route path="/info/aboutUs" element={<AboutUs />} />
+      <Route path="/info/contact" element={<Contact />} />
+      <Route path="/info/jobs" element={<Jobs />} />
+      <Route path="/info/privacyPolicy" element={<PrivacyPolicy />} />
+      <Route path="/info/termsOfUse" element={<TermsOfUse />} />
     </Route>
   )
 );

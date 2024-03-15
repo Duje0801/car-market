@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { store } from "./store";
 import { getProfileData } from "./store/slices/loggedProfile";
 import { Header } from "./components/header";
+import { Footer } from "./components/common/footer";
 
 export function App() {
   const dispatch: typeof store.dispatch = useDispatch();
@@ -16,6 +17,7 @@ export function App() {
     <>
       <Header />
       <Outlet />
+      <Footer />
     </>
   );
 }
