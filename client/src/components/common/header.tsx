@@ -4,8 +4,8 @@ import { useCheckProfileText } from "../../hooks/useCheckProfileText";
 import { removeLoggedProfileData } from "../../store/slices/loggedProfile";
 import { Link } from "react-router-dom";
 import { store } from "../../store";
-import logoImage from "../assets/images/logo-image.png";
-import logoTitle from "../assets/images/logo-title.png";
+import logoImage from "../../assets/images/logo-image.png";
+import logoTitle from "../../assets/images/logo-title.png";
 
 export function Header() {
   const { loggedProfileData, isChecked } = useSelector(
