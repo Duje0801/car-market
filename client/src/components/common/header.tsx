@@ -101,7 +101,10 @@ export function Header() {
         </div>
       </div>
       {/* Header 2nd row */}
-      <div className="flex w-fit m-auto my-2">
+      <div
+        onClick={() => handleRedirect(``)}
+        className="flex w-fit m-auto my-2"
+      >
         <img src={logoImage} alt="logo" className="h-[12.5vh]" />
         <img src={logoTitle} alt="logo" className="h-[5vh] m-auto" />
       </div>

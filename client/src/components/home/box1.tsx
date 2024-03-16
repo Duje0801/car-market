@@ -1,6 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import lowCostCarImage from "../../assets/images/low-cost-car-image.png";
 
 export function Box1() {
+
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    navigate(`/ads/priceTo=5000`)
+  }
+
   return (
     <div className="card card-side w-[90vw] mx-auto bg-base-200 shadow-xl rounded-lg">
       <figure>
@@ -13,7 +21,7 @@ export function Box1() {
           selection of quality used cars priced under 5000 euros!{" "}
         </p>
         <div className="card-actions justify-end">
-          <button className="btn bg-black text-white">Check</button>
+          <button onClick={handleClick} className="btn bg-black text-white">Check</button>
         </div>
       </div>
     </div>
