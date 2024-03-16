@@ -27,19 +27,19 @@ export function Footer() {
         <h6 className="footer-title">Company</h6>
         <a
           onClick={() => handleRedirectInside(`aboutUs`)}
-          className="link link-hover"
+          className="link no-underline hover:text-slate-300 hover:cursor-pointer"
         >
           About us
         </a>
         <a
           onClick={() => handleRedirectInside(`contact`)}
-          className="link link-hover"
+          className="link no-underline hover:text-slate-300 hover:cursor-pointer"
         >
           Contact
         </a>
         <a
           onClick={() => handleRedirectInside(`jobs`)}
-          className="link link-hover"
+          className="link no-underline hover:text-slate-300 hover:cursor-pointer"
         >
           Jobs
         </a>
@@ -48,13 +48,13 @@ export function Footer() {
         <h6 className="footer-title">Legal</h6>
         <a
           onClick={() => handleRedirectInside(`termsOfUse`)}
-          className="link link-hover"
+          className="link no-underline hover:text-slate-300 hover:cursor-pointer"
         >
           Terms of use
         </a>
         <a
           onClick={() => handleRedirectInside(`privacyPolicy`)}
-          className="link link-hover"
+          className="link no-underline hover:text-slate-300 hover:cursor-pointer"
         >
           Privacy policy
         </a>
@@ -64,19 +64,19 @@ export function Footer() {
         <div className="grid grid-flow-col gap-4">
           <a>
             <FaSquareXTwitter
-              className="text-2xl"
+              className="text-2xl hover:text-slate-300 hover:cursor-pointer"
               onClick={() => handleRedirectOutside(`x`)}
             />
           </a>
           <a>
             <FaYoutube
-              className="text-2xl"
+              className="text-2xl hover:text-slate-300 hover:cursor-pointer"
               onClick={() => handleRedirectOutside(`youTube`)}
             />
           </a>
           <a>
             <FaFacebook
-              className="text-2xl"
+              className="text-2xl hover:text-slate-300 hover:cursor-pointer"
               onClick={() => handleRedirectOutside("facebook")}
             />
           </a>

@@ -4,8 +4,8 @@ import { useCheckProfileText } from "../../hooks/useCheckProfileText";
 import { removeLoggedProfileData } from "../../store/slices/loggedProfile";
 import { Link } from "react-router-dom";
 import { store } from "../../store";
-import logoImage from "../../assets/images/logo-image.png";
-import logoTitle from "../../assets/images/logo-title.png";
+import logoImage from "../../assets/images/header/logo-image.png";
+import logoTitle from "../../assets/images/header/logo-title.png";
 
 export function Header() {
   const { loggedProfileData, isChecked } = useSelector(
@@ -103,9 +103,9 @@ export function Header() {
       {/* Header 2nd row */}
       <div
         onClick={() => handleRedirect(``)}
-        className="flex w-fit m-auto my-2"
+        className="flex w-fit m-auto my-2 hover:cursor-pointer"
       >
-        <img src={logoImage} alt="logo" className="h-[12.5vh]" />
+        <img src={logoImage} alt="logo" className="h-[12.5vh] lg:h-[14vh]" />
         <img src={logoTitle} alt="logo" className="h-[5vh] m-auto" />
       </div>
     </header>

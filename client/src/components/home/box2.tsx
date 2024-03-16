@@ -1,21 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import box1Image from "../../assets/images/home/box1-image.png";
+import box2Image from "../../assets/images/home/box2-image.jpg";
 
-export function Box1() {
+export function Box2() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/ads/firstRegistrationFrom=${new Date().getFullYear() - 1}`);
+    navigate(`/ads/priceTo=5000`);
   };
 
   return (
     <div className="card card-side flex flex-row w-[90vw] mx-auto bg-base-200 shadow-xl rounded-lg md:w-[70vw] lg:w-[37.5vw] lg:h-1/2">
       <figure className="w-2/5">
-        <img className="h-full" src={box1Image} alt="car-image" />
+        <img className="h-full" src={box2Image} alt="car-image" />
       </figure>
-      <div className="card-body p-4 my-auto w-3/5">
+      <div className="card-body my-auto p-4 w-3/5">
         <h2 className="card-title text-sm md:text-lg">
-          Drive Like New! Low Mileage Cars Under 1 Year Old!
+          Check out selection of used cars priced under 5000 euros!
         </h2>
         <div className="card-actions justify-end">
           <button

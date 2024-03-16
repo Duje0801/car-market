@@ -248,55 +248,62 @@ export function SearchAds() {
     <>
       {/*Error box*/}
       {error && (
-        <main className="mx-auto w-[90vw]">
+        <div className="mx-auto w-[90vw]">
           <MessageError message={error} />
-        </main>
+        </div>
       )}
       {/* Search form */}
-      <form className="flex flex-wrap justify-between bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw]">
-        {/* Make select */}
-        <select
-          value={make}
-          onChange={handleSelectMake}
-          className="input input-bordered w-[39.5vw] max-w-xs"
-        >
-          <option>Make</option>
-          {makesList.map((m, i) => (
-            <option key={i} value={m}>
-              {m}
-            </option>
-          ))}
-        </select>
-        {/* Model input */}
-        <input
-          type="text"
-          placeholder="Model"
-          className="input input-bordered w-[39.5vw] max-w-xs text-black"
-          minLength={1}
-          maxLength={20}
-          value={model}
-          onChange={handleChangeModel}
-        />
-        {/* Price from input */}
-        <input
-          type="text"
-          placeholder="Price from"
-          className="input input-bordered w-[39.5vw] max-w-xs text-black"
-          minLength={0}
-          maxLength={8}
-          value={priceFrom}
-          onChange={handleChangePriceFrom}
-        />
-        {/* Price to input */}
-        <input
-          type="text"
-          placeholder="Price to"
-          className="input input-bordered w-[39.5vw] max-w-xs text-black"
-          minLength={0}
-          maxLength={8}
-          value={priceTo}
-          onChange={handleChangePriceTo}
-        />
+      <form className="flex flex-col bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw] md:w-[70vw] lg:w-[52.5vw] lg:mt-0">
+        {/* 1st row */}
+        <div className="flex gap-2 justify-around">
+          {/* Make select */}
+          <select
+            value={make}
+            onChange={handleSelectMake}
+            className="input input-bordered w-1/2"
+          >
+            <option>Make</option>
+            {makesList.map((m, i) => (
+              <option key={i} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+          {/* Model input */}
+          <input
+            type="text"
+            placeholder="Model"
+            className="input input-bordered w-1/2 text-black"
+            minLength={1}
+            maxLength={20}
+            value={model}
+            onChange={handleChangeModel}
+          />
+        </div>
+        {/* 2nd row */}
+        <div className="flex gap-2 justify-around">
+          {/* Price from input */}
+          <input
+            type="text"
+            placeholder="Price from"
+            className="input input-bordered w-1/2 text-black"
+            minLength={0}
+            maxLength={8}
+            value={priceFrom}
+            onChange={handleChangePriceFrom}
+          />
+          {/* Price to input */}
+          <input
+            type="text"
+            placeholder="Price to"
+            className="input input-bordered w-1/2 text-black"
+            minLength={0}
+            maxLength={8}
+            value={priceTo}
+            onChange={handleChangePriceTo}
+          />
+        </div>
+        {/* 3rd row */}
         {/* Country select */}
         <select
           value={country}
@@ -312,6 +319,7 @@ export function SearchAds() {
             );
           })}
         </select>
+        {/* 4th row */}
         {/* More search options button */}
         <button
           type="button"
@@ -322,6 +330,7 @@ export function SearchAds() {
         </button>
         {moreSearchOptions && (
           <>
+            {/* 5th row */}
             {/* Condition select */}
             <select
               value={condition}
@@ -335,7 +344,7 @@ export function SearchAds() {
                 </option>
               ))}
             </select>
-
+            {/* 6th row */}
             {/* Fuel select */}
             <select
               value={fuel}
@@ -349,92 +358,102 @@ export function SearchAds() {
                 </option>
               ))}
             </select>
-            {/* First registration from select */}
-            <select
-              value={firstRegistrationFrom}
-              onChange={handleSelectFirstRegistrationFrom}
-              className="input input-bordered w-[39.5vw]"
-            >
-              <option>First registration from</option>
-              {years.map((y, i) => {
-                return (
-                  <option key={i + 1} value={y}>
-                    {y}
-                  </option>
-                );
-              })}
-            </select>
-            {/* First registration to select */}
-            <select
-              value={firstRegistrationTo}
-              onChange={handleSelectFirstRegistrationTo}
-              className="input input-bordered w-[39.5vw]"
-            >
-              <option>First registration to</option>
-              {years.map((y, i) => {
-                if (typeof y !== `number`) return;
-                else {
+            {/* 7th row */}
+            <div className="flex gap-2 justify-around">
+              {/* First registration from select */}
+              <select
+                value={firstRegistrationFrom}
+                onChange={handleSelectFirstRegistrationFrom}
+                className="input input-bordered w-1/2"
+              >
+                <option>First registration from</option>
+                {years.map((y, i) => {
                   return (
                     <option key={i + 1} value={y}>
                       {y}
                     </option>
                   );
-                }
-              })}
-            </select>
-            {/* Mileage from input */}
-            <input
-              type="text"
-              placeholder="Mileage from (km)"
-              className="input input-bordered w-[39.5vw] max-w-xs text-black"
-              minLength={1}
-              maxLength={7}
-              value={mileageFrom}
-              onChange={handleChangeMileageFrom}
-            />
-            {/* Mileage to input*/}
-            <input
-              type="text"
-              placeholder="Mileage to (km)"
-              className="input input-bordered w-[39.5vw] max-w-xs text-black"
-              minLength={1}
-              maxLength={7}
-              value={mileageTo}
-              onChange={handleChangeMileageTo}
-            />
-            {/* Min power input*/}
-            <input
-              type="text"
-              placeholder="Min power (kW)"
-              className="input input-bordered w-[39.5vw] max-w-xs text-black"
-              minLength={1}
-              maxLength={4}
-              value={minPower}
-              onChange={handleChangeMinPower}
-            />
-            {/* Max power input*/}
-            <input
-              type="text"
-              placeholder="Max power (kW)"
-              className="input input-bordered w-[39.5vw] max-w-xs text-black"
-              minLength={1}
-              maxLength={4}
-              value={maxPower}
-              onChange={handleChangeMaxPower}
-            />
+                })}
+              </select>
+              {/* First registration to select */}
+              <select
+                value={firstRegistrationTo}
+                onChange={handleSelectFirstRegistrationTo}
+                className="input input-bordered w-1/2"
+              >
+                <option>First registration to</option>
+                {years.map((y, i) => {
+                  if (typeof y !== `number`) return;
+                  else {
+                    return (
+                      <option key={i + 1} value={y}>
+                        {y}
+                      </option>
+                    );
+                  }
+                })}
+              </select>
+            </div>
+            {/* 8th row */}
+            <div className="flex gap-2 justify-around">
+              {/* Mileage from input */}
+              <input
+                type="text"
+                placeholder="Mileage from (km)"
+                className="input input-bordered w-1/2 text-black"
+                minLength={1}
+                maxLength={7}
+                value={mileageFrom}
+                onChange={handleChangeMileageFrom}
+              />
+              {/* Mileage to input*/}
+              <input
+                type="text"
+                placeholder="Mileage to (km)"
+                className="input input-bordered w-1/2 text-black"
+                minLength={1}
+                maxLength={7}
+                value={mileageTo}
+                onChange={handleChangeMileageTo}
+              />
+            </div>
+            {/* 9th row */}
+            <div className="flex gap-2 justify-around">
+              {/* Min power input*/}
+              <input
+                type="text"
+                placeholder="Min power (kW)"
+                className="input input-bordered w-1/2 text-black"
+                minLength={1}
+                maxLength={4}
+                value={minPower}
+                onChange={handleChangeMinPower}
+              />
+              {/* Max power input*/}
+              <input
+                type="text"
+                placeholder="Max power (kW)"
+                className="input input-bordered w-1/2 text-black"
+                minLength={1}
+                maxLength={4}
+                value={maxPower}
+                onChange={handleChangeMaxPower}
+              />
+            </div>
           </>
         )}
+        {/* Last row */}
         {/* Clear all and Results buttons */}
         <button
           type="button"
-          className="btn btn-error w-[39.5vw] max-w-xs"
+          className="btn btn-error w-full"
           onClick={() => clearFields(true)}
         >
           Clear All
         </button>
         <button
           type="button"
-          className="btn bg-black text-white w-[39.5vw] max-w-xs"
+          className="btn bg-black text-white w-full"
           onClick={handleRedirect}
         >
           {isLoading ? (
