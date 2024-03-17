@@ -26,6 +26,7 @@ import { Contact } from "./pages/info/contact.tsx";
 import { Jobs } from "./pages/info/jobs.tsx";
 import { PrivacyPolicy } from "./pages/info/privacyPolicy.tsx";
 import { TermsOfUse } from "./pages/info/termsOfUse.tsx";
+import { PageDontExist } from "./pages/error/pageDontExist.tsx";
 import "./index.css";
 
 const router = createBrowserRouter(
@@ -49,6 +50,7 @@ const router = createBrowserRouter(
       <Route path="/info/jobs" element={<Jobs />} />
       <Route path="/info/privacyPolicy" element={<PrivacyPolicy />} />
       <Route path="/info/termsOfUse" element={<TermsOfUse />} />
+      <Route path="*" element={<PageDontExist />} />
     </Route>
   )
 );
