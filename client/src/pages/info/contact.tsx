@@ -6,7 +6,7 @@ export function Contact() {
   }, []);
 
   return (
-    <main className="flex flex-col gap-2 w-[90vw] mx-auto text-justify">
+    <div className="flex flex-col gap-2 w-[90vw] mx-auto text-justify">
       <p className="text-2xl font-bold my-2">Contact Us</p>
       <p>
         Thank you for your interest in Car-Market! Whether you have questions
@@ -24,6 +24,6 @@ export function Contact() {
         <b>Address:</b> <br></br> Car-Market Headquarters, <br></br> Street
         Address City, <br></br> Postal Code Country
       </p>
-    </main>
+    </div>
   );
 }

@@ -6,7 +6,7 @@ export function AboutUs() {
   }, []);
 
   return (
-    <main className="flex flex-col gap-2 w-[90vw] mx-auto text-justify">
+    <div className="flex flex-col gap-2 w-[90vw] mx-auto text-justify">
       <p className="text-2xl font-bold my-2">About Us</p>
       <p>
         Welcome to Car Market, your premier online destination for all things
@@ -50,6 +50,6 @@ export function AboutUs() {
         with the perfect buyer. Together, we're driving innovation and
         transforming the way Europeans navigate the world of automobiles.
       </p>
-    </main>
+    </div>
   );
 }

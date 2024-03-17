@@ -6,7 +6,7 @@ export function TermsOfUse() {
   }, []);
 
   return (
-    <main className="flex flex-col gap-2 w-[90vw] mx-auto text-justify">
+    <div className="flex flex-col gap-2 w-[90vw] mx-auto text-justify">
       <p className="text-2xl font-bold my-2">Terms of Use</p>
       <p>
         Welcome to Car-Market! Before using our platform, please carefully
@@ -51,6 +51,6 @@ export function TermsOfUse() {
         </a>
         .
       </p>
-    </main>
+    </div>
   );
 }

@@ -6,7 +6,7 @@ export function PrivacyPolicy() {
   }, []);
 
   return (
-    <main className="flex flex-col gap-2 w-[90vw] mx-auto text-justify">
+    <div className="flex flex-col gap-2 w-[90vw] mx-auto text-justify">
       <div>
         <p className="text-2xl font-bold my-2">Privacy Policy</p>
         <p>
@@ -101,6 +101,6 @@ export function PrivacyPolicy() {
           this policy, please do not use our platform.
         </p>
       </div>
-    </main>
+    </div>
   );
 }
