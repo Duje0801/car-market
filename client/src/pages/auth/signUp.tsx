@@ -118,19 +118,19 @@ export function SignUp() {
         ) : (
           <>
             {error && (
-              <main className="mx-auto w-[90vw]">
+              <div className="mx-auto mt-8 w-[80vw] md:w-[50vw] lg:w-[30vw]">
                 <MessageError message={error} />
-              </main>
+              </div>
             )}
             {/* Sign Up form */}
             <form
               onSubmit={handleSubmit}
-              className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw]"
+              className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-8 rounded-lg w-[80vw] md:w-[50vw] lg:w-[30vw]"
             >
               <div className="card-body p-4">
-                <p className="card-title text-3xl">Sign Up</p>
+                <p className="card-title mx-auto text-3xl">Sign Up</p>
                 {/* Username input */}
-                <label className="form-control w-full max-w-xs">
+                <label className="form-control w-full max-w-xs mx-auto">
                   <div className="label p-0">
                     <span className="label-text">Username</span>
                   </div>
@@ -146,7 +146,7 @@ export function SignUp() {
                   />
                 </label>
                 {/* Email input */}
-                <label className="form-control w-full max-w-xs">
+                <label className="form-control w-full max-w-xs mx-auto">
                   <div className="label p-0">
                     <span className="label-text">Email</span>
                   </div>
@@ -162,7 +162,7 @@ export function SignUp() {
                   <div className="label"></div>
                 </label>
                 {/* Password input */}
-                <label className="form-control w-full max-w-xs">
+                <label className="form-control w-full max-w-xs mx-auto">
                   <div className="label p-0">
                     <span className="label-text">Password</span>
                   </div>
@@ -179,7 +179,7 @@ export function SignUp() {
                   <div className="label"></div>
                 </label>
                 {/* Confirm Password input */}
-                <label className="form-control w-full max-w-xs">
+                <label className="form-control w-full max-w-xs mx-auto">
                   <div className="label p-0">
                     <span className="label-text">Confirm Password</span>
                   </div>
@@ -196,7 +196,7 @@ export function SignUp() {
                   <div className="label"></div>
                 </label>
                 {/* Contact input */}
-                <label className="form-control w-full max-w-xs">
+                <label className="form-control w-full max-w-xs mx-auto">
                   <div className="label p-0">
                     <span className="label-text">Contact (Mob/Tel)</span>
                   </div>
@@ -217,9 +217,11 @@ export function SignUp() {
                 </label>
                 {/* User type radio */}
                 <div>
-                  <label className="text-sm">User type:</label>
+                  <div className="flex justify-center">
+                    <label className="text-sm">User type:</label>
+                  </div>
                   {userTypesList.map((type, i) => (
-                    <div className="form-control">
+                    <div className="form-control mx-auto max-w-xs">
                       <label className="label cursor-pointer">
                         <span className="label-text text-sm">{type}</span>
                         <input

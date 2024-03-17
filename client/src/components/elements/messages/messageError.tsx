@@ -4,7 +4,7 @@ interface Props {
 
 export function MessageError({ message }: Props) {
   return (
-    <div role="alert" className="alert alert-error rounded-lg gap-0">
+    <div role="alert" className="alert alert-error rounded-lg gap-0 md:gap-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         className="stroke-current shrink-0 h-6 w-6"

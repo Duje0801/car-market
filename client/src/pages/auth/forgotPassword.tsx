@@ -97,18 +97,18 @@ export function ForgotPassword() {
         ) : (
           <>
             {error && (
-              <main className="mx-auto w-[90vw]">
+              <div className="mx-auto mt-8 w-[80vw] md:w-[50vw] lg:w-[30vw]">
                 <MessageError message={error} />
-              </main>
+              </div>
             )}
             {/* Forgot password form */}
             <form
               onSubmit={handleSubmit}
-              className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw]"
+              className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-8 rounded-lg w-[80vw] md:w-[50vw] lg:w-[30vw]"
             >
               <div className="card-body p-4">
-                <p className="card-title text-3xl">Forgot Password</p>
-                <label className="form-control w-full max-w-xs">
+                <p className="card-title mx-auto text-3xl">Forgot Password</p>
+                <label className="form-control w-full max-w-xs mx-auto">
                   <div className="label p-0">
                     <span className="label-text mt-4">
                       Please type your email:
