@@ -16,7 +16,9 @@ export function App() {
   return (
     <>
       <Header />
-      <Outlet />
+      <main className="pb-8">
+        <Outlet />
+      </main>
       <Footer />
     </>
   );

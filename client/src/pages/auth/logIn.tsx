@@ -75,25 +75,25 @@ export function LogIn() {
   }
   if (!isChecked) {
     return (
-      <main>
+      <div>
         <WaitingDots size={"md"} marginTop={8} />{" "}
-      </main>
+      </div>
     );
   } else if (loggedProfileData.username) {
     {
       /* If the user is already logged in */
     }
     return (
-      <main className="mx-auto w-[90vw]">
+      <div className="mx-auto w-[90vw]">
         <MessageError message={"You are already logged in!"} />
-      </main>
+      </div>
     );
   } else {
     {
       /* Log in form */
     }
     return (
-      <main className="pb-4">
+      <>
         {isLogging ? (
           <WaitingDots size={"md"} marginTop={8} />
         ) : (
@@ -162,7 +162,7 @@ export function LogIn() {
             </form>
           </>
         )}
-      </main>
+      </>
     );
   }
 }

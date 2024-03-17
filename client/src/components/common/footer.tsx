@@ -18,7 +18,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="footer p-10 bg-base-300 text-base-content mt-8">
+    <footer className="footer p-10 bg-base-300 text-base-content mt-auto ">
       <aside>
         <p className="text-2xl font-bold">Car Market</p>
         <p>Biggest online car market in Western Europe</p>

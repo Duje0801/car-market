@@ -60,25 +60,25 @@ export function ForgotPassword() {
 
   if (!isChecked) {
     return (
-      <main>
+      <div>
         <WaitingDots size={"md"} marginTop={8} />{" "}
-      </main>
+      </div>
     );
   } else if (loggedProfileData.username) {
     {
       /* If the user is already logged in */
     }
     return (
-      <main className="mx-auto w-[90vw]">
+      <div className="mx-auto w-[90vw]">
         <MessageError message={"You are already logged in!"} />
-      </main>
+      </div>
     );
   } else if (codeSended) {
     {
       /* Password reset link, once the code has been sent */
     }
     return (
-      <main>
+      <div>
         <p className="text-center mx-auto mt-2 w-[90vw]">
           A recovery code has been sent to your email address. Go to{" "}
           <a onClick={handleClick} className="link">
@@ -86,11 +86,11 @@ export function ForgotPassword() {
           </a>
           .
         </p>
-      </main>
+      </div>
     );
   } else {
     return (
-      <main className="pb-4">
+      <>
         {/* Waiting while code is sent to email */}
         {isSending ? (
           <WaitingDots size={"md"} marginTop={8} />
@@ -139,7 +139,7 @@ export function ForgotPassword() {
             </form>
           </>
         )}
-      </main>
+      </>
     );
   }
 }

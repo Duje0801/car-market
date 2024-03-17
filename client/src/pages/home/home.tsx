@@ -4,7 +4,7 @@ import { Box2 } from "../../components/home/box2";
 
 export function Home() {
   return (
-    <main>
+    <>
       <div className="flex flex-col gap-8 lg:flex-row lg:justify-around lg:gap-0">
         <div className="flex lg:px-6 lg:flex-col lg:justify-between">
           <SearchAds />
@@ -14,6 +14,6 @@ export function Home() {
           <Box2 />
         </div>
       </div>
-    </main>
+    </>
   );
 }
