@@ -4,7 +4,7 @@ interface Props {
 
 export function AdSLDropdownSort({ handleSorting }: Props) {
   return (
-      <div className="dropdown dropdown-end">
+      <div className="dropdown dropdown-end mt-auto">
         <div
           tabIndex={0}
           role="button"

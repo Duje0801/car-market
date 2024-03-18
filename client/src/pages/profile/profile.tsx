@@ -9,7 +9,7 @@ import {
 } from "../../store/slices/profile";
 import { removeLoggedProfileData } from "../../store/slices/loggedProfile";
 import { catchErrors } from "../../utilis/catchErrors";
-import { AdSLDropdownSort } from "../../components/adSearchList/adSLDropdownSort";
+import { AdSLDropdownSort } from "../../components/adSearchList/dropdowns/adSLDropdownSort";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { MessageWarning } from "../../components/elements/messages/messageWarning";

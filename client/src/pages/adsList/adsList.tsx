@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
-import { AdSLDropdownSort } from "../../components/adSearchList/adSLDropdownSort";
-import { AdSLModal } from "../../components/adSearchList/adSLModal";
 import { AdSL } from "../../components/adSearchList/adSL";
+import { AdSLModal } from "../../components/adSearchList/adSLModal";
+import { AdSLFilter } from "../../components/adSearchList/adSLFilter";
+import { AdSLDropdowns } from "../../components/adSearchList/dropdowns/adSLDropdowns";
 import { Pagination } from "../../components/elements/pagination";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
@@ -34,6 +35,7 @@ export function AdsList() {
     }
   }, [isChecked, page, sort]);
 
+  //Ads fetching function
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -54,68 +56,50 @@ export function AdsList() {
     setIsLoaded(true);
   };
 
-  //Sorting ads list
-  const handleSorting = (id: string) => {
-    setSort(id);
-    setPage(1);
-  };
-
-  //Open modal
-  const handleOpenModal = (id: string) => {
-    const modal = document.getElementById(
-      `${id}Modal`
-    ) as HTMLDialogElement | null;
-    if (modal) {
-      modal.showModal();
-    }
-  };
-
   if (!isChecked || !isLoaded) {
     {
       /* Loading ad data */
     }
     return (
-      <main>
+      <div>
         <WaitingDots size={"md"} marginTop={8} />{" "}
-      </main>
+      </div>
     );
   } else if (isChecked && isLoaded && error) {
     {
       /* Problems with loading ad info */
     }
     return (
-      <main className="mx-auto w-[90vw]">
+      <div className="mx-auto w-[90vw]">
         <MessageError message={error} />
-      </main>
+      </div>
     );
   } else if (adInfo.length === 0 && isChecked && isLoaded) {
     {
       /* No matching ads */
     }
     return (
-      <main className="mx-auto w-[90vw]">
+      <div className="mx-auto w-[90vw]">
         <MessageWarning message={"Can't find any matching ad"} />
-      </main>
+      </div>
     );
   } else if (adInfo) {
     return (
-      <>
-        <main className="pb-2">
-          {/* Ads dropdown */}
-          <div className="flex justify-between w-[90vw] mx-auto mb-2">
-            <button
-              onClick={() => handleOpenModal(`filterSearch`)}
-              className="btn btn-sm bg-black text-white text-sm font-bold"
-            >
-              Filter
-            </button>
-            <p className="flex text-lg font-bold">
-              Total: {adInfoTotalNo} ad{adInfoTotalNo > 1 ? "s" : ""}
-            </p>
-            <AdSLDropdownSort handleSorting={handleSorting} />
-          </div>
-          {/* Ads (mapped) */}
-          <div className="card bg-base-200 gap-2 py-4 shadow-xl mx-auto mb-2 rounded-lg w-[90vw]">
+      <div className="flex justify-center w-full">
+        {/* Ads filter - left, if screen is wider than 768px */}
+        <AdSLFilter />
+
+        {/* Ads column */}
+        <div className="md:w-2/3">
+          {/* Ads dropdowns */}
+          <AdSLDropdowns
+            adInfoTotalNo={adInfoTotalNo}
+            setSort={setSort}
+            setPage={setPage}
+          />
+
+          {/* Ads  */}
+          <div className="card bg-base-200 gap-2 py-4 shadow-xl mx-auto rounded-lg w-[90vw] md:w-5/6 md:ml-4 md:py-2">
             {/* Pagination */}
             <Pagination
               totalLength={adInfoTotalNo}
@@ -124,8 +108,8 @@ export function AdsList() {
               setPage={setPage}
             />
 
-            {/*Ads list*/}
-            <div className="card-body p-2">
+            {/*Ads list (mapped)*/}
+            <div className="card-body p-2 md:gap-6 md:py-0">
               <AdSL adInfo={adInfo} />
             </div>
 
@@ -137,9 +121,11 @@ export function AdsList() {
               setPage={setPage}
             />
           </div>
-        </main>
+        </div>
+
+        {/* Modal- active only if screen is narrower than 768px */}
         <AdSLModal />
-      </>
+      </div>
     );
   }
 }

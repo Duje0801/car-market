@@ -25,7 +25,7 @@ export function Pagination({
   //for example if 10 pages exists (1, 2, ... ,7 , ... , 10) will appear
   else if (totalLength > itemsPerPage * 5) {
     return (
-      <div className="join">
+      <div className="join md:py-2">
         <div
           className="join-item btn bg-white"
           onClick={() => setPage(page === 1 ? 1 : page - 1)}
@@ -90,7 +90,7 @@ export function Pagination({
       pagesArray = [...pagesArray, i];
     }
     return (
-      <div className="flex justify-center">
+      <div className="flex justify-center md:py-2">
         <div className="join shadow-xl">
           <div
             className="join-item btn bg-white"
@@ -110,7 +110,7 @@ export function Pagination({
             );
           })}
           <div
-            className="join-item btn bg-white"
+            className="join-item btn bg-white md:py-2"
             onClick={() =>
               setPage(page === numberOfPages ? numberOfPages : page + 1)
             }
