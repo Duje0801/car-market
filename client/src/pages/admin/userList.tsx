@@ -76,104 +76,100 @@ export function UserList() {
       /* Loading user list data */
     }
     return (
-      <main>
+      <div>
         <WaitingDots size={"md"} marginTop={8} />{" "}
-      </main>
+      </div>
     );
   } else if (isChecked && isLoaded && loggedProfileData.username !== `admin`) {
     {
       /* User don't have permission */
     }
     return (
-      <main className="mt-2 mx-auto w-[90vw]">
+      <div className="mt-2 mx-auto w-[90vw]">
         <MessageError message={"You don't have permission to see this page"} />
-      </main>
+      </div>
     );
   } else if (isChecked && isLoaded && error) {
     {
       /* Error message */
     }
     return (
-      <main className="mt-2 mx-auto w-[90vw]">
+      <div className="mt-2 mx-auto w-[90vw]">
         <MessageError message={error} />
-      </main>
+      </div>
     );
   } else if (isChecked && isLoaded && loggedProfileData.username === `admin`) {
     {
       /* User list with filters */
     }
     return (
-      <main className="p-2">
-        <div className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 mb-4 rounded-lg w-[90vw]">
-          <form>
-            {/* Show only active users checkbox */}
-            <div className="flex justify-center mb-2">
-              <label>
-                Show only active users
-                <input
-                  type="checkbox"
-                  checked={onlyActive}
-                  onChange={handleActiveUsersChange}
-                  className="ml-2"
-                />
-              </label>
+      <div className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mb-4 rounded-lg w-[90vw] md:w-[75vw] lg:w-[60vw]">
+        <form>
+           {/* Search profile input */}
+           <label className="form-control mx-auto w-full sm:w-1/2 lg:w-1/3">
+            <div className="label p-0">
+              <span className="label-text">Search profile</span>
             </div>
-            {/* Search profile input */}
-            <label className="form-control w-full max-w-xs">
-              <div className="label p-0">
-                <span className="label-text">Search profile</span>
-              </div>
+            <input
+              type="text"
+              maxLength={10}
+              value={userSearchText}
+              onChange={(e) => handleInputSearch(e.target.value)}
+              className="input input-bordered w-full"
+            />
+          </label>{" "}
+          {/* Show only active users checkbox */}
+          <div className="flex justify-center mb-2">
+            <label>
+              Show only active users
               <input
-                type="text"
-                maxLength={10}
-                value={userSearchText}
-                onChange={(e) => handleInputSearch(e.target.value)}
-                className="input input-bordered w-full max-w-xs"
+                type="checkbox"
+                checked={onlyActive}
+                onChange={handleActiveUsersChange}
+                className="ml-2"
               />
-            </label>{" "}
-          </form>
-          {users.length === 0 ? (
-            <div className="mt-2 mx-auto w-[90vw]">
-              {/* If no user matches the requested requirements  */}
-              <MessageError
-                message={"No user matches the requested requirements"}
-              />
-            </div>
-          ) : (
-            <table className="table">
-              {/* User list table */}
-              <thead>
-                <tr>
-                  <th className="text-center">Username</th>
-                  <th className="text-center">Email</th>
-                  <th className="text-center">Active</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users &&
-                  users.map((userInfo, i) => {
-                    if (userInfo.username === `admin`) return;
-                    else
-                      return (
-                        <tr
-                          onClick={() =>
-                            handleredirectProfile(userInfo.username)
-                          }
-                          key={i}
-                        >
-                          <td className="text-center">{userInfo.username}</td>
-                          <td className="text-center">{userInfo.email}</td>
-                          <td className="text-center">
-                            {userInfo.active ? `Yes` : `No`}
-                          </td>
-                        </tr>
-                      );
-                  })}
-              </tbody>
-            </table>
-          )}
-        </div>{" "}
-      </main>
+            </label>
+          </div>
+        </form>
+        {users.length === 0 ? (
+          <div className="mt-2 mx-auto w-[90vw]">
+            {/* If no user matches the requested requirements  */}
+            <MessageError
+              message={"No user matches the requested requirements"}
+            />
+          </div>
+        ) : (
+          <table className="table">
+            {/* User list table */}
+            <thead>
+              <tr>
+                <th className="text-center">Username</th>
+                <th className="text-center">Email</th>
+                <th className="text-center">Active</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users &&
+                users.map((userInfo, i) => {
+                  if (userInfo.username === `admin`) return;
+                  else
+                    return (
+                      <tr
+                        onClick={() => handleredirectProfile(userInfo.username)}
+                        key={i}
+                      >
+                        <td className="text-center">{userInfo.username}</td>
+                        <td className="text-center">{userInfo.email}</td>
+                        <td className="text-center">
+                          {userInfo.active ? `Yes` : `No`}
+                        </td>
+                      </tr>
+                    );
+                })}
+            </tbody>
+          </table>
+        )}
+      </div>
     );
   }
 }
