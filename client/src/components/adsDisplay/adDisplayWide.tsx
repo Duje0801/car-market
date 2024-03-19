@@ -2,14 +2,14 @@ import { MdNewReleases } from "react-icons/md";
 import { FaCalendarAlt } from "react-icons/fa";
 import { FaRoad } from "react-icons/fa";
 import { FaFlag } from "react-icons/fa";
-import { IAd } from "../../../interfaces/IAd";
+import { IAd } from "../../interfaces/IAd";
 
 interface Props {
   ad: IAd;
   handleSeeMoreClick: (id: string) => void;
 }
 
-export function AdSLAdsWide({ ad, handleSeeMoreClick }: Props) {
+export function AdDisplayWide({ ad, handleSeeMoreClick }: Props) {
   return (
     <div className="hidden card card-side bg-base-100 shadow-xl rounded-lg h-[30vh] lg:flex">
       {/* Ad image - left */}
@@ -24,41 +24,41 @@ export function AdSLAdsWide({ ad, handleSeeMoreClick }: Props) {
       {/* Ad info - right */}
       <div className="card-body flex justify-center p-4 w-3/5">
         {/* Ad title */}
-        <h2 className="card-title mx-auto">{ad.title}</h2>
+        <h2 className="card-title mx-auto xl:text-3xl">{ad.title}</h2>
 
         {/* Ad data */}
-        <div className="card-body items-center text-center text-md p-0 gap-1">
+        <div className="card-body items-center text-center text-md p-0 gap-1 xl:gap-4">
           {/* 1st data row */}
-          <div className="flex gap-4">
-            <p className="ml-auto flex gap-2">
+          <div className="flex gap-4 mt-auto xl:gap-6">
+            <p className="ml-auto flex gap-2 xl:text-2xl xl:gap-4">
               <MdNewReleases className="m-auto" /> {ad.condition}
             </p>
-            <p className="ml-auto flex gap-2">
+            <p className="ml-auto flex gap-2 xl:text-2xl xl:gap-4">
               <FaRoad className="m-auto" /> {ad.mileage} km
             </p>
           </div>
           {/* 2nd data row */}
-          <div className="flex gap-4">
-            <p className="ml-auto flex gap-2">
+          <div className="flex gap-4 mb-auto xl:gap-6">
+            <p className="ml-auto flex gap-2 xl:text-2xl xl:gap-4">
               <FaCalendarAlt className="m-auto" />{" "}
               {ad.firstRegistration === 1999 ? "<2000" : ad.firstRegistration}.
             </p>
-            <p className="ml-auto flex gap-2">
+            <p className="ml-auto flex gap-2 xl:text-2xl xl:gap-4">
               <FaFlag className="m-auto" /> {ad.country}
             </p>
           </div>
         </div>
         {/* Price and button */}
-        <div className="card-actions flex flex-col gap-0">
+        <div className="card-actions flex flex-col gap-0 xl:gap-4">
           {/* Price */}
           <div className="flex  ml-auto">
-            <p className="flex text-xl gap-2">{ad.price} €</p>
+            <p className="flex text-xl gap-2 xl:text-3xl">{ad.price} €</p>
           </div>
 
           {/* Details button */}
           <button
             onClick={() => handleSeeMoreClick(ad.id)}
-            className="btn bg-black text-white ml-auto"
+            className="btn bg-black text-white ml-auto xl:text-2xl"
           >
             See details
           </button>

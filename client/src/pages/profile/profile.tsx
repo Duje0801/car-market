@@ -9,16 +9,13 @@ import {
 } from "../../store/slices/profile";
 import { removeLoggedProfileData } from "../../store/slices/loggedProfile";
 import { catchErrors } from "../../utilis/catchErrors";
-import { AdSLDropdownSort } from "../../components/adSearchList/dropdowns/adSLDropdownSort";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
-import { MessageWarning } from "../../components/elements/messages/messageWarning";
 import { ProfileModals } from "../../components/profile/profileModals";
-import { ProfileEditDropdown } from "../../components/profile/profileEditDropdown";
 import { ProfileAds } from "../../components/profile/profileAds";
 import { ProfileInfoBox } from "../../components/profile/profileInfoBox";
-import { ProfileMessages } from "../../components/profile/profileMessages";
 import axios from "axios";
+import { ProfileNoAds } from "../../components/profile/profileNoAds";
 
 export function Profile() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -30,8 +27,6 @@ export function Profile() {
   const [adInfoTotalNo, setAdInfoTotalNo] = useState<number>(0);
   const [sort, setSort] = useState<string>("-createdAt");
 
-  const params = useParams();
-
   const { loggedProfileData, isChecked } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
@@ -40,6 +35,7 @@ export function Profile() {
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
+  const params = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -50,6 +46,7 @@ export function Profile() {
     }
   }, [isChecked, page, sort]);
 
+  //Data fetch function
   const fetchData = async () => {
     try {
       const response = await axios.get(
@@ -173,84 +170,50 @@ export function Profile() {
     navigate(`/ad/${id}`);
   };
 
-  //Sorting ads list
-  const handleSorting = (id: string) => {
-    setSort(id);
-    setPage(1);
-  };
-
   if (!isChecked || !isLoaded) {
     {
       /* Loading user data */
     }
     return (
-      <main>
+      <div>
         <WaitingDots size={"md"} marginTop={8} />{" "}
-      </main>
+      </div>
     );
   } else if (!profileData && isLoaded) {
     return (
-      <main className="mx-auto w-[90vw]">
+      <div className="mx-auto w-[90vw]">
         <MessageError message={error} />
-      </main>
+      </div>
     );
   } else if (profileData && isLoaded) {
     return (
       <>
-        <main className="pb-2">
-          {/* Profile deactivated message */}
-          <ProfileMessages
-            error={error}
-            profileData={profileData}
-            message={message}
-          />
-
-          {/*Dropdown menu*/}
-          {loggedProfileData.username === params.id &&
-          loggedProfileData.username !== `admin` ? (
-            <ProfileEditDropdown handleOpenModal={handleOpenModal} />
-          ) : null}
-
+        <div className="pb-2 lg:flex">
           {/* Profile info box */}
           <ProfileInfoBox
-            profileData={profileData}
+            adInfoTotalNo={adInfoTotalNo}
             setError={setError}
             handleOpenModal={handleOpenModal}
+            error={error}
+            message={message}
           />
-
-          {/* Profile ads */}
-          <div className="my-2 w-[90vw] mx-auto">
-            <div className="w-fit ml-auto">
-              <AdSLDropdownSort handleSorting={handleSorting} />
-            </div>
-          </div>
-
-          {/* Prfile has ads */}
+          {/* Profile has ads */}
           {profileAds &&
           profileAds.length > 0 &&
           profileAds.length < 9999999 ? (
             <ProfileAds
               page={page}
               setPage={setPage}
+              setSort={setSort}
               adInfoTotalNo={adInfoTotalNo}
               handleSeeMoreClick={handleSeeMoreClick}
             />
           ) : null}
-          {/* Profile has no ads */}
-          {adInfoTotalNo === 0 ? (
-            <div className="mx-auto w-[90vw]">
-              <MessageWarning message={"This user has no ads"} />
-            </div>
+          {/* No ads */}
+          {profileAds.length === 0 || profileAds.length === 9999999 ? (
+            <ProfileNoAds />
           ) : null}
-          {/* Can't get the total number of profile ads */}
-          {adInfoTotalNo === 9999999 ? (
-            <div className="mx-auto w-[90vw]">
-              <MessageWarning
-                message={"Can't get all ads data, please try again."}
-              />
-            </div>
-          ) : null}
-        </main>
+        </div>
 
         {/* Modals */}
         {profileData && (

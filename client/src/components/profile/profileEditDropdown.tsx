@@ -4,12 +4,12 @@ interface Props {
 
 export function ProfileEditDropdown({ handleOpenModal }: Props) {
   return (
-    <div className="flex justify-end mx-auto w-[90vw]">
+    <div className="flex justify-end mx-auto w-[90vw] mb-2 sm:w-[66vw] lg:w-2/3 lg:ml-auto lg:mr-4">
       <div className="dropdown dropdown-end">
         <div
           tabIndex={0}
           role="button"
-          className="btn btn-sm my-auto bg-black text-white text-sm font-bold"
+          className="btn btn-sm my-auto bg-black text-white text-sm font-bold xl:text-xl"
         >
           Edit profile
         </div>

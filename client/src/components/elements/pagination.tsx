@@ -16,8 +16,8 @@ export function Pagination({
   const numberOfPages: number = Math.ceil(totalLength / itemsPerPage);
 
   //Active and unactive classes
-  const activeClass: string = "join-item btn btn-active";
-  const unactiveClass: string = "join-item btn bg-white";
+  const activeClass: string = "join-item btn btn-active xxl:text-2xl";
+  const unactiveClass: string = "join-item btn bg-white xxl:text-2xl";
 
   //If number of ads is less then 6, pages list will not appear
   if (totalLength < itemsPerPage + 1) return <div></div>;
@@ -93,7 +93,7 @@ export function Pagination({
       <div className="flex justify-center md:py-2">
         <div className="join shadow-xl">
           <div
-            className="join-item btn bg-white"
+            className="join-item btn bg-white xxl:text-2xl"
             onClick={() => setPage(page === 1 ? 1 : page - 1)}
           >
             Previous
@@ -110,7 +110,7 @@ export function Pagination({
             );
           })}
           <div
-            className="join-item btn bg-white md:py-2"
+            className="join-item btn bg-white md:py-2 xxl:text-2xl"
             onClick={() =>
               setPage(page === numberOfPages ? numberOfPages : page + 1)
             }

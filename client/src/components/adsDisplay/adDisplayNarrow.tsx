@@ -3,14 +3,14 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { FaRoad } from "react-icons/fa";
 import { FaFlag } from "react-icons/fa";
 import { ImPriceTags } from "react-icons/im";
-import { IAd } from "../../../interfaces/IAd";
+import { IAd } from "../../interfaces/IAd";
 
 interface Props {
   ad: IAd;
   handleSeeMoreClick: (id: string) => void;
 }
 
-export function AdSLAdsNarrow({ ad, handleSeeMoreClick }: Props) {
+export function AdDisplayNarrow({ ad, handleSeeMoreClick }: Props) {
   return (
     <div className="lg:hidden">
       {/* Ad image */}

@@ -1,13 +1,15 @@
-import { MessageWarning } from "../../elements/messages/messageWarning";
-import { MessageError } from "../../elements/messages/messageError";
-import { IAd } from "../../../interfaces/IAd";
+import { MessageWarning } from "../elements/messages/messageWarning";
+import { MessageError } from "../elements/messages/messageError";
+import { useIsAdOld } from "../../hooks/useIsAdOld";
+import { IAd } from "../../interfaces/IAd";
 
 interface Props {
-  adDate: boolean;
   ad: IAd;
 }
 
-export function AdSLMessages({ adDate, ad }: Props) {
+export function AdDisplayMessages({ ad }: Props) {
+  const adDate = useIsAdOld(ad.createdAt);
+
   return (
     <>
       {/* Old ad */}
