@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { store } from "../../store";
-import { MessageWarning } from "../elements/messages/messageWarning";
+import { store } from "../../../store";
+import { MessageWarning } from "../../elements/messages/messageWarning";
 
 export function ProfileNoAds() {
   const params = useParams();

@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
 import { useSelector } from "react-redux";
-import { store } from "../../store";
-import { ProfileDropdownSort } from "./profileDropdownSort";
-import { Pagination } from "../elements/pagination";
-import { AdDisplayMessages } from "../adsDisplay/adDisplayMessages";
-import { AdDisplayNarrow } from "../adsDisplay/adDisplayNarrow";
-import { AdDisplayWide } from "../adsDisplay/adDisplayWide";
+import { store } from "../../../store";
+import { ProfileDropdownSort } from "../dropdowns/profileDropdownSort";
+import { Pagination } from "../../elements/pagination";
+import { AdDisplayMessages } from "../../adsDisplay/adDisplayMessages";
+import { AdDisplayNarrow } from "../../adsDisplay/adDisplayNarrow";
+import { AdDisplayWide } from "../../adsDisplay/adDisplayWide";
 
 interface Props {
   adInfoTotalNo: number;

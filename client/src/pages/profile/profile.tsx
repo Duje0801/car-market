@@ -11,11 +11,11 @@ import { removeLoggedProfileData } from "../../store/slices/loggedProfile";
 import { catchErrors } from "../../utilis/catchErrors";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
-import { ProfileModals } from "../../components/profile/profileModals";
-import { ProfileAds } from "../../components/profile/profileAds";
-import { ProfileInfoBox } from "../../components/profile/profileInfoBox";
+import { ProfileModals } from "../../components/profile/modals/profileModals";
+import { ProfileAds } from "../../components/profile/info/profileAds";
+import { ProfileInfoBox } from "../../components/profile/info/profileInfoBox";
 import axios from "axios";
-import { ProfileNoAds } from "../../components/profile/profileNoAds";
+import { ProfileNoAds } from "../../components/profile/messages/profileNoAds";
 
 export function Profile() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);

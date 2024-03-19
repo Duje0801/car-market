@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction } from "react";
 import { useSelector } from "react-redux";
-import { store } from "../../store";
-import { EditAvatar } from "./edit/editAvatar";
-import { EditContact } from "./edit/editContact";
-import { EditEmail } from "./edit/editEmail";
-import { EditPassword } from "./edit/editPassword";
+import { store } from "../../../store";
+import { EditAvatar } from "../edit/editAvatar";
+import { EditContact } from "../edit/editContact";
+import { EditEmail } from "../edit/editEmail";
+import { EditPassword } from "../edit/editPassword";
 
 interface Props {
   editError: string;

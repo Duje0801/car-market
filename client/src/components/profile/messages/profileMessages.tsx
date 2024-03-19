@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
-import { store } from "../../store";
-import { MessageSuccessfully } from "../elements/messages/messageSuccessfully";
-import { MessageError } from "../elements/messages/messageError";
+import { store } from "../../../store";
+import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
+import { MessageError } from "../../elements/messages/messageError";
 
 interface Props {
   error: string;

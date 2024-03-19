@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { store } from "../../store";
-import { ProfileEditDropdown } from "../../components/profile/profileEditDropdown";
-import { useCreateAtToString } from "../../hooks/useCreateAtToString";
-import { useProfileAvatar } from "../../hooks/useProfileAvatar";
-import { ProfileMessages } from "./profileMessages";
+import { store } from "../../../store";
+import { ProfileEditDropdown } from "../dropdowns/profileEditDropdown";
+import { useCreateAtToString } from "../../../hooks/useCreateAtToString";
+import { useProfileAvatar } from "../../../hooks/useProfileAvatar";
+import { ProfileMessages } from "../messages/profileMessages";
 import { BsFillTelephoneFill } from "react-icons/bs";
 import { IoMail } from "react-icons/io5";
 
