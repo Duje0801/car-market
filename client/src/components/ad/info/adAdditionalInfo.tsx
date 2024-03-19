@@ -1,5 +1,5 @@
-import { AdSellerInfo } from "../../components/ad/adSellerInfo";
-import { AdData } from "../../components/ad/adData";
+import { AdData } from "./adData";
+import { AdSellerInfo } from "./adSellerInfo";
 
 export function AdAdditionalInfo() {
   return (

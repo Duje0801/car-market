@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { store } from "../../store";
 import { AdMessages } from "../../components/ad/messages/adMessages";
-import { AdInfoBox } from "../../components/ad/adInfo/adInfoBox";
+import { AdInfoBox } from "../../components/ad/info/adInfoBox";
 import { AdModals } from "../../components/ad/modals/adModals";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
@@ -11,7 +11,7 @@ import { AdDropdowns } from "../../components/ad/dropdowns/adDropdowns";
 import { addAdData, removeAdData } from "../../store/slices/ad";
 import { catchErrors } from "../../utilis/catchErrors";
 import axios from "axios";
-import { AdAdditionalInfo } from "../../components/ad/additionalInfo/adAdditionalInfo";
+import { AdAdditionalInfo } from "../../components/ad/info/adAdditionalInfo";
 
 export function AdView() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
