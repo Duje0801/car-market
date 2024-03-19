@@ -3,16 +3,17 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addAdData } from "../../../store/slices/ad";
 import { store } from "../../../store";
+import { resetImgToShow } from "../../../store/slices/ad";
 import { catchErrors } from "../../../utilis/catchErrors";
+import { WaitingDots } from "../../elements/waitingDots";
+import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
+import { MessageWarning } from "../../elements/messages/messageWarning";
+import { UploadAdImages } from "../uploadImages/uploadAdImages";
 import { yearsData } from "../../../data/years";
 import { makes as makesList } from "../../../data/makes";
 import { fuel as fuelList } from "../../../data/fuel";
 import { condition as conditionList } from "../../../data/condition";
 import { countries as countriesList } from "../../../data/countries";
-import { UploadAdImages } from "../new/uploadAdImages";
-import { WaitingDots } from "../../elements/waitingDots";
-import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
-import { MessageWarning } from "../../elements/messages/messageWarning";
 import { IAd } from "../../../interfaces/IAd";
 import { IImage } from "../../../interfaces/IImage";
 import axios from "axios";
@@ -151,6 +152,7 @@ export function EditAd({ adData }: Props) {
       const deletedImagesMessage = await deleteImage();
       setMessage(response.data.message + ". " + deletedImagesMessage);
       dispatch(addAdData(response.data.ad));
+      dispatch(resetImgToShow());
       setImgToShow(0);
     } catch (error) {
       catchErrors(error, setMessage);
@@ -213,7 +215,7 @@ export function EditAd({ adData }: Props) {
               </button>
             </form>
             {/* Edit form */}
-            <form className="card gap-2 mx-auto" onSubmit={handleSubmit}>
+            <form className="card gap-2 mx-auto w-full" onSubmit={handleSubmit}>
               <h3 className="font-bold text-lg mb-2">Edit Ad</h3>
               {message && (
                 <div className="mx-auto w-full">
@@ -222,7 +224,7 @@ export function EditAd({ adData }: Props) {
               )}
               {error && <p className="text-red-500">{error}</p>}
               {/* Title input */}
-              <label className="form-control w-full max-w-xs">
+              <label className="form-control w-full">
                 <div className="label p-0">
                   <span className="label-text">Title</span>
                 </div>
@@ -232,12 +234,12 @@ export function EditAd({ adData }: Props) {
                   maxLength={50}
                   value={title}
                   onChange={handleChangeTitle}
-                  className="input input-bordered w-full max-w-xs"
+                  className="input input-bordered w-full"
                   required
                 />
               </label>
               {/* Condition select */}
-              <label className="form-control w-full max-w-xs">
+              <label className="form-control w-full">
                 <div className="label p-0">
                   <span className="label-text">Condition</span>
                 </div>
@@ -258,7 +260,7 @@ export function EditAd({ adData }: Props) {
                 </select>
               </label>
               {/* Country select */}
-              <label className="form-control w-full max-w-xs">
+              <label className="form-control w-full">
                 <div className="label p-0">
                   <span className="label-text">Country</span>
                 </div>
@@ -279,7 +281,7 @@ export function EditAd({ adData }: Props) {
                 </select>
               </label>
               {/* Make select */}
-              <label className="form-control w-full max-w-xs">
+              <label className="form-control w-full">
                 <div className="label p-0">
                   <span className="label-text">Make</span>
                 </div>
@@ -300,7 +302,7 @@ export function EditAd({ adData }: Props) {
                 </select>
               </label>
               {/* Model input */}
-              <label className="form-control w-full max-w-xs">
+              <label className="form-control w-full">
                 <div className="label p-0">
                   <span className="label-text">Model</span>
                 </div>
@@ -310,12 +312,12 @@ export function EditAd({ adData }: Props) {
                   maxLength={20}
                   value={model}
                   onChange={handleChangeModel}
-                  className="input input-bordered w-full max-w-xs"
+                  className="input input-bordered w-full"
                   required
                 />
               </label>
               {/* First registration select */}
-              <label className="form-control w-full max-w-xs">
+              <label className="form-control w-full">
                 <div className="label p-0">
                   <span className="label-text">First Registration</span>
                 </div>
@@ -336,7 +338,7 @@ export function EditAd({ adData }: Props) {
                 </select>
               </label>
               {/* Mileage input */}
-              <label className="form-control w-full max-w-xs">
+              <label className="form-control w-full">
                 <div className="label p-0">
                   <span className="label-text">Mileage</span>
                 </div>
@@ -347,12 +349,12 @@ export function EditAd({ adData }: Props) {
                   maxLength={7}
                   value={mileage}
                   onChange={handleChangeMileage}
-                  className="input input-bordered w-full max-w-xs"
+                  className="input input-bordered w-full"
                   required
                 />
               </label>
               {/* Fuel select */}
-              <label className="form-control w-full max-w-xs">
+              <label className="form-control w-full">
                 <div className="label p-0">
                   <span className="label-text">Fuel</span>
                 </div>
@@ -373,7 +375,7 @@ export function EditAd({ adData }: Props) {
                 </select>
               </label>
               {/* Power input */}
-              <label className="form-control w-full max-w-xs">
+              <label className="form-control w-full">
                 <div className="label p-0">
                   <span className="label-text">Power</span>
                 </div>
@@ -384,12 +386,12 @@ export function EditAd({ adData }: Props) {
                   maxLength={4}
                   value={power}
                   onChange={handleChangePower}
-                  className="input input-bordered w-full max-w-xs"
+                  className="input input-bordered w-full"
                   required
                 />
               </label>
               {/* Price input */}
-              <label className="form-control w-full max-w-xs">
+              <label className="form-control w-full">
                 <div className="label p-0">
                   <span className="label-text">Price</span>
                 </div>
@@ -400,7 +402,7 @@ export function EditAd({ adData }: Props) {
                   maxLength={8}
                   value={price}
                   onChange={handleChangePrice}
-                  className="input input-bordered w-full max-w-xs"
+                  className="input input-bordered w-full"
                   required
                 />
               </label>
@@ -410,7 +412,7 @@ export function EditAd({ adData }: Props) {
                   <span className="label-text">Description</span>
                 </div>
                 <textarea
-                  className="textarea textarea-bordered h-24 max-w-xs"
+                  className="textarea textarea-bordered h-24"
                   placeholder="..."
                   value={description}
                   onChange={handleChangeDescription}

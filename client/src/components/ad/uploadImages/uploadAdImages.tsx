@@ -7,8 +7,8 @@ import { MessageError } from "../../elements/messages/messageError";
 import { MessageWarning } from "../../elements/messages/messageWarning";
 import { WaitingDots } from "../../elements/waitingDots";
 import { useCalcPhotosNumber } from "../../../hooks/useCalcPhotosNumber";
-import axios from "axios";
 import { catchErrors } from "../../../utilis/catchErrors";
+import axios from "axios";
 
 interface Props {
   setError: Dispatch<SetStateAction<string>>;
@@ -25,7 +25,6 @@ export function UploadAdImages({
   imgToShow,
   setImgToShow,
 }: Props) {
-  //States
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [messageGreen, setMessageGreen] = useState<string>("");
   const [messageRed, setMessageRed] = useState<string>("");
@@ -88,7 +87,7 @@ export function UploadAdImages({
 
   return (
     <section className="flex flex-col gap-2">
-      {/* Upload image messages (green and red) */}
+      {/* Upload image messages (successfully and error) */}
       {messageGreen && <MessageSuccessfully message={messageGreen} />}
       {messageRed && <MessageError message={messageRed} />}
       {/* Show images (box) */}
@@ -97,7 +96,7 @@ export function UploadAdImages({
           <div className="carousel carousel-item h-[33vh] w-full bg-black rounded-lg relative">
             <img
               src={adImages[imgToShow].imageUrl}
-              className="w-auto h-full m-auto"
+              className="w-auto h-full object-cover m-auto"
             />
             <div className="absolute top-2 right-2 text-3xl bg-slate-100 rounded-md cursor-pointer transition-transform"></div>
             {/* Delete image button */}
@@ -149,7 +148,7 @@ export function UploadAdImages({
         <input
           type="file"
           onChange={handleUploadImage}
-          className="file-input file-input-bordered w-full max-w-xs"
+          className="file-input file-input-bordered w-full"
         />
       )}
     </section>

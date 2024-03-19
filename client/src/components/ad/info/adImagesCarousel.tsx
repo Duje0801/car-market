@@ -1,23 +1,29 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { store } from "../../../store";
+import { changeImgToShow, resetImgToShow } from "../../../store/slices/ad";
 import { useCalcPhotosNumber } from "../../../hooks/useCalcPhotosNumber";
 import { MdOutlineZoomOutMap } from "react-icons/md";
 import { IoMdCloseCircle } from "react-icons/io";
+import { useDispatch } from "react-redux";
 
 export function AdImagesCarousel() {
-  const [imgToShow, setImgToShow] = useState<number>(0);
   const [imgToShowModal, setImgToShowModal] = useState<number>(0);
 
-  const { adData } = useSelector(
+  const { adData, imgToShowInCarousel } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.ad
   );
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    setImgToShow(0);
+    dispatch(resetImgToShow());
   }, [adData?.images.length]);
 
-  const photoNumbers = useCalcPhotosNumber(imgToShow, adData?.images.length!);
+  const photoNumbers = useCalcPhotosNumber(
+    imgToShowInCarousel,
+    adData?.images.length!
+  );
   const photoNumbersModal = useCalcPhotosNumber(
     imgToShowModal,
     adData?.images.length!
@@ -25,7 +31,7 @@ export function AdImagesCarousel() {
 
   //Changing visible image (in uploaded images box)
   const handleChangeImage = (iteration: number) => {
-    setImgToShow(iteration);
+    dispatch(changeImgToShow(iteration));
   };
 
   //Changing visible image (in modal)
@@ -35,7 +41,7 @@ export function AdImagesCarousel() {
 
   //Open modals
   const handleOpenModal = () => {
-    setImgToShowModal(imgToShow);
+    setImgToShowModal(imgToShowInCarousel);
     const modal = document.getElementById(
       `zoomImageModal`
     ) as HTMLDialogElement | null;
@@ -52,7 +58,7 @@ export function AdImagesCarousel() {
           <div className="carousel carousel-item h-[40vh] w-full bg-black rounded-lg relative lg:h-full">
             {/* Image in box */}
             <img
-              src={adData.images[imgToShow].imageUrl}
+              src={adData.images[imgToShowInCarousel].imageUrl}
               className="w-full object-cover h-[40vh] m-auto"
             />
             {/* Zoom in /open modal - top right icon */}
