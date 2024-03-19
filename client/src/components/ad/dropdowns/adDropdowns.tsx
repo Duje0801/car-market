@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { store } from "../../store";
+import { store } from "../../../store";
 
 interface Props {
   handleOpenModal: (id: string) => void;
@@ -15,7 +15,7 @@ export function AdDropdowns({ handleOpenModal }: Props) {
   );
 
   return (
-    <div className="flex justify-end mx-auto w-[90vw]">
+    <div className="flex justify-end mx-auto w-[90vw] md:w-full">
       {/* Dropdown */}
       <div className="dropdown dropdown-end">
         <div

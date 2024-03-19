@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
-import { store } from "../../store";
-import { EditAd } from "./edit/editAd";
+import { store } from "../../../store";
+import { EditAd } from "../edit/editAd";
 
 interface Props {
   handleBtnClick: (operation: string) => void;

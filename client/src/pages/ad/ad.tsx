@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { store } from "../../store";
-import { AdOwnerInfo } from "../../components/ad/adOwnerInfo";
-import { AdMessages } from "../../components/ad/adMessages";
-import { AdInfoBox } from "../../components/ad/adInfoBox";
-import { AdModals } from "../../components/ad/adModals";
+import { AdMessages } from "../../components/ad/messages/adMessages";
+import { AdInfoBox } from "../../components/ad/adInfo/adInfoBox";
+import { AdModals } from "../../components/ad/modals/adModals";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
-import { AdDropdowns } from "../../components/ad/adDropdowns";
+import { AdDropdowns } from "../../components/ad/dropdowns/adDropdowns";
 import { addAdData, removeAdData } from "../../store/slices/ad";
 import { catchErrors } from "../../utilis/catchErrors";
 import axios from "axios";
+import { AdAdditionalInfo } from "../../components/ad/additionalInfo/adAdditionalInfo";
 
 export function AdView() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -128,23 +128,23 @@ export function AdView() {
       /* Loading ad data */
     }
     return (
-      <main>
+      <div>
         <WaitingDots size={"md"} marginTop={8} />{" "}
-      </main>
+      </div>
     );
   } else if (!adData && isChecked && isLoaded) {
     {
       /* Problems with loading ad info */
     }
     return (
-      <main className="mx-auto w-[90vw]">
+      <div className="mx-auto w-[90vw]">
         <MessageError message={error} />
-      </main>
+      </div>
     );
   } else if (adData && adData.user && isChecked && isLoaded) {
     return (
       <>
-        <main className="pb-2">
+        <div className="mx-auto md:w-2/3">
           {/* Profile top messages */}
           <AdMessages error={error} message={message} />
 
@@ -155,13 +155,11 @@ export function AdView() {
           ) : null}
 
           {/* Ad display */}
-          <div className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 mb-4 rounded-lg w-[90vw]">
-            {/* Ad Info */}
-            <AdInfoBox />
-          </div>
-          {/* Ad owner data */}
-          <AdOwnerInfo />
-        </main>
+          <AdInfoBox />
+
+          {/* Ad data and seller data */}
+          <AdAdditionalInfo />
+        </div>
         {/* Ad modals */}
         <AdModals handleBtnClick={handleBtnClick} />
       </>
