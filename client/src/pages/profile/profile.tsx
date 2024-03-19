@@ -13,9 +13,9 @@ import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { ProfileModals } from "../../components/profile/modals/profileModals";
 import { ProfileAds } from "../../components/profile/info/profileAds";
+import { ProfileNoAds } from "../../components/profile/messages/profileNoAds";
 import { ProfileInfoBox } from "../../components/profile/info/profileInfoBox";
 import axios from "axios";
-import { ProfileNoAds } from "../../components/profile/messages/profileNoAds";
 
 export function Profile() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -159,6 +159,18 @@ export function Profile() {
     }
   };
 
+  //Close modals
+  const handleCloseModal = (id: string) => {
+    setEditError("");
+    setEditMessage("");
+    const modal = document.getElementById(
+      `${id}Modal`
+    ) as HTMLDialogElement | null;
+    if (modal) {
+      modal.close();
+    }
+  };
+
   //Restarting error text after clicking on X (exit) in modal
   const handleClickX = () => {
     setEditError("");
@@ -225,6 +237,7 @@ export function Profile() {
             handleClickX={handleClickX}
             handleDeactivateProfile={handleDeactivateProfile}
             handleDeleteProfile={handleDeleteProfile}
+            handleCloseModal={handleCloseModal}
           />
         )}
       </>

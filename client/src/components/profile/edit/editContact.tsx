@@ -95,7 +95,7 @@ export function EditContact({
           </div>
         )}
         {/* New contact input */}
-        <label className="form-control w-full max-w-xs">
+        <label className="form-control w-full">
           <div className="label p-0">
             <span className="label-text">New Contact</span>
           </div>
@@ -104,12 +104,12 @@ export function EditContact({
             maxLength={30}
             value={newContact}
             onChange={handleNewContact}
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full"
             required
           />
         </label>
         {/* Password input */}
-        <label className="form-control w-full max-w-xs mt-2">
+        <label className="form-control w-full mt-2">
           <div className="label p-0">
             <span className="label-text">Password</span>
           </div>
@@ -119,18 +119,18 @@ export function EditContact({
             maxLength={20}
             value={password}
             onChange={handleChangePassword}
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full"
             required
           />
         </label>
         {/* Submit button */}
-        <button type="submit" className="btn mt-2 w-full">
+        <button type="submit" className="btn btn-error mt-2 w-full">
           Submit
         </button>
       </form>
       {/* Close button */}
       <form method="dialog">
-        <button onClick={handleClickX} className="btn btn-error mt-2 w-full">
+        <button onClick={handleClickX} className="btn mt-2 w-full">
           Close
         </button>
       </form>{" "}

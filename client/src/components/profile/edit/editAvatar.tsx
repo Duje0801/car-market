@@ -1,12 +1,12 @@
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { Dispatch, FormEvent, SetStateAction, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { store } from "../../../store";
 import { addProfileData } from "../../../store/slices/profile";
+import { catchErrors } from "../../../utilis/catchErrors";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageError } from "../../elements/messages/messageError";
 import { WaitingDots } from "../../elements/waitingDots";
 import axios from "axios";
-import { catchErrors } from "../../../utilis/catchErrors";
 
 interface Props {
   editError: string;
@@ -14,6 +14,7 @@ interface Props {
   editMessage: string;
   setEditMessage: Dispatch<SetStateAction<string>>;
   handleClickX: () => void;
+  handleCloseModal: (id: string) => void;
 }
 
 export function EditAvatar({
@@ -22,6 +23,7 @@ export function EditAvatar({
   editMessage,
   setEditMessage,
   handleClickX,
+  handleCloseModal,
 }: Props) {
   //Form data states
   const [avatarURL, setAvatarURL] = useState<string>("");
@@ -34,6 +36,8 @@ export function EditAvatar({
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
   const dispatch = useDispatch();
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { loggedProfileData } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.loggedProfile
@@ -76,6 +80,13 @@ export function EditAvatar({
       const deleteAvatarText: string = await deleteOldAvatarMessage();
       dispatch(addProfileData(response.data.user));
       setEditMessage(response.data.message + deleteAvatarText);
+      handleCloseModal(`editAvatar`);
+      setAvatarURL("");
+      setUploadedImageURL("");
+      setUploadedImagePublicID("");
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } catch (error) {
       catchErrors(error, setEditError);
     }
@@ -98,6 +109,7 @@ export function EditAvatar({
       setUploadImage(true);
     }
     setEditMessage("");
+    setIsSaving(false);
   };
 
   //Avatar upload function
@@ -204,12 +216,12 @@ export function EditAvatar({
             <MessageSuccessfully message={editMessage} />
           </div>
         )}
-        {isSaving && <WaitingDots size="sm" marginTop={2} />}
         {editError && (
           <div className="my-2">
             <MessageError message={editError} />
           </div>
         )}
+        {isSaving && <WaitingDots size="sm" marginTop={2} />}
         {uploadedImageURL && (
           <p className="text-center text-sm mb-2">
             The new avatar will be confirmed after clicking the submit button
@@ -218,7 +230,7 @@ export function EditAvatar({
 
         {/* Image upload */}
         {uploadImage ? (
-          <label className="form-control w-full max-w-xs mt-2">
+          <label className="form-control w-full mt-2">
             {/* Avatar URL input */}
             <div className="label p-0">
               <span className="label-text">URL</span>
@@ -229,7 +241,7 @@ export function EditAvatar({
               id="avatarURL"
               value={avatarURL}
               onChange={handleChangeAvatarURL}
-              className="input input-bordered w-full max-w-xs"
+              className="input input-bordered w-full"
             />
           </label>
         ) : (
@@ -254,8 +266,9 @@ export function EditAvatar({
             )}
             <input
               type="file"
-              className="file-input file-input-bordered w-full max-w-xs mt-2"
+              className="file-input file-input-bordered w-full mt-2"
               onChange={handleUploadAvatar}
+              ref={fileInputRef}
             />
           </div>
         )}
@@ -270,14 +283,14 @@ export function EditAvatar({
         </div>
 
         {/* Submit button */}
-        <button type="submit" className="btn mt-2 w-full">
+        <button type="submit" className="btn btn-error mt-2 w-full">
           Submit
         </button>
       </form>
 
       {/* Close button */}
       <form method="dialog">
-        <button onClick={handleClickX} className="btn btn-error mt-2 w-full">
+        <button onClick={handleClickX} className="btn mt-2 w-full">
           Close
         </button>
       </form>

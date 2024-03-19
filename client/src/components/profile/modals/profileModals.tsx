@@ -14,6 +14,7 @@ interface Props {
   handleClickX: () => void;
   handleDeactivateProfile: () => void;
   handleDeleteProfile: () => void;
+  handleCloseModal: (id: string) => void
 }
 
 export function ProfileModals({
@@ -24,6 +25,7 @@ export function ProfileModals({
   handleClickX,
   handleDeactivateProfile,
   handleDeleteProfile,
+  handleCloseModal
 }: Props) {
 
   const { profileData } = useSelector(
@@ -50,6 +52,7 @@ export function ProfileModals({
             editMessage={editMessage}
             setEditMessage={setEditMessage}
             handleClickX={handleClickX}
+            handleCloseModal={handleCloseModal}
           />
         </div>
       </dialog>

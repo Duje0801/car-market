@@ -113,7 +113,7 @@ export function EditPassword({
         )}
 
         {/* Old password input */}
-        <label className="form-control w-full max-w-xs">
+        <label className="form-control w-full">
           <div className="label p-0">
             <span className="label-text">Old Password</span>
           </div>
@@ -123,13 +123,13 @@ export function EditPassword({
             maxLength={20}
             value={oldPassword}
             onChange={handleChangeOldPassword}
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full"
             required
           />
         </label>
 
         {/* New Password input */}
-        <label className="form-control w-full max-w-xs">
+        <label className="form-control w-full">
           <div className="label p-0">
             <span className="label-text">New Password</span>
           </div>
@@ -139,13 +139,13 @@ export function EditPassword({
             maxLength={20}
             value={newPassword}
             onChange={handleChangeNewPassword}
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full"
             required
           />
         </label>
 
         {/* New password confirm input */}
-        <label className="form-control w-full max-w-xs">
+        <label className="form-control w-full">
           <div className="label p-0">
             <span className="label-text">Confirm New Password</span>
           </div>
@@ -155,18 +155,18 @@ export function EditPassword({
             maxLength={20}
             value={confirmNewPassword}
             onChange={handleChangeConfirmNewPassword}
-            className="input input-bordered w-full max-w-xs"
+            className="input input-bordered w-full"
             required
           />
         </label>
         {/* Submit button */}
-        <button type="submit" className="btn mt-2 w-full">
+        <button type="submit" className="btn btn-error mt-2 w-full">
           Submit
         </button>
       </form>
       {/* Close button */}
       <form method="dialog">
-        <button onClick={handleClickX} className="btn btn-error mt-2 w-full">
+        <button onClick={handleClickX} className="btn mt-2 w-full">
           Close
         </button>
       </form>{" "}

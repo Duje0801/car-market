@@ -17,7 +17,7 @@ const uploadImage: any = async function (req: Request, res: Response) {
     const imageDimensions =
       req.originalUrl.split("/")[3] === "ad"
         ? { height: 800 }
-        : { width: 200, height: 200, crop: "pad", background: "transparent" };
+        : { width: 200, height: 200, crop: "fill" };
 
     try {
       const cloudinaryUpload = await cloudinary.uploader.upload(req.file.path, {
