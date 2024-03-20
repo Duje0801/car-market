@@ -10,7 +10,7 @@ import { store } from "./store/index.tsx";
 import { App } from "./App.tsx";
 import { Home } from "./pages/home/home.tsx";
 import { AdsList } from "./pages/adsList/adsList.tsx";
-import { AdView } from "./pages/ad/ad.tsx";
+import { Ad } from "./pages/ad/ad.tsx";
 import { Profile } from "./pages/profile/profile.tsx";
 import { SignUp } from "./pages/auth/signUp.tsx";
 import { LogIn } from "./pages/auth/logIn.tsx";
@@ -34,7 +34,7 @@ const router = createBrowserRouter(
     <Route path="/" element={<App />}>
       <Route path="/" element={<Home />} />
       <Route path="/ads/:id?" element={<AdsList />} />
-      <Route path="/ad/:id?" element={<AdView />} />
+      <Route path="/ad/:id?" element={<Ad />} />
       <Route path="/profile/:id" element={<Profile />} />
       <Route path="/signUp" element={<SignUp />} />
       <Route path="/logIn" element={<LogIn />} />

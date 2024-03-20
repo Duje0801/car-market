@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { addAdData, removeAdData } from "../../store/slices/ad";
 import { store } from "../../store";
 import { AdMessages } from "../../components/ad/messages/adMessages";
 import { AdInfoBox } from "../../components/ad/info/adInfoBox";
@@ -8,12 +9,11 @@ import { AdModals } from "../../components/ad/modals/adModals";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { AdDropdowns } from "../../components/ad/dropdowns/adDropdowns";
-import { addAdData, removeAdData } from "../../store/slices/ad";
+import { AdAdditionalInfo } from "../../components/ad/info/adAdditionalInfo";
 import { catchErrors } from "../../utilis/catchErrors";
 import axios from "axios";
-import { AdAdditionalInfo } from "../../components/ad/info/adAdditionalInfo";
 
-export function AdView() {
+export function Ad() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -65,7 +65,7 @@ export function AdView() {
   };
 
   //Function for hiding, deactivating and deleting ad
-  const handleBtnClick = async (operation: string) => {
+  const handleModalClick = async (operation: string) => {
     setIsLoaded(false);
     try {
       const response = await axios.delete(
@@ -161,7 +161,7 @@ export function AdView() {
           <AdAdditionalInfo />
         </div>
         {/* Ad modals */}
-        <AdModals handleBtnClick={handleBtnClick} />
+        <AdModals handleModalClick={handleModalClick} />
       </>
     );
   }

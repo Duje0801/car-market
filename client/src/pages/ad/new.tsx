@@ -1,16 +1,17 @@
-import { FormEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { FormEvent, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
 import { catchErrors } from "../../utilis/catchErrors";
+import { EditAdImagesModal } from "../../components/ad/modals/editAdImagesModal";
+import { UploadAdImages } from "../../components/ad/uploadImages/uploadAdImages";
+import { WaitingDots } from "../../components/elements/waitingDots";
+import { MessageError } from "../../components/elements/messages/messageError";
+import { MessageSuccessfully } from "../../components/elements/messages/messageSuccessfully";
 import { yearsData } from "../../data/years";
 import { makes as makesList } from "../../data/makes";
 import { fuel as fuelList } from "../../data/fuel";
 import { condition as conditionList } from "../../data/condition";
 import { countries as countriesList } from "../../data/countries";
-import { UploadAdImages } from "../../components/ad/uploadImages/uploadAdImages";
-import { WaitingDots } from "../../components/elements/waitingDots";
-import { MessageError } from "../../components/elements/messages/messageError";
 import { IImage } from "../../interfaces/IImage";
 import axios from "axios";
 
@@ -34,13 +35,23 @@ export function NewAd() {
   //Other states
   const [imgToShow, setImgToShow] = useState<number>(0);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
+
+  //Reason why this is in the parent element,
+  //after clicking on the clear all button (in /src/pages/ad/new.tsx),
+  //it will delete both successful and error messages
+
+  //UploadAdImagesStates
+  const [messageImgSuccess, setMessageImgSuccess] = useState<string>("");
+  const [messageImgError, setMessageImgError] = useState<string>("");
 
   const { loggedProfileData, isChecked } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
-  const navigate = useNavigate();
+  //File input ref
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const years = yearsData();
 
@@ -101,7 +112,7 @@ export function NewAd() {
     setFuel(event.target.value);
   };
 
-  //Submit function
+  //New ad submit function
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
@@ -109,6 +120,10 @@ export function NewAd() {
     if (adImages.length < 1) {
       setError("Ad must have at least one image");
       setIsSaving(false);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
       return;
     }
 
@@ -127,21 +142,34 @@ export function NewAd() {
       formData.append("description", description);
       formData.append("adImages", JSON.stringify(adImages));
 
-      await axios.post("http://localhost:4000/api/v1/ad/new", formData, {
-        headers: {
-          "Content-Type": "application/json",
-          authorization: `Bearer ${loggedProfileData?.token}`,
-        },
+      const response = await axios.post(
+        "http://localhost:4000/api/v1/ad/new",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${loggedProfileData?.token}`,
+          },
+        }
+      );
+      handleClearAll(`submit`);
+      setMessage(response.data.message);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
       });
-      navigate("/redirect/ad/new");
     } catch (error) {
       catchErrors(error, setError);
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     }
     setIsSaving(false);
   };
 
-  //Clear button click
-  const handleClearAll = () => {
+  //Clear all button click
+  const handleClearAll = async (operation: string) => {
     setError("");
     setTitle("");
     setCondition("");
@@ -154,7 +182,85 @@ export function NewAd() {
     setPower("");
     setPrice("");
     setDescription("");
+    setMessageImgSuccess("");
+    setMessageImgError("");
     setAdImages([]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    if (operation === `clear`) {
+      const deleteImageResponse = await deleteUploadedImages();
+      setMessage(deleteImageResponse);
+    }
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  //Open modals
+  const handleOpenModal = (id: string) => {
+    const modal = document.getElementById(
+      `${id}Modal`
+    ) as HTMLDialogElement | null;
+    if (modal) {
+      modal.showModal();
+    }
+  };
+
+  //Deleting image/s (from adImages array and Cloudinary DB)
+  const handleModalClick = async (operation: string) => {
+    //Removing one image from images array (adImages)
+    if (operation === `deleteOne`) {
+      const updatedadImagesArray = [...adImages];
+      updatedadImagesArray.splice(imgToShow, 1);
+      const deleteImageResponse = await deleteUploadedImages(
+        adImages[imgToShow].publicID
+      );
+      setMessageImgSuccess(deleteImageResponse);
+      setAdImages([...updatedadImagesArray]);
+      setImgToShow(0);
+    }
+    //Removing all images from images array (adImages)
+    else if (operation === `deleteAll`) {
+      const deleteImageResponse = await deleteUploadedImages();
+      setMessageImgSuccess(deleteImageResponse);
+      setAdImages([]);
+    }
+  };
+
+  //Deleting image/s (from Cloudinary DB)
+  const deleteUploadedImages = async (publicID?: string) => {
+    let imagesDeleteList: string[] = [];
+
+    if (publicID) {
+      //Deleting only one ad image
+      imagesDeleteList = [publicID];
+    } else {
+      //Deleting all ad`s images
+      adImages.forEach((img) => {
+        imagesDeleteList.push(img.publicID);
+      });
+    }
+
+    //Creating fetch for all images
+    const promises = imagesDeleteList.map((publicID) =>
+      axios.delete(`http://localhost:4000/api/v1/ad/deleteImage/${publicID}`, {
+        headers: {
+          authorization: `Bearer ${loggedProfileData?.token}`,
+        },
+      })
+    );
+
+    try {
+      //Deleting images
+      await Promise.all(promises);
+      if (publicID) return "Image is deleted!";
+      else return "All images are deleted!";
+    } catch (error) {
+      if (publicID) return "Image is not deleted!";
+      else return "Maybe some uploaded images are not deleted!!";
+    }
   };
 
   if (!isChecked) {
@@ -162,267 +268,285 @@ export function NewAd() {
       /* Loading user data */
     }
     return (
-      <main>
+      <div>
         <WaitingDots size={"md"} marginTop={8} />{" "}
-      </main>
+      </div>
     );
   } else if (!loggedProfileData.username) {
     {
       /* If the user is not logged in */
     }
     return (
-      <main className="mx-auto w-[90vw]">
+      <div className="mx-auto w-[90vw]">
         <MessageError message={"You are already logged in!"} />
-      </main>
+      </div>
     );
   } else {
     return (
-      <main className="pb-2">
+      <>
         {isSaving ? (
           <WaitingDots size={"md"} marginTop={8} />
         ) : (
-          <>
-            {error && (
-              <main className="mx-auto w-[90vw]">
-                <MessageError message={error} />
-              </main>
-            )}
-            <form
-              className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw]"
-              onSubmit={handleSubmit}
-            >
-              <div className="card-body p-4">
-                <p className="card-title text-3xl">Create New Ad</p>
-                {/* Title input */}
-                <label className="form-control w-full max-w-xs">
-                  <div className="label p-0">
-                    <span className="label-text">Title</span>
-                  </div>
-                  <input
-                    type="text"
-                    minLength={5}
-                    maxLength={50}
-                    value={title}
-                    onChange={handleChangeTitle}
-                    className="input input-bordered w-full max-w-xs"
-                    required
-                  />
-                </label>
-                {/* Condition select */}
-                <label className="form-control w-full max-w-xs">
-                  <div className="label p-0">
-                    <span className="label-text">Condition</span>
-                  </div>
-                  <select
-                    value={condition}
-                    onChange={handleSelectCondition}
-                    className="input input-bordered w-full"
-                    required
-                  >
-                    <option key={0}></option>
-                    {conditionList.map((c, i) => {
-                      return (
-                        <option key={i + 1} value={c}>
-                          {c}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </label>
-                {/* Country select */}
-                <label className="form-control w-full max-w-xs">
-                  <div className="label p-0">
-                    <span className="label-text">Country</span>
-                  </div>
-                  <select
-                    value={country}
-                    onChange={handleSelectCountry}
-                    className="input input-bordered w-full"
-                    required
-                  >
-                    <option key={0}></option>
-                    {countriesList.map((c, i) => {
-                      return (
-                        <option key={i + 1} value={c}>
-                          {c}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </label>
-                {/* Make select */}
-                <label className="form-control w-full max-w-xs">
-                  <div className="label p-0">
-                    <span className="label-text">Make</span>
-                  </div>
-                  <select
-                    value={make}
-                    onChange={handleSelectMake}
-                    className="input input-bordered w-full"
-                    required
-                  >
-                    <option key={0}></option>
-                    {makesList.map((m, i) => {
-                      return (
-                        <option key={i + 1} value={m}>
-                          {m}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </label>
-                {/* Model input */}
-                <label className="form-control w-full max-w-xs">
-                  <div className="label p-0">
-                    <span className="label-text">Model</span>
-                  </div>
-                  <input
-                    type="text"
-                    minLength={1}
-                    maxLength={20}
-                    value={model}
-                    onChange={handleChangeModel}
-                    className="input input-bordered w-full max-w-xs"
-                    required
-                  />
-                </label>
-                {/* First registration select */}
-                <label className="form-control w-full max-w-xs">
-                  <div className="label p-0">
-                    <span className="label-text">First Registration</span>
-                  </div>
-                  <select
-                    value={firstRegistration}
-                    onChange={handleSelectFirstRegistration}
-                    className="input input-bordered w-full"
-                    required
-                  >
-                    <option key={0}></option>
-                    {years.map((m, i) => {
-                      return (
-                        <option key={i + 1} value={m}>
-                          {m}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </label>
-                {/* Mileage input */}
-                <label className="form-control w-full max-w-xs">
-                  <div className="label p-0">
-                    <span className="label-text">Mileage</span>
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="km"
-                    minLength={1}
-                    maxLength={7}
-                    value={mileage}
-                    onChange={handleChangeMileage}
-                    className="input input-bordered w-full max-w-xs"
-                    required
-                  />
-                </label>
-                {/* Fuel select */}
-                <label className="form-control w-full max-w-xs">
-                  <div className="label p-0">
-                    <span className="label-text">Fuel</span>
-                  </div>
-                  <select
-                    value={fuel}
-                    onChange={handleSelectFuel}
-                    className="input input-bordered w-full"
-                    required
-                  >
-                    <option key={0}></option>
-                    {fuelList.map((m, i) => {
-                      return (
-                        <option key={i + 1} value={m}>
-                          {m}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </label>
-                {/* Power input */}
-                <label className="form-control w-full max-w-xs">
-                  <div className="label p-0">
-                    <span className="label-text">Power</span>
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="kW"
-                    minLength={1}
-                    maxLength={4}
-                    value={power}
-                    onChange={handleChangePower}
-                    className="input input-bordered w-full max-w-xs"
-                    required
-                  />
-                </label>
-                {/* Price input */}
-                <label className="form-control w-full max-w-xs">
-                  <div className="label p-0">
-                    <span className="label-text">Price</span>
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="€"
-                    minLength={1}
-                    maxLength={8}
-                    value={price}
-                    onChange={handleChangePrice}
-                    className="input input-bordered w-full max-w-xs"
-                    required
-                  />
-                </label>
-                {/* Description textarea */}
-                <label className="form-control">
-                  <div className="label p-0">
-                    <span className="label-text">Description</span>
-                  </div>
-                  <textarea
-                    className="textarea textarea-bordered h-24 max-w-xs"
-                    placeholder="..."
-                    value={description}
-                    onChange={handleChangeDescription}
-                    maxLength={1000}
-                    rows={3}
-                    cols={75}
-                  ></textarea>
-                </label>
-                {/* Upload images */}
-                <UploadAdImages
-                  setError={setError}
-                  adImages={adImages}
-                  setAdImages={setAdImages}
-                  imgToShow={imgToShow}
-                  setImgToShow={setImgToShow}
+          <form
+            className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto rounded-lg w-[80vw] md:w-[50vw]"
+            onSubmit={handleSubmit}
+          >
+            <div className="card-body p-0">
+              <p className="card-title mx-auto text-3xl xxl:text-4xl">
+                Create New Ad
+              </p>
+              {/* Messages */}
+              {message && (
+                <div className="mx-auto max-w-lg xxl:max-w-2xl w-full">
+                  <MessageSuccessfully message={message} />
+                </div>
+              )}
+              {error && (
+                <div className="mx-auto max-w-lg xxl:max-w-2xl w-full">
+                  <MessageError message={error} />
+                </div>
+              )}
+              {/* Title input */}
+              <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
+                <div className="label p-0">
+                  <span className="label-text xxl:text-xl">Title</span>
+                </div>
+                <input
+                  type="text"
+                  minLength={5}
+                  maxLength={50}
+                  value={title}
+                  onChange={handleChangeTitle}
+                  className="input input-bordered w-full mx-auto max-w-lg xxl:max-w-2xl xxl:text-xl"
+                  required
                 />
-                {/* Clear all button */}
-                <div className="card-actions justify-end">
-                  <button
-                    type="button"
-                    className="btn btn-error w-full"
-                    onClick={handleClearAll}
-                  >
-                    Clear All
-                  </button>
+              </label>
+              {/* Condition select */}
+              <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
+                <div className="label p-0">
+                  <span className="label-text xxl:text-xl">Condition</span>
                 </div>
-                {/* Submit button */}
-                <div className="card-actions justify-end">
-                  <button
-                    type="submit"
-                    className="btn bg-black text-white w-full"
-                  >
-                    Submit
-                  </button>
+                <select
+                  value={condition}
+                  onChange={handleSelectCondition}
+                  className="input input-bordered w-full xxl:text-xl"
+                  required
+                >
+                  <option key={0}></option>
+                  {conditionList.map((c, i) => {
+                    return (
+                      <option key={i + 1} value={c}>
+                        {c}
+                      </option>
+                    );
+                  })}
+                </select>
+              </label>
+              {/* Country select */}
+              <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
+                <div className="label p-0">
+                  <span className="label-text xxl:text-xl">Country</span>
                 </div>
+                <select
+                  value={country}
+                  onChange={handleSelectCountry}
+                  className="input input-bordered w-full xxl:text-xl"
+                  required
+                >
+                  <option key={0}></option>
+                  {countriesList.map((c, i) => {
+                    return (
+                      <option key={i + 1} value={c}>
+                        {c}
+                      </option>
+                    );
+                  })}
+                </select>
+              </label>
+              {/* Make select */}
+              <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
+                <div className="label p-0">
+                  <span className="label-text xxl:text-xl">Make</span>
+                </div>
+                <select
+                  value={make}
+                  onChange={handleSelectMake}
+                  className="input input-bordered w-full xxl:text-xl"
+                  required
+                >
+                  <option key={0}></option>
+                  {makesList.map((m, i) => {
+                    return (
+                      <option key={i + 1} value={m}>
+                        {m}
+                      </option>
+                    );
+                  })}
+                </select>
+              </label>
+              {/* Model input */}
+              <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
+                <div className="label p-0">
+                  <span className="label-text xxl:text-xl">Model</span>
+                </div>
+                <input
+                  type="text"
+                  minLength={1}
+                  maxLength={20}
+                  value={model}
+                  onChange={handleChangeModel}
+                  className="input input-bordered w-full mx-auto max-w-lg xxl:max-w-2xl xxl:text-xl"
+                  required
+                />
+              </label>
+              {/* First registration select */}
+              <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
+                <div className="label p-0">
+                  <span className="label-text xxl:text-xl">
+                    First Registration
+                  </span>
+                </div>
+                <select
+                  value={firstRegistration}
+                  onChange={handleSelectFirstRegistration}
+                  className="input input-bordered w-full xxl:text-xl"
+                  required
+                >
+                  <option key={0}></option>
+                  {years.map((m, i) => {
+                    return (
+                      <option key={i + 1} value={m}>
+                        {m}
+                      </option>
+                    );
+                  })}
+                </select>
+              </label>
+              {/* Mileage input */}
+              <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
+                <div className="label p-0">
+                  <span className="label-text xxl:text-xl">Mileage</span>
+                </div>
+                <input
+                  type="text"
+                  placeholder="km"
+                  minLength={1}
+                  maxLength={7}
+                  value={mileage}
+                  onChange={handleChangeMileage}
+                  className="input input-bordered w-full mx-auto max-w-lg xxl:max-w-2xl xxl:text-xl"
+                  required
+                />
+              </label>
+              {/* Fuel select */}
+              <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
+                <div className="label p-0">
+                  <span className="label-text xxl:text-xl">Fuel</span>
+                </div>
+                <select
+                  value={fuel}
+                  onChange={handleSelectFuel}
+                  className="input input-bordered w-full xxl:text-xl"
+                  required
+                >
+                  <option key={0}></option>
+                  {fuelList.map((m, i) => {
+                    return (
+                      <option key={i + 1} value={m}>
+                        {m}
+                      </option>
+                    );
+                  })}
+                </select>
+              </label>
+              {/* Power input */}
+              <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
+                <div className="label p-0">
+                  <span className="label-text xxl:text-xl">Power</span>
+                </div>
+                <input
+                  type="text"
+                  placeholder="kW"
+                  minLength={1}
+                  maxLength={4}
+                  value={power}
+                  onChange={handleChangePower}
+                  className="input input-bordered w-full mx-auto max-w-lg xxl:max-w-2xl xxl:text-xl"
+                  required
+                />
+              </label>
+              {/* Price input */}
+              <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
+                <div className="label p-0">
+                  <span className="label-text xxl:text-xl">Price</span>
+                </div>
+                <input
+                  type="text"
+                  placeholder="€"
+                  minLength={1}
+                  maxLength={8}
+                  value={price}
+                  onChange={handleChangePrice}
+                  className="input input-bordered w-full mx-auto max-w-lg xxl:max-w-2xl xxl:text-xl"
+                  required
+                />
+              </label>
+              {/* Description textarea */}
+              <label className="form-control">
+                <div className="label p-0">
+                  <span className="label-text max-w-lg xxl:max-w-2xl md:mx-auto xxl:text-xl">
+                    Description
+                  </span>
+                </div>
+                <textarea
+                  className="textarea textarea-bordered w-full mx-auto max-w-lg xxl:max-w-2xl text-base xxl:text-xl"
+                  placeholder="..."
+                  value={description}
+                  onChange={handleChangeDescription}
+                  maxLength={1000}
+                  rows={4}
+                  cols={50}
+                ></textarea>
+              </label>
+              {/* Upload images */}
+              <UploadAdImages
+                setError={setError}
+                adImages={adImages}
+                setAdImages={setAdImages}
+                imgToShow={imgToShow}
+                setImgToShow={setImgToShow}
+                messageImgSuccess={messageImgSuccess}
+                setMessageImgSuccess={setMessageImgSuccess}
+                messageImgError={messageImgError}
+                setMessageImgError={setMessageImgError}
+                fileInputRef={fileInputRef}
+                handleOpenModal={handleOpenModal}
+              />
+              {/* Clear all button */}
+              <div className="card-actions justify-end">
+                <button
+                  type="button"
+                  className="btn btn-error w-full mx-auto max-w-lg xxl:max-w-2xl xxl:text-xl"
+                  onClick={() => handleClearAll(`clear`)}
+                >
+                  Clear All
+                </button>
               </div>
-            </form>
-          </>
+              {/* Submit button */}
+              <div className="card-actions justify-end">
+                <button
+                  type="submit"
+                  className="btn bg-black text-white w-full mx-auto max-w-lg xxl:max-w-2xl xxl:text-xl"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
         )}
-      </main>
+        {/* Edit Uploaded Image Modal */}
+        <EditAdImagesModal handleModalClick={handleModalClick} />
+      </>
     );
   }
 }

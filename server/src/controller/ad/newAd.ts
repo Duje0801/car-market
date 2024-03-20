@@ -58,7 +58,7 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
 
     res.status(200).json({
       status: `success`,
-      message: "The ad has been successfully saved!",
+      message: "The ad has been successfully created!",
     });
   } catch (error) {
     errorHandler(error, req, res);

@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addAdData } from "../../../store/slices/ad";
@@ -6,16 +6,18 @@ import { store } from "../../../store";
 import { resetImgToShow } from "../../../store/slices/ad";
 import { catchErrors } from "../../../utilis/catchErrors";
 import { WaitingDots } from "../../elements/waitingDots";
+import { MessageError } from "../../elements/messages/messageError";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageWarning } from "../../elements/messages/messageWarning";
 import { UploadAdImages } from "../uploadImages/uploadAdImages";
+import { EditAdImagesModal } from "../modals/editAdImagesModal";
 import { yearsData } from "../../../data/years";
 import { makes as makesList } from "../../../data/makes";
 import { fuel as fuelList } from "../../../data/fuel";
 import { condition as conditionList } from "../../../data/condition";
 import { countries as countriesList } from "../../../data/countries";
-import { IAd } from "../../../interfaces/IAd";
 import { IImage } from "../../../interfaces/IImage";
+import { IAd } from "../../../interfaces/IAd";
 import axios from "axios";
 
 interface Props {
@@ -47,12 +49,23 @@ export function EditAd({ adData }: Props) {
   const [message, setMessage] = useState<string>("");
   const [isSaving, setIsSaving] = useState<boolean>(false);
 
+  //Reason why this is in the parent element,
+  //after clicking on the clear all button (in /src/pages/ad/new.tsx),
+  //it will delete both successful and error messages
+
+  //UploadAdImagesStates
+  const [messageImgSuccess, setMessageImgSuccess] = useState<string>("");
+  const [messageImgError, setMessageImgError] = useState<string>("");
+
   const { loggedProfileData } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   const params = useParams();
   const dispatch = useDispatch();
+
+  //File input ref
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const years = yearsData();
 
@@ -135,6 +148,7 @@ export function EditAd({ adData }: Props) {
 
       if (adImages.length < 1 || adImages.length > 10) {
         setError("Ad must have between 1 and 10 images");
+        setMessage("");
         setIsSaving(false);
         return;
       }
@@ -150,9 +164,12 @@ export function EditAd({ adData }: Props) {
         }
       );
       const deletedImagesMessage = await deleteImage();
-      setMessage(response.data.message + ". " + deletedImagesMessage);
       dispatch(addAdData(response.data.ad));
       dispatch(resetImgToShow());
+      setMessage(response.data.message + ". " + deletedImagesMessage);
+      setError("");
+      setMessageImgError("");
+      setMessageImgSuccess("");
       setImgToShow(0);
     } catch (error) {
       catchErrors(error, setMessage);
@@ -164,6 +181,7 @@ export function EditAd({ adData }: Props) {
   const deleteImage = async () => {
     let imagesDeleteList: string[] = [];
 
+    //Looking to images that are deleted during editing ad
     const adImagesMapped = adImages.map((img) => img.publicID);
     adData?.images.forEach((img) => {
       if (!adImagesMapped.includes(img.publicID)) {
@@ -186,7 +204,7 @@ export function EditAd({ adData }: Props) {
     );
 
     try {
-      //Deleting images
+      //Deleting images message
       await Promise.all(promises);
       return "All ad images designated for deletion have been deleted";
     } catch (error) {
@@ -194,8 +212,38 @@ export function EditAd({ adData }: Props) {
     }
   };
 
+  //Open modals
+  const handleOpenModal = (id: string) => {
+    const modal = document.getElementById(
+      `${id}Modal`
+    ) as HTMLDialogElement | null;
+    if (modal) {
+      modal.showModal();
+    }
+  };
+
+  //Deleting image from images array (images are deleted from Cloudinary DB after edit form submit)
+  const handleModalClick = async (operation: string) => {
+    if (operation === `deleteOne`) {
+      //Removing one image from images array (adImages)
+      const updatedadImagesArray = [...adImages];
+      updatedadImagesArray.splice(imgToShow, 1);
+      setMessageImgSuccess("Image deleted");
+      setAdImages([...updatedadImagesArray]);
+      setImgToShow(0);
+    } else if (operation === `deleteAll`) {
+      //Removing all images from images array (adImages)
+      setMessageImgSuccess("Deleted all images");
+      setAdImages([]);
+    }
+  };
+
+  //Click on X (top right) or cancel button
   const handleClickX = () => {
     setMessage("");
+    setError("");
+    setMessageImgSuccess("");
+    setMessageImgError("");
   };
 
   return (
@@ -222,7 +270,11 @@ export function EditAd({ adData }: Props) {
                   <MessageSuccessfully message={message} />
                 </div>
               )}
-              {error && <p className="text-red-500">{error}</p>}
+              {error && (
+                <div className="mx-auto w-full">
+                  <MessageError message={error} />
+                </div>
+              )}
               {/* Title input */}
               <label className="form-control w-full">
                 <div className="label p-0">
@@ -432,15 +484,21 @@ export function EditAd({ adData }: Props) {
               )}
               {/* Images uploading and deleting */}
               <UploadAdImages
-                setError={setMessage}
+                setError={setError}
                 adImages={adImages}
                 setAdImages={setAdImages}
                 imgToShow={imgToShow}
                 setImgToShow={setImgToShow}
+                messageImgSuccess={messageImgSuccess}
+                setMessageImgSuccess={setMessageImgSuccess}
+                messageImgError={messageImgError}
+                setMessageImgError={setMessageImgError}
+                fileInputRef={fileInputRef}
+                handleOpenModal={handleOpenModal}
               />
               <div className="label pt-1">
                 <span className="label-text-alt text-[0.75rem]">
-                  *To confirm add/delete image click `submit` button
+                  *To confirm add/delete image click Submit button
                 </span>
               </div>
               {/* Submit button */}
@@ -457,6 +515,8 @@ export function EditAd({ adData }: Props) {
           </>
         )}
       </div>
+      {/* Edit Uploaded Image Modal */}
+      <EditAdImagesModal handleModalClick={handleModalClick} />
     </>
   );
 }

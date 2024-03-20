@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, RefObject, SetStateAction, useState } from "react";
 import { useSelector } from "react-redux";
 import { IImage } from "../../../interfaces/IImage";
 import { store } from "../../../store";
@@ -16,6 +16,12 @@ interface Props {
   setAdImages: Dispatch<SetStateAction<IImage[]>>;
   imgToShow: number;
   setImgToShow: Dispatch<SetStateAction<number>>;
+  messageImgSuccess: string;
+  setMessageImgSuccess: Dispatch<SetStateAction<string>>;
+  messageImgError: string;
+  setMessageImgError: Dispatch<SetStateAction<string>>;
+  fileInputRef: RefObject<HTMLInputElement>;
+  handleOpenModal: (id: string) => void;
 }
 
 export function UploadAdImages({
@@ -24,10 +30,14 @@ export function UploadAdImages({
   setAdImages,
   imgToShow,
   setImgToShow,
+  messageImgSuccess,
+  setMessageImgSuccess,
+  messageImgError,
+  setMessageImgError,
+  fileInputRef,
+  handleOpenModal,
 }: Props) {
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [messageGreen, setMessageGreen] = useState<string>("");
-  const [messageRed, setMessageRed] = useState<string>("");
 
   const photoNumbers = useCalcPhotosNumber(imgToShow, adImages.length);
 
@@ -62,52 +72,74 @@ export function UploadAdImages({
           }
         );
         setAdImages([...adImages, response.data.image]);
-        setMessageGreen(response.data.message);
-        setMessageRed("");
+        setMessageImgSuccess(response.data.message);
+        setMessageImgError("");
         setImgToShow(adImages.length);
       } catch (error) {
-        catchErrors(error, setMessageRed);
-        setMessageGreen("");
+        catchErrors(error, setMessageImgError);
+        setMessageImgSuccess("");
       }
     } else {
-      setMessageRed("Please set valid image for upload.");
-      setMessageGreen("");
+      setMessageImgError("Please set valid image for upload.");
+      setMessageImgSuccess("");
     }
     setIsSaving(false);
   };
 
-  //Deleting image (from adImages array and Cloudinary DB)
-  const handleDeleteImage = async (index: number) => {
-    //Removing image from images array (adImages)
-    const updatedadImagesArray = [...adImages];
-    updatedadImagesArray.splice(index, 1);
-    setAdImages([...updatedadImagesArray]);
-    setImgToShow(0);
-  };
+  //Changing position od image in images array
+  function handleChangeImgOrder(index1: number, index2: number) {
+    if (index1 === -1 && index2 === 0) return;
+    if (index1 === adImages.length && index2 === adImages.length - 1) return;
+    const newAdImagesArray = [...adImages];
+    newAdImagesArray.splice(index2, 0, newAdImagesArray.splice(index1, 1)[0]);
+    setAdImages(newAdImagesArray);
+    setImgToShow(index1);
+  }
 
   return (
     <section className="flex flex-col gap-2">
       {/* Upload image messages (successfully and error) */}
-      {messageGreen && <MessageSuccessfully message={messageGreen} />}
-      {messageRed && <MessageError message={messageRed} />}
+      {messageImgSuccess && (
+        <div className="mx-auto w-full max-w-lg xxl:max-w-2xl">
+          <MessageSuccessfully message={messageImgSuccess} />
+        </div>
+      )}
+      {messageImgError && (
+        <div className="mx-auto w-full max-w-lg xxl:max-w-2xl">
+          <MessageError message={messageImgError} />
+        </div>
+      )}
       {/* Show images (box) */}
       {adImages.length > 0 && (
         <div className="flex">
-          <div className="carousel carousel-item h-[33vh] w-full bg-black rounded-lg relative">
+          <div className="carousel carousel-item h-[40vh] w-full bg-black rounded-lg relative mx-auto max-w-lg xxl:max-w-2xl">
             <img
               src={adImages[imgToShow].imageUrl}
               className="w-auto h-full object-cover m-auto"
             />
-            <div className="absolute top-2 right-2 text-3xl bg-slate-100 rounded-md cursor-pointer transition-transform"></div>
             {/* Delete image button */}
-            <div className="card-actions absolute right-1	top-1">
-              <button
-                type="button"
-                className="btn btn-error w-full"
-                onClick={() => handleDeleteImage(imgToShow)}
-              >
-                Delete
-              </button>
+            <div className="card-actions absolute flex right-1 top-1">
+              <div>
+                <button
+                  type="button"
+                  className="btn btn-error w-full"
+                  onClick={() => handleOpenModal(`deleteOneAdImage`)}
+                >
+                  Delete One
+                </button>
+              </div>
+              {/* Delete all images button */}
+              {adImages.length > 1 && (
+                <div>
+                  <button
+                    type="button"
+                    className="btn btn-error w-full"
+                    onClick={() => handleOpenModal(`deleteAllAdImages`)}
+                  >
+                    Delete All
+                  </button>
+                </div>
+              )}
             </div>
             {/* Changing visible image (left and right arrows) */}
             {adImages.length > 1 && (
@@ -126,12 +158,33 @@ export function UploadAdImages({
                 </a>
               </div>
             )}
+            {/* Changing image order */}
+            {adImages.length > 1 && (
+              <div className="absolute flex bottom-2 right-2 p-2 bg-slate-100 gap-2 text-xl rounded-md cursor-pointer transition-transform">
+                <div>
+                  {imgToShow + 1}/{adImages.length}
+                </div>
+                <div
+                  onClick={() => handleChangeImgOrder(imgToShow - 1, imgToShow)}
+                >
+                  ❮
+                </div>
+                <div
+                  onClick={() => handleChangeImgOrder(imgToShow + 1, imgToShow)}
+                >
+                  ❯
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
       {/* Upload image message */}
       {adImages.length === 0 ? (
-        <MessageWarning message={"Ad must have at least 1 image"} />
+        <div className="mx-auto w-full max-w-lg xxl:max-w-2xl">
+          {" "}
+          <MessageWarning message={"Ad must have at least 1 image"} />
+        </div>
       ) : null}
       {/* Three dots while saving image */}
       {isSaving && (
@@ -141,14 +194,17 @@ export function UploadAdImages({
       )}
       {/* If maximum number of images (10) is reached / upload image input */}
       {adImages.length >= 10 ? (
-        <MessageWarning
-          message={"You have reached maximum od 10 uploaded images per ad!"}
-        />
+        <div className="mx-auto w-full max-w-lg xxl:max-w-2xl">
+          <MessageWarning
+            message={"You have reached maximum od 10 uploaded images per ad!"}
+          />
+        </div>
       ) : (
         <input
           type="file"
+          ref={fileInputRef}
           onChange={handleUploadImage}
-          className="file-input file-input-bordered w-full"
+          className="file-input file-input-bordered w-full mx-auto max-w-lg xxl:max-w-2xl"
         />
       )}
     </section>

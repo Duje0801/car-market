@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
+import { useSelector, useDispatch } from "react-redux";
 import { changeImgToShow, resetImgToShow } from "../../../store/slices/ad";
+import { store } from "../../../store";
 import { useCalcPhotosNumber } from "../../../hooks/useCalcPhotosNumber";
 import { MdOutlineZoomOutMap } from "react-icons/md";
 import { IoMdCloseCircle } from "react-icons/io";
-import { useDispatch } from "react-redux";
 
 export function AdImagesCarousel() {
   const [imgToShowModal, setImgToShowModal] = useState<number>(0);
@@ -66,23 +65,28 @@ export function AdImagesCarousel() {
               onClick={() => handleOpenModal()}
               className="absolute top-2 right-2 text-3xl bg-slate-100 rounded-md cursor-pointer hover:bg-slate-300"
             />
-            <div className="absolute top-2 right-2 text-3xl bg-slate-100 rounded-md cursor-pointer transition-transform"></div>
-            {/* Changing visible image (left and right arrows) */}
             {adData.images.length > 1 && (
-              <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                <a
-                  onClick={() => handleChangeImage(photoNumbers.before)}
-                  className="btn btn-circle bg-slate-100"
-                >
-                  ❮
-                </a>
-                <a
-                  onClick={() => handleChangeImage(photoNumbers.after)}
-                  className="btn btn-circle bg-slate-100"
-                >
-                  ❯
-                </a>
-              </div>
+              <>
+                {/* Changing visible image (left and right arrows) */}
+                <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                  <a
+                    onClick={() => handleChangeImage(photoNumbers.before)}
+                    className="btn btn-circle bg-slate-100"
+                  >
+                    ❮
+                  </a>
+                  <a
+                    onClick={() => handleChangeImage(photoNumbers.after)}
+                    className="btn btn-circle bg-slate-100"
+                  >
+                    ❯
+                  </a>
+                </div>
+                {/* No of image user is looking at */}
+                <div className="absolute flex bottom-2 right-2 p-2 bg-slate-100 gap-2 text-xl rounded-md cursor-pointer transition-transform">
+                  {imgToShowInCarousel + 1}/{adData.images.length}
+                </div>
+              </>
             )}
           </div>
         </div>

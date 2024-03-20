@@ -3,10 +3,10 @@ import { store } from "../../../store";
 import { EditAd } from "../edit/editAd";
 
 interface Props {
-  handleBtnClick: (operation: string) => void;
+  handleModalClick: (operation: string) => void;
 }
 
-export function AdModals({ handleBtnClick }: Props) {
+export function AdModals({ handleModalClick }: Props) {
   const { adData } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.ad
   );
@@ -27,7 +27,7 @@ export function AdModals({ handleBtnClick }: Props) {
           <div className="flex flex-col gap-2">
             <form method="dialog">
               <button
-                onClick={() => handleBtnClick(`hide`)}
+                onClick={() => handleModalClick(`hide`)}
                 className="btn btn-error w-full"
               >
                 Yes
@@ -57,7 +57,7 @@ export function AdModals({ handleBtnClick }: Props) {
             </form>
             <form method="dialog">
               <button
-                onClick={() => handleBtnClick(`deactivate`)}
+                onClick={() => handleModalClick(`deactivate`)}
                 className="btn btn-error w-full"
               >
                 Yes
@@ -83,7 +83,7 @@ export function AdModals({ handleBtnClick }: Props) {
             </form>
             <form method="dialog">
               <button
-                onClick={() => handleBtnClick(`delete`)}
+                onClick={() => handleModalClick(`delete`)}
                 className="btn btn-error w-full"
               >
                 Yes
