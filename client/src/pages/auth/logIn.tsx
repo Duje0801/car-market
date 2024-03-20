@@ -108,10 +108,10 @@ export function LogIn() {
               className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-8 rounded-lg w-[80vw] md:w-[50vw] lg:w-[30vw]"
             >
               <div className="card-body p-4">
-                <p className="card-title mx-auto text-3xl">Log in</p>
-                <label className="form-control w-full max-w-xs mx-auto">
+                <p className="card-title mx-auto text-3xl xxl:text-4xl">Log in</p>
+                <label className="form-control w-full max-w-md mx-auto">
                   <div className="label p-0">
-                    <span className="label-text">Email</span>
+                    <span className="label-text xxl:text-xl">Email</span>
                   </div>
                   <input
                     type="email"
@@ -119,13 +119,13 @@ export function LogIn() {
                     id="emailField"
                     value={email}
                     onChange={handleChangeEmail}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-md xxl:text-xl"
                     required
                   />
                 </label>
-                <label className="form-control w-full max-w-xs mx-auto">
+                <label className="form-control w-full max-w-md mx-auto xxl:text-xl">
                   <div className="label p-0">
-                    <span className="label-text">Password</span>
+                    <span className="label-text xxl:text-xl">Password</span>
                   </div>
                   <input
                     type="password"
@@ -134,27 +134,27 @@ export function LogIn() {
                     id="passwordField"
                     value={password}
                     onChange={handleChangePassword}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-md xxl:text-xl"
                     required
                   />
                   <div className="label"></div>
                 </label>
                 <p className="text-center">
                   <a
-                    className="link"
+                    className="link xxl:text-xl"
                     onClick={() => handleClick(`forgotPassword`)}
                   >
                     Forgot password?
                   </a>
                 </p>
-                <p className="text-center">
+                <p className="text-center xxl:text-xl">
                   Not a member yet?{" "}
-                  <a className="link" onClick={() => handleClick(`signUp`)}>
+                  <a className="link xxl:text-xl" onClick={() => handleClick(`signUp`)}>
                     Sign up
                   </a>
                 </p>
                 <div className="card-actions justify-end mt-4">
-                  <button type="submit" className="btn bg-black text-white">
+                  <button type="submit" className="btn bg-black text-white xxl:text-xl">
                     Submit
                   </button>
                 </div>

@@ -118,11 +118,13 @@ export function ResetPassword() {
               className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-8 rounded-lg w-[80vw] md:w-[50vw] lg:w-[30vw]"
             >
               <div className="card-body p-4">
-                <p className="card-title mx-auto text-3xl">Reset Password</p>
+                <p className="card-title mx-auto text-3xl xxl:text-4xl">
+                  Reset Password
+                </p>
                 {/* Email input */}
-                <label className="form-control w-full max-w-xs mx-auto">
+                <label className="form-control w-full max-w-md mx-auto">
                   <div className="label p-0">
-                    <span className="label-text">Email</span>
+                    <span className="label-text xxl:text-xl">Email</span>
                   </div>
                   <input
                     type="email"
@@ -130,14 +132,14 @@ export function ResetPassword() {
                     id="emailField"
                     value={email}
                     onChange={handleChangeEmail}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-md xxl:text-xl"
                     required
                   />
                 </label>
                 {/* Password input */}
-                <label className="form-control w-full max-w-xs mx-auto">
+                <label className="form-control w-full max-w-md mx-auto">
                   <div className="label p-0">
-                    <span className="label-text">New Password</span>
+                    <span className="label-text xxl:text-xl">New Password</span>
                   </div>
                   <input
                     type="password"
@@ -146,14 +148,16 @@ export function ResetPassword() {
                     id="passwordField"
                     value={password}
                     onChange={handleChangePassword}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-md xxl:text-xl"
                     required
                   />
                 </label>
                 {/* Confirm password input */}
-                <label className="form-control w-full max-w-xs mx-auto">
+                <label className="form-control w-full max-w-md mx-auto">
                   <div className="label p-0">
-                    <span className="label-text">Confirm New Password</span>
+                    <span className="label-text xxl:text-xl">
+                      Confirm New Password
+                    </span>
                   </div>
                   <input
                     type="password"
@@ -162,14 +166,14 @@ export function ResetPassword() {
                     id="confirmPasswordField"
                     value={confirmPassword}
                     onChange={handleChangeConfirmPassword}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-md xxl:text-xl"
                     required
                   />
                 </label>
                 {/* Token input */}
-                <label className="form-control w-full max-w-xs mx-auto">
+                <label className="form-control w-full max-w-md mx-auto">
                   <div className="label p-0">
-                    <span className="label-text">Token</span>
+                    <span className="label-text xxl:text-xl">Token</span>
                   </div>
                   <input
                     type="password"
@@ -178,13 +182,16 @@ export function ResetPassword() {
                     id="tokenField"
                     value={token}
                     onChange={handleChangeToken}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-md xxl:text-xl"
                     required
                   />
                 </label>
                 {/* Submit button */}
                 <div className="card-actions justify-end mt-4">
-                  <button type="submit" className="btn bg-black text-white">
+                  <button
+                    type="submit"
+                    className="btn bg-black text-white xxl:text-xl"
+                  >
                     Submit
                   </button>
                 </div>

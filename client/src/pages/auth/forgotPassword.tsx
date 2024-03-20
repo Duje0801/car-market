@@ -107,10 +107,12 @@ export function ForgotPassword() {
               className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-8 rounded-lg w-[80vw] md:w-[50vw] lg:w-[30vw]"
             >
               <div className="card-body p-4">
-                <p className="card-title mx-auto text-3xl">Forgot Password</p>
-                <label className="form-control w-full max-w-xs mx-auto">
+                <p className="card-title mx-auto text-3xl xxl:text-4xl">
+                  Forgot Password
+                </p>
+                <label className="form-control w-full max-w-md mx-auto">
                   <div className="label p-0">
-                    <span className="label-text mt-4">
+                    <span className="label-text mt-4 xxl:text-xl">
                       Please type your email:
                     </span>
                   </div>
@@ -120,18 +122,21 @@ export function ForgotPassword() {
                     id="emailField"
                     value={email}
                     onChange={handleChangeEmail}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-md xxl:text-xl"
                     required
                   />
                   <div className="label pt-1">
-                    <span className="label-text-alt text-[0.6rem]">
+                    <span className="label-text-alt text-[0.6rem] xxl:text-lg">
                       A recovery code will be sent to your email.
                     </span>
                   </div>
                 </label>
                 {/* Submit button */}
                 <div className="card-actions justify-end mt-4">
-                  <button type="submit" className="btn bg-black text-white">
+                  <button
+                    type="submit"
+                    className="btn bg-black text-white xxl:text-xl"
+                  >
                     Submit
                   </button>
                 </div>

@@ -128,11 +128,13 @@ export function SignUp() {
               className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-8 rounded-lg w-[80vw] md:w-[50vw] lg:w-[30vw]"
             >
               <div className="card-body p-4">
-                <p className="card-title mx-auto text-3xl">Sign Up</p>
+                <p className="card-title mx-auto text-3xl xxl:text-4xl">
+                  Sign Up
+                </p>
                 {/* Username input */}
-                <label className="form-control w-full max-w-xs mx-auto">
+                <label className="form-control w-full max-w-md mx-auto">
                   <div className="label p-0">
-                    <span className="label-text">Username</span>
+                    <span className="label-text xxl:text-xl">Username</span>
                   </div>
                   <input
                     type="text"
@@ -141,14 +143,14 @@ export function SignUp() {
                     id="usernameField"
                     value={username}
                     onChange={handleChangeUsername}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-md xxl:text-xl"
                     required
                   />
                 </label>
                 {/* Email input */}
-                <label className="form-control w-full max-w-xs mx-auto">
+                <label className="form-control w-full max-w-md mx-auto">
                   <div className="label p-0">
-                    <span className="label-text">Email</span>
+                    <span className="label-text xxl:text-xl">Email</span>
                   </div>
                   <input
                     type="email"
@@ -156,15 +158,15 @@ export function SignUp() {
                     id="emailField"
                     value={email}
                     onChange={handleChangeEmail}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-md xxl:text-xl"
                     required
                   />
                   <div className="label"></div>
                 </label>
                 {/* Password input */}
-                <label className="form-control w-full max-w-xs mx-auto">
+                <label className="form-control w-full max-w-md mx-auto">
                   <div className="label p-0">
-                    <span className="label-text">Password</span>
+                    <span className="label-text xxl:text-xl">Password</span>
                   </div>
                   <input
                     type="password"
@@ -173,15 +175,17 @@ export function SignUp() {
                     id="passwordField"
                     value={password}
                     onChange={handleChangePassword}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-md xxl:text-xl"
                     required
                   />
                   <div className="label"></div>
                 </label>
                 {/* Confirm Password input */}
-                <label className="form-control w-full max-w-xs mx-auto">
+                <label className="form-control w-full max-w-md mx-auto">
                   <div className="label p-0">
-                    <span className="label-text">Confirm Password</span>
+                    <span className="label-text xxl:text-xl">
+                      Confirm Password
+                    </span>
                   </div>
                   <input
                     type="password"
@@ -190,15 +194,17 @@ export function SignUp() {
                     id="confirmPasswordField"
                     value={confirmPassword}
                     onChange={handleChangeConfirmPassword}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-md xxl:text-xl"
                     required
                   />
                   <div className="label"></div>
                 </label>
                 {/* Contact input */}
-                <label className="form-control w-full max-w-xs mx-auto">
+                <label className="form-control w-full max-w-md mx-auto">
                   <div className="label p-0">
-                    <span className="label-text">Contact (Mob/Tel)</span>
+                    <span className="label-text xxl:text-xl">
+                      Contact (Mob/Tel)
+                    </span>
                   </div>
                   <input
                     type="text"
@@ -206,11 +212,11 @@ export function SignUp() {
                     id="contactField"
                     value={contact}
                     onChange={handleChangeContact}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-md xxl:text-xl"
                     required
                   />
                   <div className="label pt-1">
-                    <span className="label-text-alt text-[0.6rem]">
+                    <span className="label-text-alt text-[0.6rem] xxl:text-lg">
                       Contact number can contain only numbers, +, /, ( and )
                     </span>
                   </div>
@@ -218,12 +224,14 @@ export function SignUp() {
                 {/* User type radio */}
                 <div>
                   <div className="flex justify-center">
-                    <label className="text-sm">User type:</label>
+                    <label className="text-sm xxl:text-xl">User type:</label>
                   </div>
                   {userTypesList.map((type, i) => (
-                    <div className="form-control mx-auto max-w-xs">
+                    <div className="form-control mx-auto max-w-md">
                       <label className="label cursor-pointer">
-                        <span className="label-text text-sm">{type}</span>
+                        <span className="label-text text-sm xxl:text-xl">
+                          {type}
+                        </span>
                         <input
                           type="radio"
                           id={type}
@@ -232,7 +240,7 @@ export function SignUp() {
                           value={type}
                           checked={userType === type}
                           onChange={handleOptionChange}
-                          className="radio checked:bg-black"
+                          className="radio checked:bg-black xxl:text-xl"
                           required
                         />
                       </label>
@@ -241,7 +249,10 @@ export function SignUp() {
                 </div>
                 {/* Submit button */}
                 <div className="card-actions justify-end mt-4">
-                  <button type="submit" className="btn bg-black text-white">
+                  <button
+                    type="submit"
+                    className="btn bg-black text-white xxl:text-xl"
+                  >
                     Submit
                   </button>
                 </div>
