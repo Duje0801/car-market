@@ -14,13 +14,13 @@ export function Box2() {
         <img className="h-full" src={box2Image} alt="car-image" />
       </figure>
       <div className="card-body my-auto p-4 w-3/5 xxl:w-2/3">
-        <h2 className="card-title text-md lg:text-lg xxl:text-xl">
+        <h2 className="card-title text-md lg:text-lg xxl:text-2xl">
           Check out selection of used cars under 5000€!
         </h2>
         <div className="card-actions justify-end">
           <button
             onClick={handleClick}
-            className="btn text-xs bg-black text-white lg:text-sm"
+            className="btn text-xs bg-black text-white lg:text-sm xxl:text-xl"
           >
             Check
           </button>

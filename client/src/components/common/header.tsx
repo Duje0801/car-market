@@ -35,7 +35,7 @@ export function Header() {
         <div className="flex gap-2">
           {!loggedProfileData.username ? (
             <button
-              className="btn btn-sm my-auto bg-black text-white text-sm font-bold ml-2"
+              className="btn btn-sm my-auto bg-black text-white text-sm font-bold ml-2 xxl:text-xl"
               onClick={() => handleRedirect(``)}
             >
               Home
@@ -45,7 +45,7 @@ export function Header() {
               <div
                 tabIndex={0}
                 role="button"
-                className="btn btn-sm my-auto bg-black text-white text-sm font-bold ml-2"
+                className="btn btn-sm my-auto bg-black text-white text-sm font-bold ml-2 xxl:text-xl"
               >
                 Options
               </div>
@@ -54,11 +54,11 @@ export function Header() {
                 className="dropdown-content z-[1] menu p-2 shadow border-[0.8px] border-white bg-black rounded-box w-52"
               >
                 <Link to={`/`} className="my-auto">
-                  <li className="text-sm font-bold py-2">Home</li>
+                  <li className="text-sm font-bold py-2 xxl:text-xl">Home</li>
                 </Link>
                 {loggedProfileData.username === `admin` ? (
                   <Link to="/admin/userList" className="my-auto">
-                    <li className="text-sm font-bold py-2"> User List</li>
+                    <li className="text-sm font-bold py-2 xxl:text-xl"> User List</li>
                   </Link>
                 ) : null}
                 {loggedProfileData.username &&
@@ -68,10 +68,10 @@ export function Header() {
                       to={`/profile/${loggedProfileData.username}`}
                       className="my-auto"
                     >
-                      <li className="text-sm font-bold py-2">My Profile</li>
+                      <li className="text-sm font-bold py-2 xxl:text-xl">My Profile</li>
                     </Link>
                     <Link to={`/newAd`} className="my-auto">
-                      <li className="text-sm font-bold py-2">New Ad</li>
+                      <li className="text-sm font-bold py-2 xxl:text-xl">New Ad</li>
                     </Link>
                   </>
                 ) : null}
@@ -81,10 +81,10 @@ export function Header() {
         </div>
         {/* Header 1st row - Right */}
         <div className="flex">
-          <p className="my-auto text-sm font-bold">{checkProfileText}</p>
+          <p className="my-auto text-sm font-bold xxl:text-xl">{checkProfileText}</p>
           {isChecked && loggedProfileData.username ? (
             <button
-              className="btn btn-sm my-auto bg-black text-white text-sm font-bold ml-2"
+              className="btn btn-sm my-auto bg-black text-white text-sm font-bold ml-2 xxl:text-xl"
               onClick={() => handleLogOut()}
             >
               Log out
@@ -92,7 +92,7 @@ export function Header() {
           ) : null}
           {isChecked && !loggedProfileData.username ? (
             <button
-              className="btn btn-sm my-auto bg-black text-white text-sm font-bold ml-2"
+              className="btn btn-sm my-auto bg-black text-white text-sm font-bold ml-2 xxl:text-xl"
               onClick={() => handleRedirect(`logIn`)}
             >
               Log in
