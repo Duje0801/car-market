@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { changeImgToShow, resetImgToShow } from "../../../store/slices/ad";
 import { store } from "../../../store";
 import { useCalcPhotosNumber } from "../../../hooks/useCalcPhotosNumber";
@@ -7,6 +7,7 @@ import { MdOutlineZoomOutMap } from "react-icons/md";
 import { IoMdCloseCircle } from "react-icons/io";
 
 export function AdImagesCarousel() {
+  //Image number to show in modal only
   const [imgToShowModal, setImgToShowModal] = useState<number>(0);
 
   const { adData, imgToShowInCarousel } = useSelector(
@@ -14,10 +15,6 @@ export function AdImagesCarousel() {
   );
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(resetImgToShow());
-  }, [adData?.images.length]);
 
   const photoNumbers = useCalcPhotosNumber(
     imgToShowInCarousel,
@@ -27,6 +24,10 @@ export function AdImagesCarousel() {
     imgToShowModal,
     adData?.images.length!
   );
+
+  useEffect(() => {
+    dispatch(resetImgToShow());
+  }, [adData?.images.length]);
 
   //Changing visible image (in uploaded images box)
   const handleChangeImage = (iteration: number) => {
@@ -67,8 +68,8 @@ export function AdImagesCarousel() {
             />
             {adData.images.length > 1 && (
               <>
-                {/* Changing visible image (left and right arrows) */}
                 <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                  {/* Changing visible image (left and right arrows) */}
                   <a
                     onClick={() => handleChangeImage(photoNumbers.before)}
                     className="btn btn-circle bg-slate-100"
@@ -82,12 +83,12 @@ export function AdImagesCarousel() {
                     ❯
                   </a>
                 </div>
-                {/* No of image user is looking at */}
-                <div className="absolute flex bottom-2 right-2 p-2 bg-slate-100 gap-2 text-xl rounded-md cursor-pointer transition-transform">
-                  {imgToShowInCarousel + 1}/{adData.images.length}
-                </div>
               </>
             )}
+            {/* No of image user is looking at */}
+            <div className="absolute flex bottom-2 right-2 p-2 bg-slate-100 gap-2 text-xl rounded-md cursor-pointer transition-transform">
+              {imgToShowInCarousel + 1}/{adData.images.length}
+            </div>
           </div>
         </div>
       )}
@@ -100,21 +101,27 @@ export function AdImagesCarousel() {
             src={adData?.images[imgToShowModal].imageUrl}
             className="m-auto max-h-[70vh]"
           ></img>
-          {/* Changing visible image in modal (left and right arrows) */}
-          <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-            <a
-              onClick={() => handleChangeImageModal(photoNumbersModal.before)}
-              className="btn btn-circle bg-slate-100 transition-transform"
-            >
-              ❮
-            </a>
-            <a
-              onClick={() => handleChangeImageModal(photoNumbersModal.after)}
-              className="btn btn-circle bg-slate-100 transition-transform"
-            >
-              ❯
-            </a>
+          {/* No of image user is looking at (in modal) */}
+          <div className="absolute flex bottom-2 right-2 p-2 bg-slate-100 gap-2 text-xl rounded-md cursor-pointer transition-transform">
+            {imgToShowModal + 1}/{adData?.images.length}
           </div>
+          {/* Changing visible image in modal (left and right arrows) */}
+          {adData?.images.length! > 1 && (
+            <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+              <a
+                onClick={() => handleChangeImageModal(photoNumbersModal.before)}
+                className="btn btn-circle bg-slate-100 transition-transform"
+              >
+                ❮
+              </a>
+              <a
+                onClick={() => handleChangeImageModal(photoNumbersModal.after)}
+                className="btn btn-circle bg-slate-100 transition-transform"
+              >
+                ❯
+              </a>
+            </div>
+          )}
           {/* Close button (X) */}
           <div className="modal-action h-0 m-0">
             <form method="dialog">
