@@ -57,35 +57,35 @@ export function RedirectAd() {
       /* Loading user data */
     }
     return (
-      <main>
+      <div>
         <WaitingDots size={"md"} marginTop={8} />{" "}
-      </main>
+      </div>
     );
   } else if (!loggedProfileData.username) {
     {
       /* If the user is already logged in */
     }
     return (
-      <main className="mx-auto w-[90vw]">
+      <div className="mx-auto">
         <MessageError
           message={"You don't have permission to view this page!"}
         />
-      </main>
+      </div>
     );
   } else {
     {
-      /* Showing message */
+      /* Show message */
     }
     return (
-      <main>
-        <p className="text-center mx-auto mt-2 w-[90vw]">
+      <div className="flex justify-center mt-8">
+        <p className="xxl:text-xl">
           {message}
           <a onClick={handleClick} className="link">
             {clickRedirect}
           </a>
           .
         </p>
-      </main>
+      </div>
     );
   }
 }

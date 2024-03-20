@@ -18,7 +18,7 @@ export function RedirectAuth() {
 
   useEffect(() => {
     if (params.id === `logIn`) {
-      setMessage(`You have logged in. Go to `);
+      setMessage(`You have logged in as ${loggedProfileData.username}. Go to `);
       setClickRedirect(`the home page`);
     } else if (params.id === `signUp`) {
       setMessage(`Profile has been created. Go to `);
@@ -49,33 +49,33 @@ export function RedirectAuth() {
       /* Loading profile data */
     }
     return (
-      <main>
+      <div>
         <WaitingDots size={"md"} marginTop={8} />{" "}
-      </main>
+      </div>
     );
   } else if (loggedProfileData.username && params.id !== `logIn`) {
     {
       /* If the profile is already logged in */
     }
     return (
-      <main className="mx-auto w-[90vw]">
+      <div className="mx-auto">
         <MessageError message={"You are logged in!"} />
-      </main>
+      </div>
     );
   } else {
     {
-      /* Showing message */
+      /* Show message */
     }
     return (
-      <main>
-        <p className="text-center mx-auto mt-2 w-[90vw]">
+      <div className="flex justify-center mt-8">
+        <p className="xxl:text-xl">
           {message}
           <a onClick={handleClick} className="link">
             {clickRedirect}
           </a>
           .
         </p>
-      </main>
+      </div>
     );
   }
 }
