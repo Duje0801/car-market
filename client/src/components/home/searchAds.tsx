@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
@@ -9,10 +9,13 @@ import { yearsData } from "../../data/years";
 import { condition as conditionList } from "../../data/condition";
 import { fuel as fuelList } from "../../data/fuel";
 import { WaitingDots } from "../elements/waitingDots";
-import { MessageError } from "../elements/messages/messageError";
 import axios from "axios";
 
-export function SearchAds() {
+interface Props {
+  setError: Dispatch<SetStateAction<string>>;
+}
+
+export function SearchAds({ setError }: Props) {
   //States of search parameters
   const [make, setMake] = useState<string>("Make");
   const [model, setModel] = useState<string>("");
@@ -35,7 +38,6 @@ export function SearchAds() {
   //Functional states
   const [moreSearchOptions, setMoreSearchOptions] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
   const [resultsNo, setResultsNo] = useState<number>(0);
   const [searchId, setSearchId] = useState<string>("");
 
@@ -246,21 +248,15 @@ export function SearchAds() {
 
   return (
     <>
-      {/*Error box*/}
-      {error && (
-        <div className="mx-auto w-[90vw]">
-          <MessageError message={error} />
-        </div>
-      )}
       {/* Search form */}
-      <form className="flex flex-col bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw] md:w-[70vw] lg:w-[52.5vw] lg:mt-0">
+      <form className="flex flex-col bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw] md:w-[70vw] lg:full lg:mt-0">
         {/* 1st row */}
         <div className="flex gap-2 justify-around">
           {/* Make select */}
           <select
             value={make}
             onChange={handleSelectMake}
-            className="input input-bordered w-1/2"
+            className="input input-bordered w-1/2 xxl:text-xl"
           >
             <option>Make</option>
             {makesList.map((m, i) => (
@@ -273,7 +269,7 @@ export function SearchAds() {
           <input
             type="text"
             placeholder="Model"
-            className="input input-bordered w-1/2 text-black"
+            className="input input-bordered w-1/2 text-black xxl:text-xl"
             minLength={1}
             maxLength={20}
             value={model}
@@ -286,7 +282,7 @@ export function SearchAds() {
           <input
             type="text"
             placeholder="Price from"
-            className="input input-bordered w-1/2 text-black"
+            className="input input-bordered w-1/2 text-black xxl:text-xl"
             minLength={0}
             maxLength={8}
             value={priceFrom}
@@ -296,7 +292,7 @@ export function SearchAds() {
           <input
             type="text"
             placeholder="Price to"
-            className="input input-bordered w-1/2 text-black"
+            className="input input-bordered w-1/2 text-black xxl:text-xl"
             minLength={0}
             maxLength={8}
             value={priceTo}
@@ -308,7 +304,7 @@ export function SearchAds() {
         <select
           value={country}
           onChange={handleSelectCountry}
-          className="input input-bordered w-full"
+          className="input input-bordered w-full xxl:text-xl"
         >
           <option>Pick country</option>
           {countriesList.map((c, i) => {
@@ -323,7 +319,7 @@ export function SearchAds() {
         {/* More search options button */}
         <button
           type="button"
-          className="btn bg-black text-white w-full"
+          className="btn bg-black text-white w-full xxl:text-xl"
           onClick={handleMoreSearchOptions}
         >
           {moreSearchOptions ? "Less" : "More"} search options
@@ -335,7 +331,7 @@ export function SearchAds() {
             <select
               value={condition}
               onChange={handleSelectCondition}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full xxl:text-xl"
             >
               <option>New/Used</option>
               {conditionList.map((f, i) => (
@@ -349,7 +345,7 @@ export function SearchAds() {
             <select
               value={fuel}
               onChange={handleSelectFuel}
-              className="input input-bordered w-full"
+              className="input input-bordered w-full xxl:text-xl"
             >
               <option>Fuel</option>
               {fuelList.map((f, i) => (
@@ -364,7 +360,7 @@ export function SearchAds() {
               <select
                 value={firstRegistrationFrom}
                 onChange={handleSelectFirstRegistrationFrom}
-                className="input input-bordered w-1/2"
+                className="input input-bordered w-1/2 xxl:text-xl"
               >
                 <option>First registration from</option>
                 {years.map((y, i) => {
@@ -379,7 +375,7 @@ export function SearchAds() {
               <select
                 value={firstRegistrationTo}
                 onChange={handleSelectFirstRegistrationTo}
-                className="input input-bordered w-1/2"
+                className="input input-bordered w-1/2 xxl:text-xl"
               >
                 <option>First registration to</option>
                 {years.map((y, i) => {
@@ -400,7 +396,7 @@ export function SearchAds() {
               <input
                 type="text"
                 placeholder="Mileage from (km)"
-                className="input input-bordered w-1/2 text-black"
+                className="input input-bordered w-1/2 text-black xxl:text-xl"
                 minLength={1}
                 maxLength={7}
                 value={mileageFrom}
@@ -410,7 +406,7 @@ export function SearchAds() {
               <input
                 type="text"
                 placeholder="Mileage to (km)"
-                className="input input-bordered w-1/2 text-black"
+                className="input input-bordered w-1/2 text-black xxl:text-xl"
                 minLength={1}
                 maxLength={7}
                 value={mileageTo}
@@ -423,7 +419,7 @@ export function SearchAds() {
               <input
                 type="text"
                 placeholder="Min power (kW)"
-                className="input input-bordered w-1/2 text-black"
+                className="input input-bordered w-1/2 text-black xxl:text-xl"
                 minLength={1}
                 maxLength={4}
                 value={minPower}
@@ -433,7 +429,7 @@ export function SearchAds() {
               <input
                 type="text"
                 placeholder="Max power (kW)"
-                className="input input-bordered w-1/2 text-black"
+                className="input input-bordered w-1/2 text-black xxl:text-xl"
                 minLength={1}
                 maxLength={4}
                 value={maxPower}
@@ -446,14 +442,14 @@ export function SearchAds() {
         {/* Clear all and Results buttons */}
         <button
           type="button"
-          className="btn btn-error w-full"
+          className="btn btn-error w-full xxl:text-xl"
           onClick={() => clearFields(true)}
         >
           Clear All
         </button>
         <button
           type="button"
-          className="btn bg-black text-white w-full"
+          className="btn bg-black text-white w-full xxl:text-xl"
           onClick={handleRedirect}
         >
           {isLoading ? (
