@@ -10,6 +10,7 @@ import { MessageSuccessfully } from "../../components/elements/messages/messageS
 import { yearsData } from "../../data/years";
 import { makes as makesList } from "../../data/makes";
 import { fuel as fuelList } from "../../data/fuel";
+import { gearbox as gearboxList } from "../../data/gearbox";
 import { condition as conditionList } from "../../data/condition";
 import { countries as countriesList } from "../../data/countries";
 import { IImage } from "../../interfaces/IImage";
@@ -27,9 +28,11 @@ export function NewAd() {
   );
   const [mileage, setMileage] = useState<string>("");
   const [fuel, setFuel] = useState<string>("");
+  const [gearbox, setGearbox] = useState<string>("");
   const [power, setPower] = useState<string>("");
   const [price, setPrice] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
   const [adImages, setAdImages] = useState<IImage[]>([]);
 
   //Other states
@@ -102,14 +105,22 @@ export function NewAd() {
     }
   };
 
+  const handleSelectFuel = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setFuel(event.target.value);
+  };
+
+  const handleSelectGearbox = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setGearbox(event.target.value);
+  };
+
   const handleChangeDescription = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setDescription(event.target.value);
   };
 
-  const handleSelectFuel = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setFuel(event.target.value);
+  const handleChangeLocation = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation(event.target.value);
   };
 
   //New ad submit function
@@ -137,9 +148,11 @@ export function NewAd() {
       formData.append("firstRegistration", String(firstRegistration));
       formData.append("mileage", mileage);
       formData.append("fuel", fuel);
+      formData.append("gearbox", gearbox);
       formData.append("power", power);
       formData.append("price", price);
       formData.append("description", description);
+      formData.append("location", location);
       formData.append("adImages", JSON.stringify(adImages));
 
       const response = await axios.post(
@@ -314,7 +327,7 @@ export function NewAd() {
                 <input
                   type="text"
                   minLength={5}
-                  maxLength={50}
+                  maxLength={30}
                   value={title}
                   onChange={handleChangeTitle}
                   className="input input-bordered w-full mx-auto max-w-lg xxl:max-w-2xl xxl:text-xl"
@@ -459,6 +472,27 @@ export function NewAd() {
                   })}
                 </select>
               </label>
+              {/* Gearbox select */}
+              <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
+                <div className="label p-0">
+                  <span className="label-text xxl:text-xl">Gearbox</span>
+                </div>
+                <select
+                  value={gearbox}
+                  onChange={handleSelectGearbox}
+                  className="input input-bordered w-full xxl:text-xl"
+                  required
+                >
+                  <option key={0}></option>
+                  {gearboxList.map((g, i) => {
+                    return (
+                      <option key={i + 1} value={g}>
+                        {g}
+                      </option>
+                    );
+                  })}
+                </select>
+              </label>
               {/* Power input */}
               <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
                 <div className="label p-0">
@@ -489,6 +523,20 @@ export function NewAd() {
                   onChange={handleChangePrice}
                   className="input input-bordered w-full mx-auto max-w-lg xxl:max-w-2xl xxl:text-xl"
                   required
+                />
+              </label>
+              {/* Location input */}
+              <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
+                <div className="label p-0">
+                  <span className="label-text xxl:text-xl">Location</span>
+                </div>
+                <input
+                  type="text"
+                  placeholder="City/region where the car is located"
+                  maxLength={20}
+                  value={location}
+                  onChange={handleChangeLocation}
+                  className="input input-bordered w-full mx-auto max-w-lg xxl:max-w-2xl xxl:text-xl"
                 />
               </label>
               {/* Description textarea */}

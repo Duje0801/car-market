@@ -52,6 +52,12 @@ export const searchAds: any = async function (req: Request, res: Response) {
         fuel: req.query.fuel,
       };
     }
+    if (req.query.gearbox) {
+      adsCheck = {
+        ...adsCheck,
+        gearbox: req.query.gearbox,
+      };
+    }
     if (req.query.firstRegistrationFrom || req.query.firstRegistrationTo) {
       let firstRegistrationCheck: {} = {};
       if (req.query.firstRegistrationFrom === "Older") {

@@ -18,11 +18,20 @@ export function AdInfoBox() {
       </div>
       {/* Ad description */}
       {adData && adData.description ? (
-        <div className="gap-2 text-xl mt-6">
+        <div className="gap-2 text-xl mt-4">
           <div>
             <b>Description:</b>
           </div>
           <div className="text-base">{adData.description}</div>
+        </div>
+      ) : null}
+       {/* Car location */}
+       {adData && adData?.location ? (
+        <div className="gap-2 text-xl">
+          <div>
+            <b>Location:</b>
+          </div>
+          <div className="text-base">{adData.location}</div>
         </div>
       ) : null}
     </div>

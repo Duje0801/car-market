@@ -15,8 +15,10 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
       firstRegistration,
       mileage,
       fuel,
+      gearbox,
       power,
       price,
+      location,
       description,
       adImages
     } = req.body;
@@ -50,8 +52,10 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
       firstRegistration: firstRegistrationChecked,
       mileage: Number(mileage),
       fuel,
+      gearbox,
       power: Number(power),
       price: Number(price),
+      location,
       description,
       images: JSON.parse(adImages)
     });

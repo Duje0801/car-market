@@ -14,6 +14,7 @@ import { EditAdImagesModal } from "../modals/editAdImagesModal";
 import { yearsData } from "../../../data/years";
 import { makes as makesList } from "../../../data/makes";
 import { fuel as fuelList } from "../../../data/fuel";
+import { gearbox as gearboxList } from "../../../data/gearbox";
 import { condition as conditionList } from "../../../data/condition";
 import { countries as countriesList } from "../../../data/countries";
 import { IImage } from "../../../interfaces/IImage";
@@ -36,11 +37,13 @@ export function EditAd({ adData }: Props) {
   );
   const [mileage, setMileage] = useState<string>(String(adData?.mileage || ""));
   const [fuel, setFuel] = useState<string>(adData?.fuel || "");
+  const [gearbox, setGearbox] = useState<string>(adData?.gearbox || "");
   const [power, setPower] = useState<string>(String(adData?.power || ""));
   const [price, setPrice] = useState<string>(String(adData?.price || ""));
   const [description, setDescription] = useState<string>(
     String(adData?.description || "")
   );
+  const [location, setLocation] = useState<string>(adData?.location || "");
   const [adImages, setAdImages] = useState<IImage[]>(adData?.images || []);
 
   //Other states
@@ -118,14 +121,22 @@ export function EditAd({ adData }: Props) {
     }
   };
 
+  const handleSelectFuel = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setFuel(event.target.value);
+  };
+
+  const handleSelectGearbox = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setGearbox(event.target.value);
+  };
+
   const handleChangeDescription = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setDescription(event.target.value);
   };
 
-  const handleSelectFuel = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setFuel(event.target.value);
+  const handleChangeLocation = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation(event.target.value);
   };
 
   //Submit new ad data
@@ -143,9 +154,11 @@ export function EditAd({ adData }: Props) {
       formData.append("firstRegistration", String(firstRegistration));
       formData.append("mileage", mileage);
       formData.append("fuel", fuel);
+      formData.append("gearbox", gearbox);
       formData.append("power", power);
       formData.append("price", price);
       formData.append("description", description);
+      formData.append("location", location);
       formData.append("adImages", JSON.stringify(adImages));
 
       if (adImages.length < 1 || adImages.length > 10) {
@@ -285,7 +298,7 @@ export function EditAd({ adData }: Props) {
                 <input
                   type="text"
                   minLength={5}
-                  maxLength={50}
+                  maxLength={30}
                   value={title}
                   onChange={handleChangeTitle}
                   className="input input-bordered w-full"
@@ -428,6 +441,27 @@ export function EditAd({ adData }: Props) {
                   })}
                 </select>
               </label>
+              {/* Gearbox select */}
+              <label className="form-control w-full">
+                <div className="label p-0">
+                  <span className="label-text">Gearbox</span>
+                </div>
+                <select
+                  value={gearbox}
+                  onChange={handleSelectGearbox}
+                  className="input input-bordered w-full"
+                  required
+                >
+                  <option key={0}></option>
+                  {gearboxList.map((g, i) => {
+                    return (
+                      <option key={i + 1} value={g}>
+                        {g}
+                      </option>
+                    );
+                  })}
+                </select>
+              </label>
               {/* Power input */}
               <label className="form-control w-full">
                 <div className="label p-0">
@@ -458,6 +492,20 @@ export function EditAd({ adData }: Props) {
                   onChange={handleChangePrice}
                   className="input input-bordered w-full"
                   required
+                />
+              </label>
+              {/* Location input */}
+              <label className="form-control w-full">
+                <div className="label p-0">
+                  <span className="label-text">Location</span>
+                </div>
+                <input
+                  type="text"
+                  placeholder="City/region where the car is located"
+                  maxLength={20}
+                  value={location}
+                  onChange={handleChangeLocation}
+                  className="input input-bordered w-full"
                 />
               </label>
               {/* Description textarea */}

@@ -11,9 +11,11 @@ export interface IAd {
   firstRegistration: number;
   mileage: number;
   fuel: string;
+  gearbox: string;
   power: number;
   price: number;
   description: string;
+  location: string;
   createdAt: Date;
   id: string;
   images: {

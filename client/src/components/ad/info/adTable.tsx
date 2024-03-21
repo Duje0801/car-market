@@ -7,18 +7,19 @@ import { FaCarSide } from "react-icons/fa";
 import { FaCalendarAlt } from "react-icons/fa";
 import { FaRoad } from "react-icons/fa";
 import { BsFillFuelPumpFill } from "react-icons/bs";
+import { TbManualGearbox } from "react-icons/tb";
 import { ImPower } from "react-icons/im";
 import { ImPriceTags } from "react-icons/im";
 
 export function AdTable() {
   const { adData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.ad,
+    (state: ReturnType<typeof store.getState>) => state.ad
   );
 
   return (
     <div className="overflow-x-auto mx-auto md:w-2/3 lg:w-1/2">
       {/* Ad title */}
-      <p className="text-2xl font-bold text-center my-4 md:text-3xl">
+      <p className="text-2xl font-bold text-center my-4 md:text-3xl md:mt-0">
         {adData && adData.title}
       </p>
       {/* Table */}
@@ -61,7 +62,8 @@ export function AdTable() {
               {" "}
               {adData && adData.firstRegistration === 1999
                 ? "Older than 2000."
-                : adData?.firstRegistration}.
+                : adData?.firstRegistration}
+              .
             </td>
           </tr>
           {/* Mileage row */}
@@ -79,6 +81,15 @@ export function AdTable() {
             </th>
             <td className="p-0">{adData && adData.fuel}</td>
           </tr>
+          {/* Gearbox row */}
+          <tr className="bg-base-200 text-xl">
+            <th className="flex gap-2 p-0">
+              <TbManualGearbox className="my-auto" />
+              Gearbox:{" "}
+            </th>
+            <td className="p-0">{adData && adData.gearbox}</td>
+          </tr>
+
           {/* Power row */}
           <tr className="bg-base-200 text-xl">
             <th className="flex gap-2 p-0">
@@ -91,7 +102,7 @@ export function AdTable() {
             <th className="flex gap-2 p-0">
               <ImPriceTags className="my-auto" /> Price:
             </th>
-            <td className="p-0">{adData && adData.price}€</td>
+            <td className="p-0"><b>{adData && adData.price}€</b></td>
           </tr>
         </tbody>
       </table>

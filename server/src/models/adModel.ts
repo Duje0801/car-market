@@ -19,8 +19,8 @@ const adSchema = new Schema(
         "The minimum number of characters allowed in the title is 5",
       ],
       maxLength: [
-        50,
-        "The maximum number of characters allowed in the title is 50",
+        30,
+        "The maximum number of characters allowed in the title is 30",
       ],
     },
     condition: {
@@ -54,17 +54,12 @@ const adSchema = new Schema(
         "Dacia",
         "Fiat",
         "Ford",
-        "Hyundai",
         "Mercedes-Benz",
         "Opel",
         "Peugeot",
         "Renault",
-        "Seat",
         "Skoda",
-        "Suzuki",
-        "Toyota",
         "Volkswagen",
-        "Volvo",
         "Other",
       ],
     },
@@ -103,6 +98,11 @@ const adSchema = new Schema(
       required: [true, "Fuel type is required"],
       enum: ["Gasoline", "Diesel", "Hybrid", "LPG", "EV"],
     },
+    gearbox: {
+      type: String,
+      required: [true, "Gearbox type is required"],
+      enum: ["Manual", "Automatic", "Semi-Automatic"],
+    },
     power: {
       type: Number,
       required: [true, "Engine power is required"],
@@ -114,6 +114,13 @@ const adSchema = new Schema(
       required: [true, "The price of the car is required"],
       min: [1, "The minimum price is 1"],
       max: [99999999, "The maximum price is 99999999"],
+    },
+    location: {
+      type: String,
+      maxLength: [
+        20,
+        "The maximum number of characters allowed in the car location is 20",
+      ],
     },
     description: {
       type: String,

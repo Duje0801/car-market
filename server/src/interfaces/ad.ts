@@ -11,8 +11,10 @@ export interface IAd extends Document {
   firstRegistration: number;
   mileage: number;
   fuel: string;
+  gearbox: string;
   power: number;
   price: number;
+  location: string;
   description: string;
   images: {
     imageUrl: string;

@@ -16,8 +16,10 @@ export const editAd: any = async function (req: ReqUser, res: Response) {
       firstRegistration,
       mileage,
       fuel,
+      gearbox,
       power,
       price,
+      location,
       description,
       adImages,
     } = req.body;
@@ -69,9 +71,11 @@ export const editAd: any = async function (req: ReqUser, res: Response) {
     ad.firstRegistration = firstRegistrationChecked;
     ad.mileage = mileage;
     ad.fuel = fuel;
+    ad.gearbox = gearbox;
     ad.power = power;
     ad.price = price;
     ad.images = JSON.parse(adImages);
+    ad.location = location;
     ad.description = description;
 
     //Saving ad

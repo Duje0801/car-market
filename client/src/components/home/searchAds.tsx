@@ -8,6 +8,7 @@ import { countries as countriesList } from "../../data/countries";
 import { yearsData } from "../../data/years";
 import { condition as conditionList } from "../../data/condition";
 import { fuel as fuelList } from "../../data/fuel";
+import { gearbox as gearboxList } from "../../data/gearbox";
 import { WaitingDots } from "../elements/waitingDots";
 import axios from "axios";
 
@@ -24,6 +25,7 @@ export function SearchAds({ setError }: Props) {
   const [country, setCountry] = useState<string>("Pick country");
   const [condition, setCondition] = useState<string>("New/Used");
   const [fuel, setFuel] = useState<string>("Fuel");
+  const [gearbox, setGearbox] = useState<string>("Gearbox");
   const [firstRegistrationFrom, setFirstRegistrationFrom] = useState<string>(
     "First registration from"
   );
@@ -59,6 +61,7 @@ export function SearchAds({ setError }: Props) {
       country ||
       condition ||
       fuel ||
+      gearbox ||
       firstRegistrationFrom ||
       firstRegistrationTo ||
       mileageFrom ||
@@ -76,6 +79,7 @@ export function SearchAds({ setError }: Props) {
     country,
     condition,
     fuel,
+    gearbox,
     firstRegistrationFrom,
     firstRegistrationTo,
     mileageFrom,
@@ -120,6 +124,10 @@ export function SearchAds({ setError }: Props) {
 
   const handleSelectFuel = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setFuel(event.target.value);
+  };
+
+  const handleSelectGearbox = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setGearbox(event.target.value);
   };
 
   const handleSelectFirstRegistrationFrom = (
@@ -195,6 +203,7 @@ export function SearchAds({ setError }: Props) {
     if (condition && condition !== "New/Used")
       queries += `condition=${condition}&`;
     if (fuel && fuel !== "Fuel") queries += `fuel=${fuel}&`;
+    if (gearbox && gearbox !== "Gearbox") queries += `gearbox=${gearbox}&`;
     if (minPower) queries += `minPower=${minPower}&`;
     if (maxPower) queries += `maxPower=${maxPower}&`;
     if (priceFrom) queries += `priceFrom=${priceFrom}&`;
@@ -355,6 +364,20 @@ export function SearchAds({ setError }: Props) {
               ))}
             </select>
             {/* 7th row */}
+            {/* Gearbox select */}
+            <select
+              value={gearbox}
+              onChange={handleSelectGearbox}
+              className="input input-bordered w-full xxl:text-xl"
+            >
+              <option>Gearbox</option>
+              {gearboxList.map((g, i) => (
+                <option key={i} value={g}>
+                  {g}
+                </option>
+              ))}
+            </select>
+            {/* 8th row */}
             <div className="flex gap-2 justify-around">
               {/* First registration from select */}
               <select
@@ -390,7 +413,7 @@ export function SearchAds({ setError }: Props) {
                 })}
               </select>
             </div>
-            {/* 8th row */}
+            {/* 9th row */}
             <div className="flex gap-2 justify-around">
               {/* Mileage from input */}
               <input
@@ -413,7 +436,7 @@ export function SearchAds({ setError }: Props) {
                 onChange={handleChangeMileageTo}
               />
             </div>
-            {/* 9th row */}
+            {/* 10th row */}
             <div className="flex gap-2 justify-around">
               {/* Min power input*/}
               <input

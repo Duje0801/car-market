@@ -7,6 +7,7 @@ import { countries as countriesList } from "../../../data/countries";
 import { yearsData } from "../../../data/years";
 import { condition as conditionList } from "../../../data/condition";
 import { fuel as fuelList } from "../../../data/fuel";
+import { gearbox as gearboxList } from "../../../data/gearbox";
 import { WaitingDots } from "../../elements/waitingDots";
 import { MessageError } from "../../elements/messages/messageError";
 import { MessageWarning } from "../../elements/messages/messageWarning";
@@ -22,6 +23,7 @@ export function AdSLFilter() {
   const [country, setCountry] = useState<string>("Pick country");
   const [condition, setCondition] = useState<string>("New/Used");
   const [fuel, setFuel] = useState<string>("Fuel");
+  const [gearbox, setGearBox] = useState<string>("Gearbox");
   const [firstRegistrationFrom, setFirstRegistrationFrom] = useState<string>(
     "First registration from"
   );
@@ -86,6 +88,7 @@ export function AdSLFilter() {
       country ||
       condition ||
       fuel ||
+      gearbox ||
       firstRegistrationFrom ||
       firstRegistrationTo ||
       mileageFrom ||
@@ -103,6 +106,7 @@ export function AdSLFilter() {
     country,
     condition,
     fuel,
+    gearbox,
     firstRegistrationFrom,
     firstRegistrationTo,
     mileageFrom,
@@ -147,6 +151,10 @@ export function AdSLFilter() {
 
   const handleSelectFuel = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setFuel(event.target.value);
+  };
+
+  const handleSelectGearbox = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setGearBox(event.target.value);
   };
 
   const handleSelectFirstRegistrationFrom = (
@@ -223,6 +231,7 @@ export function AdSLFilter() {
       queries += `condition=${condition}&`;
     }
     if (fuel && fuel !== "Fuel") queries += `fuel=${fuel}&`;
+    if (gearbox && gearbox !== "Gearbox") queries += `gearbox=${gearbox}&`;
     if (minPower) queries += `minPower=${minPower}&`;
     if (maxPower) queries += `maxPower=${maxPower}&`;
     if (priceFrom) queries += `priceFrom=${priceFrom}&`;
@@ -392,6 +401,19 @@ export function AdSLFilter() {
               {fuelList.map((f, i) => (
                 <option key={i} value={f}>
                   {f}
+                </option>
+              ))}
+            </select>
+            {/* Gearbox select */}
+            <select
+              value={gearbox}
+              onChange={handleSelectGearbox}
+              className="input input-bordered w-full xxl:text-xl"
+            >
+              <option>Gearbox</option>
+              {gearboxList.map((g, i) => (
+                <option key={i} value={g}>
+                  {g}
                 </option>
               ))}
             </select>
