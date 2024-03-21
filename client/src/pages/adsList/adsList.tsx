@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addAdListData, changeAdListDataNo } from "../../store/slices/adList";
 import { store } from "../../store";
-import { AdSL } from "../../components/adSearchList/adSL";
-import { AdSLModal } from "../../components/adSearchList/adSLModal";
-import { AdSLFilter } from "../../components/adSearchList/adSLFilter";
+import { AdSL } from "../../components/adSearchList/info/adSL";
+import { AdSLModal } from "../../components/adSearchList/modals/adSLModal";
+import { AdSLFilter } from "../../components/adSearchList/filter/adSLFilter";
 import { AdSLDropdowns } from "../../components/adSearchList/dropdowns/adSLDropdowns";
 import { Pagination } from "../../components/elements/pagination";
 import { WaitingDots } from "../../components/elements/waitingDots";
@@ -107,7 +107,12 @@ export function AdsList() {
     return (
       <div className="flex justify-center w-full">
         {/* Ads filter - left, if screen is wider than 768px */}
-        <AdSLFilter />
+        <div className="hidden w-2/5 md:block md:w-1/3">
+          <div className="w-11/12 mx-auto mt-12 bg-base-200 py-4 shadow-xl rounded-lg md:w-10/12 md:mr-2 lg:w-2/3 lg:mr-4">
+            <h3 className="font-bold text-lg text-center">Filter</h3>
+            <AdSLFilter />
+          </div>
+        </div>
 
         {/* Ads column */}
         <div className="md:w-2/3">
@@ -118,7 +123,7 @@ export function AdsList() {
           />
 
           {/* Ads  */}
-          <div className="card bg-base-200 gap-2 py-4 shadow-xl mx-auto rounded-lg w-[90vw] md:w-5/6 md:ml-4 md:py-2">
+          <div className="card w-[90vw] bg-base-200 gap-2 py-4 shadow-xl mx-auto rounded-lg md:w-11/12 md:ml-2 md:py-2 lg:w-5/6 lg:ml-4">
             {/* Pagination */}
             <Pagination
               totalLength={adListDataNo}

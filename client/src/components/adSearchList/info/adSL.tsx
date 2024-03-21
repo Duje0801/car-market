@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { store } from "../../store";
-import { AdDisplayMessages } from "../adsDisplay/adDisplayMessages";
-import { AdDisplayNarrow } from "../adsDisplay/adDisplayNarrow";
-import { AdDisplayWide } from "../adsDisplay/adDisplayWide";
+import { store } from "../../../store";
+import { AdDisplayMessages } from "../../adsDisplay/adDisplayMessages";
+import { AdDisplayNarrow } from "../../adsDisplay/adDisplayNarrow";
+import { AdDisplayWide } from "../../adsDisplay/adDisplayWide";
 
 export function AdSL() {
   const navigate = useNavigate();

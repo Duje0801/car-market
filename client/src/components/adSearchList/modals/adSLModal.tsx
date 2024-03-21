@@ -1,4 +1,4 @@
-import { AdSLFilter } from "./adSLFilter";
+import { AdSLFilter } from "../filter/adSLFilter";
 
 export function AdSLModal() {
   return (
