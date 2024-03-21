@@ -105,7 +105,7 @@ export function Header() {
         onClick={() => handleRedirect(``)}
         className="flex w-fit m-auto my-2 hover:cursor-pointer"
       >
-        <img src={logoImage} alt="logo" className="h-[12.5vh] lg:h-[14vh]" />
+        <img src={logoImage} alt="logo" className="h-[10vh] sm:h-[12.5vh] lg:h-[14vh]" />
         <img src={logoTitle} alt="logo" className="h-[5vh] m-auto" />
       </div>
     </header>
