@@ -8,6 +8,7 @@ import {
   addProfileAds,
 } from "../../store/slices/profile";
 import { removeLoggedProfileData } from "../../store/slices/loggedProfile";
+import { changeProfileAdsNo } from "../../store/slices/profile";
 import { catchErrors } from "../../utilis/catchErrors";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
@@ -24,7 +25,6 @@ export function Profile() {
   const [editError, setEditError] = useState<string>("");
   const [editMessage, setEditMessage] = useState<string>("");
   const [page, setPage] = useState<number>(1);
-  const [adInfoTotalNo, setAdInfoTotalNo] = useState<number>(0);
   const [sort, setSort] = useState<string>("-createdAt");
 
   const { loggedProfileData, isChecked } = useSelector(
@@ -61,7 +61,7 @@ export function Profile() {
       );
       dispatch(addProfileData({ ...response.data.user, ads: undefined }));
       dispatch(addProfileAds(response.data.user.ads));
-      setAdInfoTotalNo(response.data.adsNo);
+      dispatch(changeProfileAdsNo(response.data.adsNo));
     } catch (error) {
       catchErrors(error, setError);
     }
@@ -182,6 +182,12 @@ export function Profile() {
     navigate(`/ad/${id}`);
   };
 
+  //Sorting function
+  const handleSorting = (id: string) => {
+    setSort(id);
+    setPage(1);
+  };
+
   if (!isChecked || !isLoaded) {
     {
       /* Loading user data */
@@ -203,7 +209,6 @@ export function Profile() {
         <div className="pb-2 lg:flex">
           {/* Profile info box */}
           <ProfileInfoBox
-            adInfoTotalNo={adInfoTotalNo}
             setError={setError}
             handleOpenModal={handleOpenModal}
             error={error}
@@ -217,8 +222,8 @@ export function Profile() {
               page={page}
               setPage={setPage}
               setSort={setSort}
-              adInfoTotalNo={adInfoTotalNo}
               handleSeeMoreClick={handleSeeMoreClick}
+              handleSorting={handleSorting}
             />
           ) : null}
           {/* No ads */}

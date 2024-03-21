@@ -1,3 +1,4 @@
+import { useIsAdOld } from "../../hooks/useIsAdOld";
 import { MdNewReleases } from "react-icons/md";
 import { FaCalendarAlt } from "react-icons/fa";
 import { FaRoad } from "react-icons/fa";
@@ -10,14 +11,21 @@ interface Props {
 }
 
 export function AdDisplayWide({ ad, handleSeeMoreClick }: Props) {
+  const isOld = useIsAdOld(ad.createdAt);
   return (
-    <div className="hidden card card-side bg-base-100 shadow-xl rounded-lg h-[30vh] lg:flex">
+    <div
+      className={`hidden card card-side bg-base-100 shadow-xl rounded-lg h-[22.5vh] lg:h-[27.5vh] lg:flex ${
+        isOld || !ad.visible || !ad.active ? `rounded-tl-none` : ``
+      }`}
+    >
       {/* Ad image - left */}
       <figure className="w-2/5">
         <img
           src={ad.images[0].imageUrl}
           alt="AdImage"
-          className="h-full w-full max-h-[25vw]"
+          className={`h-full object-cover ${
+            isOld || !ad.visible || !ad.active ? `rounded-tr-lg` : ``
+          }`}
         />
       </figure>
 
@@ -52,7 +60,9 @@ export function AdDisplayWide({ ad, handleSeeMoreClick }: Props) {
         <div className="card-actions flex flex-col gap-0 xl:gap-4">
           {/* Price */}
           <div className="flex  ml-auto">
-            <p className="flex text-xl gap-2 xl:text-3xl">{ad.price} €</p>
+            <p className="flex text-xl gap-2 xl:text-3xl">
+              <b>{ad.price} €</b>
+            </p>
           </div>
 
           {/* Details button */}

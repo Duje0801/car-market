@@ -7,6 +7,7 @@ import { IAd } from "../../interfaces/IAd";
 const initialState: IProfileState = {
   profileData: null,
   profileAds: [],
+  profileAdsNo: 0,
 };
 
 export const profileSlice = createSlice({
@@ -25,6 +26,13 @@ export const profileSlice = createSlice({
     removeProfileAds(state) {
       state.profileAds = [];
     },
+    changeProfileAdsNo(state, action: PayloadAction<number>) {
+      state.profileAdsNo = action.payload
+    },
+    removeProfileAdsNo(state) {
+      state.profileAdsNo = 0
+    },
+
   },
 });
 
@@ -33,4 +41,6 @@ export const {
   removeProfileData,
   addProfileAds,
   removeProfileAds,
+  changeProfileAdsNo,
+  removeProfileAdsNo
 } = profileSlice.actions;

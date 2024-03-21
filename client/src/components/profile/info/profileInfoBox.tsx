@@ -10,7 +10,6 @@ import { BsFillTelephoneFill } from "react-icons/bs";
 import { IoMail } from "react-icons/io5";
 
 interface Props {
-  adInfoTotalNo: number;
   error: string;
   message: string;
   setError: Dispatch<SetStateAction<string>>;
@@ -18,7 +17,6 @@ interface Props {
 }
 
 export function ProfileInfoBox({
-  adInfoTotalNo,
   error,
   message,
   handleOpenModal,
@@ -27,7 +25,7 @@ export function ProfileInfoBox({
     (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
-  const { profileData } = useSelector(
+  const { profileData, profileAdsNo } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
@@ -54,7 +52,7 @@ export function ProfileInfoBox({
         <div
           className={`card bg-base-200 p-4 gap-2 shadow-xl mx-auto mb-4 rounded-lg w-[90vw] sm:w-[66vw] lg:w-2/3 lg:ml-auto lg:mr-4 ${
             loggedProfileData.username !== params.id &&
-            (adInfoTotalNo !== 0 || adInfoTotalNo >= 9999999)
+            (profileAdsNo !== 0 || profileAdsNo >= 9999999)
               ? "mt-2 lg:mt-10"
               : "mt-0"
           }`}

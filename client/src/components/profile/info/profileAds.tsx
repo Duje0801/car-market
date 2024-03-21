@@ -8,28 +8,22 @@ import { AdDisplayNarrow } from "../../adsDisplay/adDisplayNarrow";
 import { AdDisplayWide } from "../../adsDisplay/adDisplayWide";
 
 interface Props {
-  adInfoTotalNo: number;
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
   setSort: Dispatch<SetStateAction<string>>;
   handleSeeMoreClick: (id: string) => void;
+  handleSorting: (id: string) => void;
 }
 
 export function ProfileAds({
-  adInfoTotalNo,
   page,
   setPage,
-  setSort,
   handleSeeMoreClick,
+  handleSorting,
 }: Props) {
-  const { profileAds } = useSelector(
+  const { profileAds, profileAdsNo } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
   );
-
-  const handleSorting = (id: string) => {
-    setSort(id);
-    setPage(1);
-  };
 
   return (
     <div className="lg:w-2/3">
@@ -41,7 +35,7 @@ export function ProfileAds({
         <div className="card-body p-2">
           {/* Pagination */}
           <Pagination
-            totalLength={adInfoTotalNo}
+            totalLength={profileAdsNo}
             itemsPerPage={5}
             page={page}
             setPage={setPage}
@@ -74,7 +68,7 @@ export function ProfileAds({
       </div>
       {/* Pagination */}
       <Pagination
-        totalLength={adInfoTotalNo}
+        totalLength={profileAdsNo}
         itemsPerPage={5}
         page={page}
         setPage={setPage}

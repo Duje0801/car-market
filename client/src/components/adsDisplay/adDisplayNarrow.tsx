@@ -14,11 +14,11 @@ export function AdDisplayNarrow({ ad, handleSeeMoreClick }: Props) {
   return (
     <div className="lg:hidden">
       {/* Ad image */}
-      <figure>
+      <figure className="h-[25vh]">
         <img
           src={ad.images[0].imageUrl}
           alt="AdImage"
-          className="rounded-lg h-[25vh] w-auto"
+          className=" w-full object-cover rounded-lg"
         />
       </figure>
 
@@ -51,7 +51,8 @@ export function AdDisplayNarrow({ ad, handleSeeMoreClick }: Props) {
       <div className="card-actions flex flex-col gap-1">
         {/* Price */}
         <p className="flex text-xl gap-2 my-auto ml-auto">
-          <ImPriceTags className="my-auto" /> {ad.price} €
+          <ImPriceTags className="my-auto" />
+          <b>{ad.price} €</b>
         </p>
         {/* See more button */}
         <button
