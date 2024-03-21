@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { changeImgToShow, resetImgToShow } from "../../../store/slices/ad";
+import { useSelector } from "react-redux";
+import { useCarouselImgContext } from "../../../context/carouselImgContext";
 import { store } from "../../../store";
 import { useCalcPhotosNumber } from "../../../hooks/useCalcPhotosNumber";
 import { MdOutlineZoomOutMap } from "react-icons/md";
@@ -10,14 +10,14 @@ export function AdImagesCarousel() {
   //Image number to show in modal only
   const [imgToShowModal, setImgToShowModal] = useState<number>(0);
 
-  const { adData, imgToShowInCarousel } = useSelector(
+  const { adData } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.ad
   );
 
-  const dispatch = useDispatch();
+  const { carouselImgState, carouselImgDispatch } = useCarouselImgContext();
 
   const photoNumbers = useCalcPhotosNumber(
-    imgToShowInCarousel,
+    carouselImgState.number,
     adData?.images.length!
   );
   const photoNumbersModal = useCalcPhotosNumber(
@@ -26,12 +26,12 @@ export function AdImagesCarousel() {
   );
 
   useEffect(() => {
-    dispatch(resetImgToShow());
+    carouselImgDispatch({ type: "SET_IMG_NO", payload: 0 });
   }, [adData?.images.length]);
 
   //Changing visible image (in uploaded images box)
   const handleChangeImage = (iteration: number) => {
-    dispatch(changeImgToShow(iteration));
+    carouselImgDispatch({ type: "SET_IMG_NO", payload: iteration });
   };
 
   //Changing visible image (in modal)
@@ -41,7 +41,7 @@ export function AdImagesCarousel() {
 
   //Open modals
   const handleOpenModal = () => {
-    setImgToShowModal(imgToShowInCarousel);
+    setImgToShowModal(carouselImgState.number);
     const modal = document.getElementById(
       `zoomImageModal`
     ) as HTMLDialogElement | null;
@@ -58,7 +58,7 @@ export function AdImagesCarousel() {
           <div className="carousel carousel-item h-[40vh] w-full bg-black rounded-lg relative lg:h-full">
             {/* Image in box */}
             <img
-              src={adData.images[imgToShowInCarousel].imageUrl}
+              src={adData.images[carouselImgState.number].imageUrl}
               className="w-full object-cover h-[40vh] m-auto"
             />
             {/* Zoom in /open modal - top right icon */}
@@ -87,7 +87,7 @@ export function AdImagesCarousel() {
             )}
             {/* No of image user is looking at */}
             <div className="absolute flex bottom-2 right-2 p-2 bg-slate-100 gap-2 text-xl rounded-md cursor-pointer transition-transform">
-              {imgToShowInCarousel + 1}/{adData.images.length}
+              {carouselImgState.number + 1}/{adData.images.length}
             </div>
           </div>
         </div>

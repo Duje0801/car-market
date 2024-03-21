@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addAdData } from "../../../store/slices/ad";
 import { store } from "../../../store";
-import { resetImgToShow } from "../../../store/slices/ad";
+import { useCarouselImgContext } from "../../../context/carouselImgContext";
 import { catchErrors } from "../../../utilis/catchErrors";
 import { WaitingDots } from "../../elements/waitingDots";
 import { MessageError } from "../../elements/messages/messageError";
@@ -56,6 +56,8 @@ export function EditAd({ adData }: Props) {
   //UploadAdImagesStates
   const [messageImgSuccess, setMessageImgSuccess] = useState<string>("");
   const [messageImgError, setMessageImgError] = useState<string>("");
+
+  const { carouselImgDispatch } = useCarouselImgContext();
 
   const { loggedProfileData } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.loggedProfile
@@ -165,7 +167,7 @@ export function EditAd({ adData }: Props) {
       );
       const deletedImagesMessage = await deleteImage();
       dispatch(addAdData(response.data.ad));
-      dispatch(resetImgToShow());
+      carouselImgDispatch({ type: "SET_IMG_NO", payload: 0 });
       setMessage(response.data.message + ". " + deletedImagesMessage);
       setError("");
       setMessageImgError("");

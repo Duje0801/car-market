@@ -12,6 +12,7 @@ import { AdDropdowns } from "../../components/ad/dropdowns/adDropdowns";
 import { AdAdditionalInfo } from "../../components/ad/info/adAdditionalInfo";
 import { catchErrors } from "../../utilis/catchErrors";
 import axios from "axios";
+import { CarouselImgProvider } from "../../context/carouselImgContext";
 
 export function Ad() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -143,7 +144,7 @@ export function Ad() {
     );
   } else if (adData && adData.user && isChecked && isLoaded) {
     return (
-      <>
+      <CarouselImgProvider>
         <div className="mx-auto md:w-2/3">
           {/* Profile top messages */}
           <AdMessages error={error} message={message} />
@@ -162,7 +163,7 @@ export function Ad() {
         </div>
         {/* Ad modals */}
         <AdModals handleModalClick={handleModalClick} />
-      </>
+      </CarouselImgProvider>
     );
   }
 }
