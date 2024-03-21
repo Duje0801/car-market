@@ -79,7 +79,7 @@ export function LogIn() {
         <WaitingDots size={"md"} marginTop={8} />{" "}
       </div>
     );
-  } else if (loggedProfileData.username) {
+  } else if (!isChecked && loggedProfileData.username) {
     {
       /* If the user is already logged in */
     }
