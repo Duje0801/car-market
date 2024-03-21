@@ -4,6 +4,7 @@ import { store } from "../../../store";
 import { useCreateAtToString } from "../../../hooks/useCreateAtToString";
 import { IoMail } from "react-icons/io5";
 import { BsFillTelephoneFill } from "react-icons/bs";
+import { useProfileAvatar } from "../../../hooks/useProfileAvatar";
 
 export function AdSellerInfo() {
   const { adData } = useSelector(
@@ -12,6 +13,11 @@ export function AdSellerInfo() {
 
   const navigate = useNavigate();
   const createdAt = useCreateAtToString(adData?.createdAt);
+
+  let avatar: string = "";
+  if (adData?.user) {
+    avatar = useProfileAvatar(adData?.user[0].avatar);
+  }
 
   const handleRedirectToProfile = () => {
     navigate(`/profile/${adData?.username}`);
@@ -26,21 +32,19 @@ export function AdSellerInfo() {
   return (
     <div className="bg-base-200 p-4 shadow-xl mx-auto rounded-lg w-[90vw] md:w-full lg:w-1/2 lg:ml-0 lg:mr-auto">
       <p className="text-xl font-bold text-center lg:mb-2">Seller Info:</p>
-      <div className="lg:flex lg:gap-4">
+      <div className={`lg:flex lg:gap-4 ${avatar ? `` : `w-fit mx-auto`}`}>
         {/* Seller avatar */}
-        <div className="lg:my-auto">
-          <img
-            src={
-              (adData?.user &&
-                adData?.user[0].avatar.uploadedAvatar.imageUrl) ||
-              (adData?.user && adData?.user[0].avatar.avatarURL)
-            }
-            alt="user-avatar"
-            className="w-1/4 mx-auto py-2 min-w-32 cursor-pointer lg:ml-auto lg:mr-0 lg:my-auto lg:h-auto lg:w-auto lg:max-h-[25vh]"
-            onClick={() => handleRedirectToProfile()}
-          ></img>
-        </div>
-        <div className="my-auto text-center lg:flex lg:flex-col lg:ml-0 lg:mr-auto lg:text-left">
+        {avatar ? (
+          <div className="lg:my-auto">
+            <img
+              src={avatar}
+              alt="user-avatar"
+              className="rounded-lg w-1/4 mx-auto my-2 min-w-32 cursor-pointer lg:my-auto lg:max-h-[25vh]"
+              onClick={() => handleRedirectToProfile()}
+            ></img>
+          </div>
+        ) : null}
+        <div className={`my-auto text-center lg:flex lg:flex-col lg:ml-0 ${avatar ? `lg:text-left lg:mr-auto` : ``}`}>
           {/* Username */}
           <p
             onClick={() => handleRedirectToProfile()}
@@ -50,7 +54,7 @@ export function AdSellerInfo() {
           </p>
           <p>Active since: {createdAt}</p>
           {/* Email */}
-          <div className="flex justify-center gap-2 lg:justify-start">
+          <div className={`flex justify-center gap-2 lg:justify-start ${avatar ? `` : `w-fit mx-auto`}`}>
             <IoMail className="my-auto" />
             {adData?.user && adData?.user[0].email ? (
               <p className="cursor-pointer" onClick={handleClickSendMail}>
@@ -59,7 +63,7 @@ export function AdSellerInfo() {
             ) : null}
           </div>
           {/* Contact */}
-          <div className="flex justify-center gap-2 lg:justify-start">
+          <div className={`flex justify-center gap-2 lg:justify-start ${avatar ? `` : `w-fit mx-auto`}`}>
             <BsFillTelephoneFill className="my-auto" />
             {adData?.user && adData?.user[0].contact ? (
               <p>{adData?.user[0].contact}</p>

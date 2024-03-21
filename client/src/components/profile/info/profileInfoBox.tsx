@@ -66,7 +66,7 @@ export function ProfileInfoBox({
               <img
                 src={avatar}
                 alt="avatarImage"
-                className="avatar rounded w-2/3 mx-auto sm:w-1/3 sm:min-w-36"
+                className="rounded-lg w-2/3 mx-auto sm:w-1/3 sm:min-w-36"
               />
             ) : null}
 
