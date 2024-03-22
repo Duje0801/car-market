@@ -249,10 +249,12 @@ export function EditAvatar({
             {/* Image upload input */}
             {uploadedImageURL && (
               <>
-                <div className="avatar rounded flex justify-center my-2">
-                  <div className="rounded">
-                    <img src={uploadedImageURL} alt="uploadedImage" />
-                  </div>
+                <div className="flex justify-center my-2">
+                  <img
+                    src={uploadedImageURL}
+                    alt="uploadedImage"
+                    className="rounded-lg w-2/3 mx-auto sm:w-1/3 sm:min-w-36"
+                  />
                 </div>
                 {/* Remove avatar button */}
                 <button

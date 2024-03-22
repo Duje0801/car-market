@@ -59,7 +59,7 @@ export function AdImagesCarousel() {
             {/* Image in box */}
             <img
               src={adData.images[carouselImgState.number].imageUrl}
-              className="w-full object-cover h-[40vh] m-auto"
+              className="w-full object-cover h-[40vh] m-auto transform transition duration-500 hover:scale-110"
             />
             {/* Zoom in /open modal - top right icon */}
             <MdOutlineZoomOutMap

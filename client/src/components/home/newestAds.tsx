@@ -71,14 +71,14 @@ export function NewestAds() {
               <figure
                 onClick={() => handleClickAd(ad.id)}
                 key={i}
-                className="carousel-item relative group w-full max-h-[30vh] cursor-pointer lg:w-[19.5%]"
+                className="carousel-item relative group w-full max-h-[30vh] overflow-hidden hover:cursor-pointer lg:w-[19.5%]"
               >
                 <img
                   src={ad.images[0].imageUrl}
-                  className="object-cover w-full"
+                  className="w-full object-cover transform transition duration-500 hover:scale-110"
                   alt="adImage"
                 />
-                <div className="absolute w-full p-2 opacity-75 group-hover:opacity-75 bg-black text-white text-md text-right bottom-0 lg:opacity-0 xxl:text-lg">
+                <div className="absolute w-full p-2 opacity-75 pointer-events-none bg-black text-white text-md text-right bottom-0 group-hover:opacity-75 lg:opacity-0 xxl:text-lg">
                   <p>{ad.title}</p>
                   <p>{ad.price}€</p>
                 </div>

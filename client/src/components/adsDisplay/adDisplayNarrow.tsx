@@ -18,7 +18,7 @@ export function AdDisplayNarrow({ ad, handleSeeMoreClick }: Props) {
         <img
           src={ad.images[0].imageUrl}
           alt="AdImage"
-          className=" w-full object-cover rounded-lg"
+          className=" w-full object-cover rounded-lg transform transition duration-500 hover:scale-110 hover:cursor-pointer"
         />
       </figure>
 

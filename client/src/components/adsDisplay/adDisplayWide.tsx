@@ -23,9 +23,10 @@ export function AdDisplayWide({ ad, handleSeeMoreClick }: Props) {
         <img
           src={ad.images[0].imageUrl}
           alt="AdImage"
-          className={`h-full object-cover ${
+          className={`h-full object-cover transform transition duration-500 hover:scale-110 hover:cursor-pointer ${
             isOld || !ad.visible || !ad.active ? `rounded-tr-lg` : ``
           }`}
+          onClick={() => handleSeeMoreClick(ad.id)}
         />
       </figure>
 
