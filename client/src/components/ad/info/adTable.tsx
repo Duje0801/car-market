@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import { store } from "../../../store";
 import { MdNewReleases } from "react-icons/md";
-import { FaFlag } from "react-icons/fa";
 import { FaCar } from "react-icons/fa";
 import { FaCarSide } from "react-icons/fa";
 import { FaCalendarAlt } from "react-icons/fa";
@@ -31,13 +30,6 @@ export function AdTable() {
               <MdNewReleases className="my-auto" /> Condition:
             </th>
             <td className="p-0">{adData && adData.condition}</td>
-          </tr>
-          {/* Country row */}
-          <tr className="bg-base-200 text-xl">
-            <th className="flex gap-2 p-0">
-              <FaFlag className="my-auto" /> Country:
-            </th>
-            <td className="p-0">{adData && adData.country}</td>
           </tr>
           {/* Make row */}
           <tr className="bg-base-200 text-xl">

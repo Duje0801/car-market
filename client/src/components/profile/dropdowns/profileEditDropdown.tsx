@@ -43,6 +43,14 @@ export function ProfileEditDropdown({ handleOpenModal }: Props) {
           </li>
           <li>
             <a
+              onClick={() => handleOpenModal(`editLocationCountry`)}
+              className="text-sm font-bold py-2 text-white"
+            >
+              Location and country
+            </a>
+          </li>
+          <li>
+            <a
               onClick={() => handleOpenModal(`editPassword`)}
               className="text-sm font-bold py-2 text-white"
             >

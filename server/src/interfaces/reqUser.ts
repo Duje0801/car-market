@@ -9,6 +9,8 @@ export interface ReqUser extends Request {
     active?: boolean;
     role?: string;
     userType: string;
+    location?: string;
+    country: string;  
     createdAt: Date;
     avatar: {
       avatarURL?: string;

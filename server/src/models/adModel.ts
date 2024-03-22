@@ -28,22 +28,6 @@ const adSchema = new Schema(
       required: [true, "Condition is required"],
       enum: ["New", "Used"],
     },
-    country: {
-      type: String,
-      required: [true, "Country is required"],
-      enum: [
-        "Austria",
-        "Belgium",
-        "Croatia",
-        "France",
-        "Germany",
-        "Italy",
-        "Luxembourg",
-        "Netherlands",
-        "Slovenia",
-        "Spain",
-      ],
-    },
     make: {
       type: String,
       required: [true, "Make is required"],
@@ -120,6 +104,22 @@ const adSchema = new Schema(
       maxLength: [
         20,
         "The maximum number of characters allowed in the car location is 20",
+      ],
+    },
+    country: {
+      type: String,
+      required: [true, "Country is required"],
+      enum: [
+        "Austria",
+        "Belgium",
+        "Croatia",
+        "France",
+        "Germany",
+        "Italy",
+        "Luxembourg",
+        "Netherlands",
+        "Slovenia",
+        "Spain",
       ],
     },
     description: {

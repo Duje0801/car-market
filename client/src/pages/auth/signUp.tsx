@@ -6,6 +6,7 @@ import { catchErrors } from "../../utilis/catchErrors";
 import { userTypes as userTypesList } from "../../data/userTypes";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
+import { countries as countriesList } from "../../data/countries";
 import axios from "axios";
 
 export function SignUp() {
@@ -15,6 +16,8 @@ export function SignUp() {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [contact, setContact] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [country, setCountry] = useState<string>("");
   const [userType, setUserType] = useState<string>("");
 
   //Other states
@@ -50,6 +53,14 @@ export function SignUp() {
     setContact(event.target.value);
   };
 
+  const handleChangeLocation = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation(event.target.value);
+  };
+
+  const handleSelectCountry = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setCountry(event.target.value);
+  };
+
   const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserType(event.target.value);
   };
@@ -76,6 +87,8 @@ export function SignUp() {
       formData.append("password", password);
       formData.append("confirmPassword", confirmPassword);
       formData.append("contact", contact);
+      formData.append("location", location);
+      formData.append("country", country);
       formData.append("userType", userType);
 
       await axios.post("http://localhost:4000/api/v1/user/signUp", formData, {
@@ -221,13 +234,49 @@ export function SignUp() {
                     </span>
                   </div>
                 </label>
+                {/* Location input */}
+                <label className="form-control w-full max-w-md mx-auto">
+                  <div className="label p-0">
+                    <span className="label-text xxl:text-xl">Location</span>
+                  </div>
+                  <input
+                    type="text"
+                    minLength={3}
+                    maxLength={20}
+                    id="locationField"
+                    value={location}
+                    onChange={handleChangeLocation}
+                    className="input input-bordered w-full max-w-md xxl:text-xl"
+                  />
+                </label>
+                {/* Country select */}
+                <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
+                  <div className="label p-0">
+                    <span className="label-text xxl:text-xl">Country</span>
+                  </div>
+                  <select
+                    value={country}
+                    onChange={handleSelectCountry}
+                    className="input input-bordered w-full xxl:text-xl"
+                    required
+                  >
+                    <option key={0}></option>
+                    {countriesList.map((c, i) => {
+                      return (
+                        <option key={i + 1} value={c}>
+                          {c}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </label>
                 {/* User type radio */}
                 <div>
                   <div className="flex justify-center">
                     <label className="text-sm xxl:text-xl">User type:</label>
                   </div>
                   {userTypesList.map((type, i) => (
-                    <div className="form-control mx-auto max-w-md">
+                    <div key={i} className="form-control mx-auto max-w-md">
                       <label className="label cursor-pointer">
                         <span className="label-text text-sm xxl:text-xl">
                           {type}

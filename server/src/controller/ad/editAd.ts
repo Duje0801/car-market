@@ -10,7 +10,6 @@ export const editAd: any = async function (req: ReqUser, res: Response) {
     const {
       title,
       condition,
-      country,
       make,
       model,
       firstRegistration,
@@ -19,7 +18,6 @@ export const editAd: any = async function (req: ReqUser, res: Response) {
       gearbox,
       power,
       price,
-      location,
       description,
       adImages,
     } = req.body;
@@ -65,7 +63,6 @@ export const editAd: any = async function (req: ReqUser, res: Response) {
 
     ad.title = title;
     ad.condition = condition;
-    ad.country = country;
     ad.make = make;
     ad.model = model;
     ad.firstRegistration = firstRegistrationChecked;
@@ -75,7 +72,8 @@ export const editAd: any = async function (req: ReqUser, res: Response) {
     ad.power = power;
     ad.price = price;
     ad.images = JSON.parse(adImages);
-    ad.location = location;
+    ad.location = req.user.location || "";
+    ad.country = req.user.country;
     ad.description = description;
 
     //Saving ad
@@ -84,7 +82,7 @@ export const editAd: any = async function (req: ReqUser, res: Response) {
     res.status(200).json({
       status: `success`,
       message: "The ad has been successfully edited",
-      ad
+      ad,
     });
   } catch (error) {
     errorHandler(error, req, res);

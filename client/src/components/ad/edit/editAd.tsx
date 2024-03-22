@@ -16,7 +16,6 @@ import { makes as makesList } from "../../../data/makes";
 import { fuel as fuelList } from "../../../data/fuel";
 import { gearbox as gearboxList } from "../../../data/gearbox";
 import { condition as conditionList } from "../../../data/condition";
-import { countries as countriesList } from "../../../data/countries";
 import { IImage } from "../../../interfaces/IImage";
 import { IAd } from "../../../interfaces/IAd";
 import axios from "axios";
@@ -29,7 +28,6 @@ export function EditAd({ adData }: Props) {
   //Form data states
   const [title, setTitle] = useState<string>(adData?.title || "");
   const [condition, setCondition] = useState<string>(adData?.condition || "");
-  const [country, setCountry] = useState<string>(adData?.country || "");
   const [make, setMake] = useState<string>(adData?.make || "");
   const [model, setModel] = useState<string>(adData?.model || "");
   const [firstRegistration, setFirstRegistration] = useState<number | string>(
@@ -43,7 +41,6 @@ export function EditAd({ adData }: Props) {
   const [description, setDescription] = useState<string>(
     String(adData?.description || "")
   );
-  const [location, setLocation] = useState<string>(adData?.location || "");
   const [adImages, setAdImages] = useState<IImage[]>(adData?.images || []);
 
   //Other states
@@ -83,10 +80,6 @@ export function EditAd({ adData }: Props) {
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setCondition(event.target.value);
-  };
-
-  const handleSelectCountry = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setCountry(event.target.value);
   };
 
   const handleSelectMake = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -135,10 +128,6 @@ export function EditAd({ adData }: Props) {
     setDescription(event.target.value);
   };
 
-  const handleChangeLocation = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLocation(event.target.value);
-  };
-
   //Submit new ad data
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -148,7 +137,6 @@ export function EditAd({ adData }: Props) {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("condition", condition);
-      formData.append("country", country);
       formData.append("make", make);
       formData.append("model", model);
       formData.append("firstRegistration", String(firstRegistration));
@@ -158,7 +146,6 @@ export function EditAd({ adData }: Props) {
       formData.append("power", power);
       formData.append("price", price);
       formData.append("description", description);
-      formData.append("location", location);
       formData.append("adImages", JSON.stringify(adImages));
 
       if (adImages.length < 1 || adImages.length > 10) {
@@ -326,27 +313,6 @@ export function EditAd({ adData }: Props) {
                   })}
                 </select>
               </label>
-              {/* Country select */}
-              <label className="form-control w-full">
-                <div className="label p-0">
-                  <span className="label-text">Country</span>
-                </div>
-                <select
-                  value={country}
-                  onChange={handleSelectCountry}
-                  className="input input-bordered w-full"
-                  required
-                >
-                  <option key={0}></option>
-                  {countriesList.map((c, i) => {
-                    return (
-                      <option key={i + 1} value={c}>
-                        {c}
-                      </option>
-                    );
-                  })}
-                </select>
-              </label>
               {/* Make select */}
               <label className="form-control w-full">
                 <div className="label p-0">
@@ -492,20 +458,6 @@ export function EditAd({ adData }: Props) {
                   onChange={handleChangePrice}
                   className="input input-bordered w-full"
                   required
-                />
-              </label>
-              {/* Location input */}
-              <label className="form-control w-full">
-                <div className="label p-0">
-                  <span className="label-text">Location</span>
-                </div>
-                <input
-                  type="text"
-                  placeholder="City/region where the car is located"
-                  maxLength={20}
-                  value={location}
-                  onChange={handleChangeLocation}
-                  className="input input-bordered w-full"
                 />
               </label>
               {/* Description textarea */}

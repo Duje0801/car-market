@@ -12,6 +12,8 @@ export interface IUser extends Document {
   userType: string;
   createdAt: Date;
   updatedAt: Date;
+  location?: string;
+  country: string;
   avatar: {
     avatarURL?: string;
     uploadedAvatar: {
@@ -19,7 +21,7 @@ export interface IUser extends Document {
       publicID?: string;
     };
   };
-  ads?: IAd[],
+  ads?: IAd[];
   restartPasswordCode?: string;
   restartPasswordCodeExpire?: Date;
   id: string;

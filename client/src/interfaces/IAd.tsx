@@ -5,7 +5,6 @@ export interface IAd {
   username: string;
   title: string;
   condition: string;
-  country: string;
   make: string;
   model: string;
   firstRegistration: number;
@@ -15,7 +14,8 @@ export interface IAd {
   power: number;
   price: number;
   description: string;
-  location: string;
+  location?: string;
+  country: string;
   createdAt: Date;
   id: string;
   images: {

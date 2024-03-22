@@ -8,6 +8,8 @@ export interface IProfile {
   active: boolean;
   createdAt: Date;
   userType: string;
+  location?: string;
+  country: string;
   avatar: {
     avatarURL?: string;
     uploadedAvatar: {

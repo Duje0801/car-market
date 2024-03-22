@@ -8,8 +8,16 @@ import { errorHandler } from "../../utilis/errorHandling/errorHandler";
 
 export const signUp: any = async function (req: Request, res: Response) {
   try {
-    const { username, email, password, confirmPassword, contact, userType } =
-      req.body;
+    const {
+      username,
+      email,
+      password,
+      confirmPassword,
+      contact,
+      userType,
+      location,
+      country,
+    } = req.body;
 
     //Checking email
     if (!validator.isEmail(email)) {
@@ -60,6 +68,8 @@ export const signUp: any = async function (req: Request, res: Response) {
           publicID: "",
         },
       },
+      location,
+      country,
     });
 
     if (!newUser) return errorResponse("Can't create new user", res, 401);

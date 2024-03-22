@@ -1,15 +1,14 @@
 import { Response } from "express";
 import { Ad } from "../../models/adModel";
-import { ReqUser } from "../../interfaces/reqUser";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
 import { errorResponse } from "../../utilis/errorHandling/errorResponse";
+import { ReqUser } from "../../interfaces/reqUser";
 
 export const newAd: any = async function (req: ReqUser, res: Response) {
   try {
     const {
       title,
       condition,
-      country,
       make,
       model,
       firstRegistration,
@@ -18,7 +17,6 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
       gearbox,
       power,
       price,
-      location,
       description,
       adImages
     } = req.body;
@@ -46,7 +44,6 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
       username: req.user.username,
       title,
       condition,
-      country,
       make,
       model,
       firstRegistration: firstRegistrationChecked,
@@ -55,7 +52,8 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
       gearbox,
       power: Number(power),
       price: Number(price),
-      location,
+      location: req.user.location,
+      country: req.user.country,
       description,
       images: JSON.parse(adImages)
     });

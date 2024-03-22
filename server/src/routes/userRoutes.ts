@@ -10,6 +10,7 @@ import { deleteProfile } from "../controller/profile/deleteProfile";
 import { editAvatar } from "../controller/editingProfileData/editAvatar";
 import { editPassword } from "../controller/editingProfileData/editPassword";
 import { editContact } from "../controller/editingProfileData/editContact";
+import { editLocationCountry } from "../controller/editingProfileData/editLocationCountry";
 import { editEmail } from "../controller/editingProfileData/editEmail";
 import { uploadImage } from "../controller/images/uploadImage";
 import { deleteImage } from "../controller/images/deleteImage";
@@ -28,9 +29,10 @@ router.route("/profile/:id").get(viewProfile);
 router.route("/deactivate/:id").delete(protect, deactivateProfile);
 router.route("/delete/:id").delete(protect, deleteProfile);
 router.route("/edit/avatar").patch(protect, editAvatar);
-router.route("/edit/password").patch(protect, editPassword);
-router.route("/edit/contact").patch(protect, editContact);
 router.route("/edit/email").patch(protect, editEmail);
+router.route("/edit/contact").patch(protect, editContact);
+router.route("/edit/locationCountry").patch(protect, editLocationCountry);
+router.route("/edit/password").patch(protect, editPassword);
 router
   .route("/uploadAvatar")
   .post(protect, upload.single("image"), uploadImage);

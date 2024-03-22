@@ -12,7 +12,6 @@ import { makes as makesList } from "../../data/makes";
 import { fuel as fuelList } from "../../data/fuel";
 import { gearbox as gearboxList } from "../../data/gearbox";
 import { condition as conditionList } from "../../data/condition";
-import { countries as countriesList } from "../../data/countries";
 import { IImage } from "../../interfaces/IImage";
 import axios from "axios";
 
@@ -20,7 +19,6 @@ export function NewAd() {
   //Form data states
   const [title, setTitle] = useState<string>("");
   const [condition, setCondition] = useState<string>("");
-  const [country, setCountry] = useState<string>("");
   const [make, setMake] = useState<string>("");
   const [model, setModel] = useState<string>("");
   const [firstRegistration, setFirstRegistration] = useState<number | string>(
@@ -32,7 +30,6 @@ export function NewAd() {
   const [power, setPower] = useState<string>("");
   const [price, setPrice] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [location, setLocation] = useState<string>("");
   const [adImages, setAdImages] = useState<IImage[]>([]);
 
   //Other states
@@ -67,10 +64,6 @@ export function NewAd() {
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setCondition(event.target.value);
-  };
-
-  const handleSelectCountry = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setCountry(event.target.value);
   };
 
   const handleSelectMake = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -119,10 +112,6 @@ export function NewAd() {
     setDescription(event.target.value);
   };
 
-  const handleChangeLocation = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLocation(event.target.value);
-  };
-
   //New ad submit function
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -142,7 +131,6 @@ export function NewAd() {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("condition", condition);
-      formData.append("country", country);
       formData.append("make", make);
       formData.append("model", model);
       formData.append("firstRegistration", String(firstRegistration));
@@ -152,7 +140,6 @@ export function NewAd() {
       formData.append("power", power);
       formData.append("price", price);
       formData.append("description", description);
-      formData.append("location", location);
       formData.append("adImages", JSON.stringify(adImages));
 
       const response = await axios.post(
@@ -186,7 +173,6 @@ export function NewAd() {
     setError("");
     setTitle("");
     setCondition("");
-    setCountry("");
     setMake("");
     setModel("");
     setFirstRegistration("");
@@ -355,27 +341,6 @@ export function NewAd() {
                   })}
                 </select>
               </label>
-              {/* Country select */}
-              <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
-                <div className="label p-0">
-                  <span className="label-text xxl:text-xl">Country</span>
-                </div>
-                <select
-                  value={country}
-                  onChange={handleSelectCountry}
-                  className="input input-bordered w-full xxl:text-xl"
-                  required
-                >
-                  <option key={0}></option>
-                  {countriesList.map((c, i) => {
-                    return (
-                      <option key={i + 1} value={c}>
-                        {c}
-                      </option>
-                    );
-                  })}
-                </select>
-              </label>
               {/* Make select */}
               <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
                 <div className="label p-0">
@@ -523,20 +488,6 @@ export function NewAd() {
                   onChange={handleChangePrice}
                   className="input input-bordered w-full mx-auto max-w-lg xxl:max-w-2xl xxl:text-xl"
                   required
-                />
-              </label>
-              {/* Location input */}
-              <label className="form-control w-full mx-auto max-w-lg xxl:max-w-2xl">
-                <div className="label p-0">
-                  <span className="label-text xxl:text-xl">Location</span>
-                </div>
-                <input
-                  type="text"
-                  placeholder="City/region where the car is located"
-                  maxLength={20}
-                  value={location}
-                  onChange={handleChangeLocation}
-                  className="input input-bordered w-full mx-auto max-w-lg xxl:max-w-2xl xxl:text-xl"
                 />
               </label>
               {/* Description textarea */}

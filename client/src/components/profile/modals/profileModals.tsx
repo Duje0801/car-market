@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { store } from "../../../store";
 import { EditAvatar } from "../edit/editAvatar";
 import { EditContact } from "../edit/editContact";
+import { EditLocationCountry } from "../edit/editLocationCountry";
 import { EditEmail } from "../edit/editEmail";
 import { EditPassword } from "../edit/editPassword";
 
@@ -14,7 +15,7 @@ interface Props {
   handleClickX: () => void;
   handleDeactivateProfile: () => void;
   handleDeleteProfile: () => void;
-  handleCloseModal: (id: string) => void
+  handleCloseModal: (id: string) => void;
 }
 
 export function ProfileModals({
@@ -25,9 +26,8 @@ export function ProfileModals({
   handleClickX,
   handleDeactivateProfile,
   handleDeleteProfile,
-  handleCloseModal
+  handleCloseModal,
 }: Props) {
-
   const { profileData } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
   );
@@ -92,6 +92,28 @@ export function ProfileModals({
           </form>
           <h3 className="font-bold text-lg mb-2">Edit Contact</h3>
           <EditContact
+            editError={editError}
+            setEditError={setEditError}
+            editMessage={editMessage}
+            setEditMessage={setEditMessage}
+            handleClickX={handleClickX}
+          />
+        </div>
+      </dialog>
+
+      {/* Edit Location/Country modal */}
+      <dialog id="editLocationCountryModal" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            <button
+              onClick={handleClickX}
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            >
+              ✕
+            </button>
+          </form>
+          <h3 className="font-bold text-lg mb-2">Edit Location and Country</h3>
+          <EditLocationCountry
             editError={editError}
             setEditError={setEditError}
             editMessage={editMessage}
