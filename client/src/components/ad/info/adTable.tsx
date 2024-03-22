@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import { store } from "../../../store";
+import { useMakeLogo } from "../../../hooks/useMakeLogo";
 import { MdNewReleases } from "react-icons/md";
 import { FaCar } from "react-icons/fa";
 import { FaCarSide } from "react-icons/fa";
@@ -15,22 +16,22 @@ export function AdTable() {
     (state: ReturnType<typeof store.getState>) => state.ad
   );
 
+  const makeLogo = useMakeLogo(adData?.make!);
+
+  //Calculating horse power from kw
+  const hp = (adData?.power! * 1.34102).toFixed(0);
+
   return (
     <div className="overflow-x-auto mx-auto md:w-2/3 lg:w-1/2">
       {/* Ad title */}
-      <p className="text-2xl font-bold text-center my-4 md:text-3xl md:mt-0">
+      <p className="text-2xl font-bold text-center my-2 md:text-3xl lg:mt-0">
         {adData && adData.title}
-      </p>
+      </p>{" "}
+      {/* Make logo */}
+      <div className="flex justify-center mb-2">{makeLogo}</div>
       {/* Table */}
       <table className="table w-3/4 mx-auto ">
         <tbody>
-          {/* Condition row */}
-          <tr className="bg-base-200 text-xl">
-            <th className="flex gap-2 p-0">
-              <MdNewReleases className="my-auto" /> Condition:
-            </th>
-            <td className="p-0">{adData && adData.condition}</td>
-          </tr>
           {/* Make row */}
           <tr className="bg-base-200 text-xl">
             <th className="flex gap-2 p-0">
@@ -53,7 +54,7 @@ export function AdTable() {
             <td className="p-0">
               {" "}
               {adData && adData.firstRegistration === 1999
-                ? "Older than 2000."
+                ? "1999. or before"
                 : adData?.firstRegistration}
               .
             </td>
@@ -63,7 +64,7 @@ export function AdTable() {
             <th className="flex gap-2 p-0">
               <FaRoad className="my-auto" /> Mileage:
             </th>
-            <td className="p-0">{adData && adData.mileage} km</td>
+            <td className="p-0">{adData && adData.mileage}km</td>
           </tr>
           {/* Fuel row */}
           <tr className="bg-base-200 text-xl">
@@ -81,20 +82,30 @@ export function AdTable() {
             </th>
             <td className="p-0">{adData && adData.gearbox}</td>
           </tr>
-
-          {/* Power row */}
+          {/* Power row (kW) */}
           <tr className="bg-base-200 text-xl">
             <th className="flex gap-2 p-0">
               <ImPower className="my-auto" /> Power:
             </th>
-            <td className="p-0">{adData && adData.power} kW</td>
+            <td className="p-0">
+              {adData && adData.power}kW/{hp}hp
+            </td>
+          </tr>
+          {/* Condition row */}
+          <tr className="bg-base-200 text-xl">
+            <th className="flex gap-2 p-0">
+              <MdNewReleases className="my-auto" /> Condition:
+            </th>
+            <td className="p-0">{adData && adData.condition}</td>
           </tr>
           {/* Price row */}
           <tr className="bg-base-200 text-xl">
             <th className="flex gap-2 p-0">
               <ImPriceTags className="my-auto" /> Price:
             </th>
-            <td className="p-0"><b>{adData && adData.price}€</b></td>
+            <td className="p-0">
+              <b>{adData && adData.price}€</b>
+            </td>
           </tr>
         </tbody>
       </table>
