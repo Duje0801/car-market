@@ -29,13 +29,13 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
       firstRegistration <= new Date().getFullYear()
     ) {
       firstRegistrationChecked = Number(firstRegistration)
-    } else if (firstRegistration === "Older") {
+    } else if (firstRegistration === "1999. and before") {
       firstRegistrationChecked = 1999;
     } else {
       return errorResponse(
-        "First registration year must be from 2000 onwards or text - Older",
+        "First registration year must be from 2000 onwards or text - 1999. and before",
         res,
-        401
+        400
       );
     }
 

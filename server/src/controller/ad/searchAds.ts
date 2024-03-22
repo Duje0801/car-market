@@ -60,7 +60,7 @@ export const searchAds: any = async function (req: Request, res: Response) {
     }
     if (req.query.firstRegistrationFrom || req.query.firstRegistrationTo) {
       let firstRegistrationCheck: {} = {};
-      if (req.query.firstRegistrationFrom === "Older") {
+      if (req.query.firstRegistrationFrom === "1999. and before") {
         firstRegistrationCheck = {
           $gte: 1999,
         };

@@ -199,7 +199,6 @@ export function AdSLFilter() {
 
   //Open/close additional search options
   const handleMoreSearchOptions = () => {
-    clearFields(false);
     return moreSearchOptions
       ? setMoreSearchOptions(false)
       : setMoreSearchOptions(true);
@@ -271,14 +270,12 @@ export function AdSLFilter() {
   };
 
   //Clear all fields function
-  const clearFields = (all: boolean) => {
-    if (all) {
-      setMake("");
-      setModel("");
-      setPriceFrom("");
-      setPriceTo("");
-      setCountry("");
-    }
+  const clearFields = () => {
+    setMake("");
+    setModel("");
+    setPriceFrom("");
+    setPriceTo("");
+    setCountry("");
     setCondition("");
     setFuel("");
     setFirstRegistrationFrom("");
@@ -308,8 +305,12 @@ export function AdSLFilter() {
       <form
         method="dialog"
         onSubmit={handleSubmit}
-        className="flex flex-col justify-between gap-2 mx-auto w-full md:p-2"
+        className="flex flex-col justify-between gap-2 mx-auto w-full md:pt-2 md:px-2"
       >
+        <p className="text-xs px-2 text-center xl:text-sm">
+          To submit the search, click on the button displaying the number of
+          results.{" "}
+        </p>
         {/* Make select */}
         <select
           value={make}
@@ -497,7 +498,7 @@ export function AdSLFilter() {
         <button
           type="button"
           className="btn btn-error w-full"
-          onClick={() => clearFields(true)}
+          onClick={() => clearFields()}
         >
           Clear All
         </button>
