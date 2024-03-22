@@ -34,7 +34,7 @@ export function AdsList() {
 
   //Automatically fetches ad list data on page load and page change
   useEffect(() => {
-    if (params.id && isChecked) {
+    if (isChecked) {
       fetchData();
     }
   }, [isChecked, page, sort]);

@@ -101,15 +101,6 @@ export const searchAds: any = async function (req: Request, res: Response) {
       };
     }
 
-    //Returning empty array if adsCheck object is empty (/searchNo)
-    if (Object.keys(adsCheck).length === 0) {
-      const adsNo = req.originalUrl.includes("/searchNo") ? 0 : [];
-      return res.status(200).json({
-        status: `success`,
-        adsNo,
-      });
-    }
-
     let ads: IAd[];
     let adsNo: number;
     let filters: {} = {
