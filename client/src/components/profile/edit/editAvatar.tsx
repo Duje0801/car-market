@@ -14,7 +14,6 @@ interface Props {
   editMessage: string;
   setEditMessage: Dispatch<SetStateAction<string>>;
   handleClickX: () => void;
-  handleCloseModal: (id: string) => void;
 }
 
 export function EditAvatar({
@@ -23,7 +22,6 @@ export function EditAvatar({
   editMessage,
   setEditMessage,
   handleClickX,
-  handleCloseModal,
 }: Props) {
   //Form data states
   const [avatarURL, setAvatarURL] = useState<string>("");
@@ -80,7 +78,6 @@ export function EditAvatar({
       const deleteAvatarText: string = await deleteOldAvatarMessage();
       dispatch(addProfileData(response.data.user));
       setEditMessage(response.data.message + deleteAvatarText);
-      handleCloseModal(`editAvatar`);
       setAvatarURL("");
       setUploadedImageURL("");
       setUploadedImagePublicID("");

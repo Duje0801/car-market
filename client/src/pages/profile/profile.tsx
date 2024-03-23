@@ -68,6 +68,26 @@ export function Profile() {
     setIsLoaded(true);
   };
 
+  //Deleting avatar function
+  const handleDeleteAvatar = async () => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:4000/api/v1/user/deleteAvatar/`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${loggedProfileData?.token}`,
+          },
+        }
+      );
+      const deleteAvatarMessage: string = await deleteImage("deleteAvatar");
+      setMessage(response.data.message + deleteAvatarMessage);
+      dispatch(addProfileData(response.data.user));
+    } catch (error) {
+      catchErrors(error, setError);
+    }
+  };
+
   //Deactivate profile function
   const handleDeactivateProfile = async () => {
     try {
@@ -105,7 +125,7 @@ export function Profile() {
         }
       );
       //Deleting all images associated with profile (avatar and ads images)
-      const deleteImageMessage: string = await deleteImage();
+      const deleteImageMessage: string = await deleteImage("deleteProfile");
       navigate(`/redirect/admin/deleteUser-${deleteImageMessage}`);
     } catch (error) {
       catchErrors(error, setError);
@@ -113,7 +133,7 @@ export function Profile() {
   };
 
   //Delete images function (avatar and ad's images)
-  const deleteImage = async () => {
+  const deleteImage = async (operation: string) => {
     let imagesDeleteList: string[] = [];
 
     //Adding avatar to delete list (if exist)
@@ -121,12 +141,14 @@ export function Profile() {
       imagesDeleteList = [profileData?.avatar.uploadedAvatar.publicID];
     }
 
-    //Adding all ad`s images
-    profileAds.forEach((ad) => {
-      ad.images.forEach((img) => {
-        imagesDeleteList.push(img.publicID);
+    //Adding all ad`s images (if user/admin is deleting profile)
+    if (operation === `deleteProfile`) {
+      profileAds.forEach((ad) => {
+        ad.images.forEach((img) => {
+          imagesDeleteList.push(img.publicID);
+        });
       });
-    });
+    }
 
     //Creating fetch for all images
     const promises = imagesDeleteList.map((publicID) =>
@@ -143,9 +165,11 @@ export function Profile() {
     try {
       //Deleting images
       await Promise.all(promises);
-      return "allDeleted";
+      return operation === "deleteProfile" ? "allDeleted" : "";
     } catch (error) {
-      return "notAllDeleted";
+      return operation === "deleteProfile"
+        ? "notAllDeleted"
+        : " But maybe avatar is not deleted from database.";
     }
   };
 
@@ -156,18 +180,6 @@ export function Profile() {
     ) as HTMLDialogElement | null;
     if (modal) {
       modal.showModal();
-    }
-  };
-
-  //Close modals
-  const handleCloseModal = (id: string) => {
-    setEditError("");
-    setEditMessage("");
-    const modal = document.getElementById(
-      `${id}Modal`
-    ) as HTMLDialogElement | null;
-    if (modal) {
-      modal.close();
     }
   };
 
@@ -242,7 +254,7 @@ export function Profile() {
             handleClickX={handleClickX}
             handleDeactivateProfile={handleDeactivateProfile}
             handleDeleteProfile={handleDeleteProfile}
-            handleCloseModal={handleCloseModal}
+            handleDeleteAvatar={handleDeleteAvatar}
           />
         )}
       </>

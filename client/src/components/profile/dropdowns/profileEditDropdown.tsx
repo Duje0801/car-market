@@ -1,8 +1,15 @@
+import { useSelector } from "react-redux";
+import { store } from "../../../store";
+
 interface Props {
   handleOpenModal: (id: string) => void;
 }
 
 export function ProfileEditDropdown({ handleOpenModal }: Props) {
+  const { profileData } = useSelector(
+    (state: ReturnType<typeof store.getState>) => state.profile
+  );
+
   return (
     <div className="flex justify-end mx-auto w-[90vw] mb-2 sm:w-[66vw] lg:w-2/3 lg:ml-auto lg:mr-4">
       <div className="dropdown dropdown-end">
@@ -15,22 +22,33 @@ export function ProfileEditDropdown({ handleOpenModal }: Props) {
         </div>
         <ul
           tabIndex={0}
-          className="dropdown-content z-[1] menu p-2 shadow border-[0.8px] border-white bg-black rounded-box w-52"
+          className="dropdown-content z-[1] menu p-2 shadow border-[0.8px] border-white bg-black rounded-box w-64"
         >
           <li>
             <a
               onClick={() => handleOpenModal(`editAvatar`)}
               className="text-sm font-bold py-2 text-white"
             >
-              Avatar
+              Edit avatar
             </a>
           </li>
+          {(profileData?.avatar.avatarURL ||
+            profileData?.avatar.uploadedAvatar.imageUrl) && (
+            <li>
+              <a
+                onClick={() => handleOpenModal(`deleteAvatar`)}
+                className="text-sm font-bold py-2 text-white"
+              >
+                Delete avatar
+              </a>
+            </li>
+          )}
           <li>
             <a
               onClick={() => handleOpenModal(`editEmail`)}
               className="text-sm font-bold py-2 text-white"
             >
-              Email
+              Edit email
             </a>
           </li>
           <li>
@@ -38,7 +56,7 @@ export function ProfileEditDropdown({ handleOpenModal }: Props) {
               onClick={() => handleOpenModal(`editContact`)}
               className="text-sm font-bold py-2 text-white"
             >
-              Contact
+              Edit contact
             </a>
           </li>
           <li>
@@ -46,7 +64,7 @@ export function ProfileEditDropdown({ handleOpenModal }: Props) {
               onClick={() => handleOpenModal(`editLocationCountry`)}
               className="text-sm font-bold py-2 text-white"
             >
-              Location and country
+              Edit location and country
             </a>
           </li>
           <li>
@@ -54,7 +72,7 @@ export function ProfileEditDropdown({ handleOpenModal }: Props) {
               onClick={() => handleOpenModal(`editPassword`)}
               className="text-sm font-bold py-2 text-white"
             >
-              Password
+              Edit password
             </a>
           </li>
         </ul>

@@ -13,9 +13,9 @@ interface Props {
   editMessage: string;
   setEditMessage: Dispatch<SetStateAction<string>>;
   handleClickX: () => void;
+  handleDeleteAvatar: () => void;
   handleDeactivateProfile: () => void;
   handleDeleteProfile: () => void;
-  handleCloseModal: (id: string) => void;
 }
 
 export function ProfileModals({
@@ -24,9 +24,9 @@ export function ProfileModals({
   editMessage,
   setEditMessage,
   handleClickX,
+  handleDeleteAvatar,
   handleDeactivateProfile,
   handleDeleteProfile,
-  handleCloseModal,
 }: Props) {
   const { profileData } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
@@ -52,8 +52,39 @@ export function ProfileModals({
             editMessage={editMessage}
             setEditMessage={setEditMessage}
             handleClickX={handleClickX}
-            handleCloseModal={handleCloseModal}
           />
+        </div>
+      </dialog>
+
+      {/* Delete avatar modal */}
+      <dialog id="deleteAvatarModal" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            <button
+              onClick={handleClickX}
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            >
+              ✕
+            </button>
+          </form>
+          <h3 className="font-bold text-lg mb-2">
+            Are you sure you want to delete avatar?
+          </h3>
+          <div className="flex flex-col gap-2">
+            <form method="dialog">
+              <button onClick={handleClickX} className="btn w-full">
+                No
+              </button>
+            </form>
+            <form method="dialog">
+              <button
+                onClick={handleDeleteAvatar}
+                className="btn btn-error w-full"
+              >
+                Yes
+              </button>
+            </form>
+          </div>
         </div>
       </dialog>
 

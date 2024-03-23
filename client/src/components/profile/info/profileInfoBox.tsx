@@ -57,7 +57,7 @@ export function ProfileInfoBox({ error, message, handleOpenModal }: Props) {
           <ProfileMessages error={error} message={message} />
 
           {/* Avatar */}
-          <div className="card-body p-4">
+          <div className="card-body p-0">
             {avatar ? (
               <img
                 src={avatar}
@@ -112,7 +112,8 @@ export function ProfileInfoBox({ error, message, handleOpenModal }: Props) {
             </div>
           </div>
 
-          {/* Open modal buttons */}
+          {/* Buttons */}
+
           {/* De/activate profile */}
           {(loggedProfileData.username === `admin` ||
             loggedProfileData.username === profileData?.username) &&
