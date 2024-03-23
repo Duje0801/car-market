@@ -42,6 +42,7 @@ export function SearchAds({ setError }: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [resultsNo, setResultsNo] = useState<number>(0);
   const [searchId, setSearchId] = useState<string>("");
+  const [lockedNewCar, setLockedNewCar] = useState<boolean>(false);
 
   const { loggedProfileData } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.loggedProfile
@@ -120,6 +121,19 @@ export function SearchAds({ setError }: Props) {
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setCondition(event.target.value);
+    if (event.target.value === "New") {
+      setMileageFrom("0");
+      setMileageTo("0");
+      setFirstRegistrationFrom("-");
+      setFirstRegistrationTo("-");
+      setLockedNewCar(true);
+    } else {
+      setLockedNewCar(false);
+      setMileageFrom("");
+      setMileageTo("");
+      setFirstRegistrationFrom("");
+      setFirstRegistrationTo("");
+    }
   };
 
   const handleSelectFuel = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -133,18 +147,22 @@ export function SearchAds({ setError }: Props) {
   const handleSelectFirstRegistrationFrom = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    if (condition === "New") return;
     setFirstRegistrationFrom(event.target.value);
   };
 
   const handleSelectFirstRegistrationTo = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    if (condition === "New") return;
     setFirstRegistrationTo(event.target.value);
   };
 
   const handleChangeMileageFrom = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    if (condition === "New") return;
+    if (Number(event.target.value) > 0) setCondition("Used");
     if (/^\d*$/.test(event.target.value)) {
       setMileageFrom(event.target.value);
     }
@@ -153,6 +171,7 @@ export function SearchAds({ setError }: Props) {
   const handleChangeMileageTo = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    if (condition === "New") return;
     if (/^\d*$/.test(event.target.value)) {
       setMileageTo(event.target.value);
     }
@@ -187,13 +206,15 @@ export function SearchAds({ setError }: Props) {
     if (model) queries += `model=${model}&`;
     if (
       firstRegistrationFrom &&
-      firstRegistrationFrom !== "First registration from"
+      firstRegistrationFrom !== "First registration from" &&
+      firstRegistrationFrom !== "-"
     ) {
       queries += `firstRegistrationFrom=${firstRegistrationFrom}&`;
     }
     if (
       firstRegistrationTo &&
-      firstRegistrationTo !== "First registration to"
+      firstRegistrationTo !== "First registration to" &&
+      firstRegistrationFrom !== "-"
     ) {
       queries += `firstRegistrationTo=${firstRegistrationTo}&`;
     }
@@ -384,9 +405,11 @@ export function SearchAds({ setError }: Props) {
                 value={firstRegistrationFrom}
                 onChange={handleSelectFirstRegistrationFrom}
                 className="input input-bordered w-1/2 xxl:text-xl"
+                disabled={lockedNewCar}
               >
                 <option>First registration from</option>
                 {years.map((y, i) => {
+                  if (y === "-" || y === "First registration from") return;
                   return (
                     <option key={i + 1} value={y}>
                       {y}
@@ -399,10 +422,16 @@ export function SearchAds({ setError }: Props) {
                 value={firstRegistrationTo}
                 onChange={handleSelectFirstRegistrationTo}
                 className="input input-bordered w-1/2 xxl:text-xl"
+                disabled={lockedNewCar}
               >
                 <option>First registration to</option>
                 {years.map((y, i) => {
-                  if (typeof y !== `number`) return;
+                  if (
+                    y === "-" ||
+                    y === "First registration to" ||
+                    y === "1999. and before"
+                  )
+                    return;
                   else {
                     return (
                       <option key={i + 1} value={y}>
@@ -423,6 +452,7 @@ export function SearchAds({ setError }: Props) {
                 minLength={1}
                 maxLength={7}
                 value={mileageFrom}
+                disabled={lockedNewCar}
                 onChange={handleChangeMileageFrom}
               />
               {/* Mileage to input*/}
@@ -433,6 +463,7 @@ export function SearchAds({ setError }: Props) {
                 minLength={1}
                 maxLength={7}
                 value={mileageTo}
+                disabled={lockedNewCar}
                 onChange={handleChangeMileageTo}
               />
             </div>

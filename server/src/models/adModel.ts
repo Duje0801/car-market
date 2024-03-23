@@ -62,10 +62,12 @@ const adSchema = new Schema(
     firstRegistration: {
       type: Number,
       required: [true, "Year of first registration is required"],
-      min: [
-        1999,
-        "First registration year must be from 2000 onwards or text - older",
-      ],
+      validate: {
+        validator: function(value: number) {
+          return value === 0 || (value >= 1999 && value <= new Date().getFullYear());
+        },
+        message: 'First registration year must be from 2000 onwards, -, or text `1999. and before`'
+      },
       max: [
         new Date().getFullYear(),
         "This year is lastest possible year to choose",

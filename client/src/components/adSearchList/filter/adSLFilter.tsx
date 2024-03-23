@@ -42,6 +42,7 @@ export function AdSLFilter() {
   const [resultsNo, setResultsNo] = useState<number>(0);
   const [searchId, setSearchId] = useState<string>("");
   const [warningMessage, setWarningMessage] = useState<string>("");
+  const [lockedNewCar, setLockedNewCar] = useState<boolean>(false);
 
   const { loggedProfileData } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.loggedProfile
@@ -65,8 +66,13 @@ export function AdSLFilter() {
           else if (el[0] === `priceFrom`) return setPriceFrom(el[1]);
           else if (el[0] === `priceTo`) return setPriceTo(el[1]);
           else if (el[0] === `country`) return setCountry(el[1]);
-          else if (el[0] === `condition`) return setCondition(el[1]);
-          else if (el[0] === `fuel`) return setFuel(el[1]);
+          else if (el[0] === `condition`) {
+            setCondition(el[1]);
+            if (el[1] === "New") {
+              setLockedNewCar(true);
+            }
+            return;
+          } else if (el[0] === `fuel`) return setFuel(el[1]);
           else if (el[0] === `firstRegistrationFrom`) {
             return setFirstRegistrationFrom(el[1]);
           } else if (el[0] === `firstRegistrationTo`) {
@@ -147,6 +153,19 @@ export function AdSLFilter() {
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setCondition(event.target.value);
+    if (event.target.value === "New") {
+      setMileageFrom("0");
+      setMileageTo("0");
+      setFirstRegistrationFrom("-");
+      setFirstRegistrationTo("-");
+      setLockedNewCar(true);
+    } else {
+      setLockedNewCar(false);
+      setMileageFrom("");
+      setMileageTo("");
+      setFirstRegistrationFrom("");
+      setFirstRegistrationTo("");
+    }
   };
 
   const handleSelectFuel = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -160,18 +179,22 @@ export function AdSLFilter() {
   const handleSelectFirstRegistrationFrom = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    if (condition === "New") return;
     setFirstRegistrationFrom(event.target.value);
   };
 
   const handleSelectFirstRegistrationTo = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    if (condition === "New") return;
     setFirstRegistrationTo(event.target.value);
   };
 
   const handleChangeMileageFrom = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    if (condition === "New") return;
+    if (Number(event.target.value) > 0) setCondition("Used");
     if (/^\d*$/.test(event.target.value)) {
       setMileageFrom(event.target.value);
     }
@@ -180,6 +203,7 @@ export function AdSLFilter() {
   const handleChangeMileageTo = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    if (condition === "New") return;
     if (/^\d*$/.test(event.target.value)) {
       setMileageTo(event.target.value);
     }
@@ -213,13 +237,15 @@ export function AdSLFilter() {
     if (model) queries += `model=${model}&`;
     if (
       firstRegistrationFrom &&
-      firstRegistrationFrom !== "First registration from"
+      firstRegistrationFrom !== "First registration from" &&
+      firstRegistrationFrom !== "-"
     ) {
       queries += `firstRegistrationFrom=${firstRegistrationFrom}&`;
     }
     if (
       firstRegistrationTo &&
-      firstRegistrationTo !== "First registration to"
+      firstRegistrationTo !== "First registration to" &&
+      firstRegistrationFrom !== "-"
     ) {
       queries += `firstRegistrationTo=${firstRegistrationTo}&`;
     }
@@ -423,14 +449,17 @@ export function AdSLFilter() {
               value={firstRegistrationFrom}
               onChange={handleSelectFirstRegistrationFrom}
               className="input input-bordered w-full"
+              disabled={lockedNewCar}
             >
               <option>First registration from</option>
               {years.map((y, i) => {
-                return (
-                  <option key={i + 1} value={y}>
-                    {y}
-                  </option>
-                );
+                if (y === "-" || y === "First registration from") return;
+                else
+                  return (
+                    <option key={i + 1} value={y}>
+                      {y}
+                    </option>
+                  );
               })}
             </select>
             {/* First registration to select */}
@@ -438,10 +467,16 @@ export function AdSLFilter() {
               value={firstRegistrationTo}
               onChange={handleSelectFirstRegistrationTo}
               className="input input-bordered w-full"
+              disabled={lockedNewCar}
             >
               <option>First registration to</option>
               {years.map((y, i) => {
-                if (typeof y !== `number`) return;
+                if (
+                  y === "-" ||
+                  y === "First registration to" ||
+                  y === "1999. and before"
+                )
+                  return;
                 else {
                   return (
                     <option key={i + 1} value={y}>
@@ -460,6 +495,7 @@ export function AdSLFilter() {
               maxLength={7}
               value={mileageFrom}
               onChange={handleChangeMileageFrom}
+              disabled={lockedNewCar}
             />
             {/* Mileage to input*/}
             <input
@@ -470,6 +506,7 @@ export function AdSLFilter() {
               maxLength={7}
               value={mileageTo}
               onChange={handleChangeMileageTo}
+              disabled={lockedNewCar}
             />
             {/* Min power input*/}
             <input

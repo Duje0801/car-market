@@ -1,4 +1,4 @@
-import { FormEvent, useState, useRef } from "react";
+import { FormEvent, useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { addAdData } from "../../../store/slices/ad";
@@ -71,6 +71,13 @@ export function EditAd({ adData }: Props) {
 
   const years = yearsData();
 
+  useEffect(() => {
+    if (condition === "New") {
+      setFirstRegistration("-");
+      setMileage("0");
+    }
+  }, []);
+
   //Form data states changes
   const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -80,6 +87,11 @@ export function EditAd({ adData }: Props) {
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setCondition(event.target.value);
+    if(event.target.value === "New"){
+      setMileage("0")
+      setFirstRegistration("-")
+      setMessage("New cars automatically have their mileage set to 0 and no first registration.")  
+    }
   };
 
   const handleSelectMake = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -91,6 +103,7 @@ export function EditAd({ adData }: Props) {
   };
 
   const handleChangeMileage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (condition === "New") return;
     if (/^\d*$/.test(event.target.value)) {
       setMileage(event.target.value);
     }
@@ -99,6 +112,7 @@ export function EditAd({ adData }: Props) {
   const handleSelectFirstRegistration = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    if (condition === "New") return;
     setFirstRegistration(event.target.value);
   };
 
@@ -174,7 +188,10 @@ export function EditAd({ adData }: Props) {
       setMessageImgSuccess("");
       setImgToShow(0);
     } catch (error) {
-      catchErrors(error, setMessage);
+      setMessage("");
+      setMessageImgSuccess("")
+      setMessageImgError("")
+      catchErrors(error, setError);
     }
     setIsSaving(false);
   };

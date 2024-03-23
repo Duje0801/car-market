@@ -22,6 +22,15 @@ export const editAd: any = async function (req: ReqUser, res: Response) {
       adImages,
     } = req.body;
 
+    //Checking if the new car is registered and it's mileage
+    if (condition === "New" && firstRegistration !== "-" && mileage !== "0") {
+      return errorResponse(
+        "The new car must not be registered and have 0 mileage",
+        res,
+        400
+      );
+    }
+
     //Getting ad
     const ad: IAd | null = await Ad.findById(req.params.id)
       .select("-updatedAt -__v")
@@ -51,11 +60,13 @@ export const editAd: any = async function (req: ReqUser, res: Response) {
       firstRegistration <= new Date().getFullYear()
     ) {
       firstRegistrationChecked = Number(firstRegistration);
+    } else if (firstRegistration === "-") {
+      firstRegistrationChecked = 0;
     } else if (firstRegistration === "Older") {
       firstRegistrationChecked = 1999;
     } else {
       return errorResponse(
-        "First registration year must be from 2000 onwards or text - Older",
+        "First registration year must be from 2000 onwards, -, or text `1999. and before`",
         res,
         401
       );

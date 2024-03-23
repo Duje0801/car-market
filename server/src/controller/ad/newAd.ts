@@ -18,8 +18,17 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
       power,
       price,
       description,
-      adImages
+      adImages,
     } = req.body;
+
+    //Checking if the new car is registered and it's mileage
+    if (condition === "New" && firstRegistration !== "-" && mileage !== "0") {
+      return errorResponse(
+        "The new car must not be registered and have 0 mileage",
+        res,
+        400
+      );
+    }
 
     //Checking first registration
     let firstRegistrationChecked: string | number;
@@ -28,12 +37,14 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
       firstRegistration >= 2000 &&
       firstRegistration <= new Date().getFullYear()
     ) {
-      firstRegistrationChecked = Number(firstRegistration)
+      firstRegistrationChecked = Number(firstRegistration);
+    } else if (firstRegistration === "-") {
+      firstRegistrationChecked = 0;
     } else if (firstRegistration === "1999. and before") {
       firstRegistrationChecked = 1999;
     } else {
       return errorResponse(
-        "First registration year must be from 2000 onwards or text - 1999. and before",
+        "First registration year must be from 2000 onwards, -, or text `1999. and before`",
         res,
         400
       );
@@ -55,7 +66,7 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
       location: req.user.location,
       country: req.user.country,
       description,
-      images: JSON.parse(adImages)
+      images: JSON.parse(adImages),
     });
 
     res.status(200).json({

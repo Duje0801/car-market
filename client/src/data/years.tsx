@@ -5,5 +5,7 @@ export function yearsData() {
     years.unshift(i);
   }
 
+  years.unshift("-")
+
   return years;
 }

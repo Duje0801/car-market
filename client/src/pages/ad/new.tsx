@@ -37,6 +37,7 @@ export function NewAd() {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [lockedNewCar, setLockedNewCar] = useState<boolean>(false);
 
   //Reason why this is in the parent element,
   //after clicking on the clear all button (in /src/pages/ad/new.tsx),
@@ -64,6 +65,18 @@ export function NewAd() {
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setCondition(event.target.value);
+    if (event.target.value === "New") {
+      setMileage("0");
+      setFirstRegistration("-");
+      setMessage(
+        "New cars automatically have their mileage set to 0 and no first registration."
+      );
+      setLockedNewCar(true);
+    } else {
+      setMileage("");
+      setFirstRegistration("");
+      setLockedNewCar(false);
+    }
   };
 
   const handleSelectMake = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -75,6 +88,7 @@ export function NewAd() {
   };
 
   const handleChangeMileage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (condition === "New") return;
     if (/^\d*$/.test(event.target.value)) {
       setMileage(event.target.value);
     }
@@ -83,6 +97,7 @@ export function NewAd() {
   const handleSelectFirstRegistration = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
+    if (condition === "New") return;
     setFirstRegistration(event.target.value);
   };
 
@@ -153,12 +168,16 @@ export function NewAd() {
         }
       );
       handleClearAll(`submit`);
+      setError("")
       setMessage(response.data.message);
       window.scrollTo({
         top: 0,
         behavior: "smooth",
       });
-    } catch (error) {
+    } catch (error: any) {
+      setMessage("");
+      setMessageImgSuccess("");
+      setMessageImgError("");
       catchErrors(error, setError);
       window.scrollTo({
         top: 0,
@@ -388,13 +407,15 @@ export function NewAd() {
                   value={firstRegistration}
                   onChange={handleSelectFirstRegistration}
                   className="input input-bordered w-full xxl:text-xl"
+                  disabled={lockedNewCar}
                   required
                 >
                   <option key={0}></option>
-                  {years.map((m, i) => {
+                  {years.map((y, i) => {
+                    if (y === "-" && !lockedNewCar) return;
                     return (
-                      <option key={i + 1} value={m}>
-                        {m}
+                      <option key={i + 1} value={y}>
+                        {y}
                       </option>
                     );
                   })}
@@ -413,6 +434,7 @@ export function NewAd() {
                   value={mileage}
                   onChange={handleChangeMileage}
                   className="input input-bordered w-full mx-auto max-w-lg xxl:max-w-2xl xxl:text-xl"
+                  disabled={lockedNewCar}
                   required
                 />
               </label>

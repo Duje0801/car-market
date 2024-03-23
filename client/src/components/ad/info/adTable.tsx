@@ -55,8 +55,9 @@ export function AdTable() {
               {" "}
               {adData && adData.firstRegistration === 1999
                 ? "1999. or before"
-                : adData?.firstRegistration}
-              .
+                : adData && adData.firstRegistration === 0
+                ? "-"
+                : `${adData?.firstRegistration}.`}
             </td>
           </tr>
           {/* Mileage row */}
