@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../../../store";
 
@@ -14,9 +15,22 @@ export function AdDropdowns({ handleOpenModal }: Props) {
     (state: ReturnType<typeof store.getState>) => state.ad
   );
 
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   return (
-    <div className="flex justify-end mx-auto w-[90vw] md:w-full">
-      {/* Dropdown */}
+    <div className="flex justify-between mx-auto w-[90vw] md:w-full">
+      {/* Go back button - top left */}
+      <button
+        className="btn btn-sm bg-black text-white text-sm font-bold"
+        onClick={handleGoBack}
+      >
+        Go back
+      </button>
+      {/* Dropdown - Ad options -top right */}
       <div className="dropdown dropdown-end">
         <div
           tabIndex={0}
