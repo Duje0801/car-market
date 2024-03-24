@@ -1,11 +1,11 @@
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
 import { useCreateAtToString } from "../../../hooks/useCreateAtToString";
+import { IAd } from "../../../interfaces/IAd";
 
-export function AdData() {
-  const { adData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.ad
-  );
+interface Props {
+  adData: IAd;
+}
+
+export function AdData({ adData }: Props) {
 
   const createdAt = useCreateAtToString(adData?.createdAt);
 

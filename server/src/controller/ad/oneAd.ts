@@ -23,20 +23,6 @@ export const oneAd = async (req: Request, res: Response) => {
       return errorResponse("Can't find this ad", res, 404);
     }
 
-    //Checking if the other user wants to see the edit page
-    if (
-      (req.originalUrl.split("/")[5] === `edit` && !user) ||
-      (req.originalUrl.split("/")[5] === `edit` &&
-        ad.user &&
-        ad.user[0].id !== user?.id)
-    ) {
-      return errorResponse(
-        "You don`t have permission to view this page",
-        res,
-        401
-      );
-    }
-
     //Checking can user see this ad:
     //1. If ad is not visible
     if (

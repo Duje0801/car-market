@@ -1,27 +1,23 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useCarouselImgContext } from "../../../context/carouselImgContext";
-import { store } from "../../../store";
 import { useCalcPhotosNumber } from "../../../hooks/useCalcPhotosNumber";
+import { handleOpenModal } from "../../../utilis/handleOpenModal";
 import { MdOutlineZoomOutMap } from "react-icons/md";
-import { IoMdCloseCircle } from "react-icons/io";
+import { IAd } from "../../../interfaces/IAd";
+import { PhotoModal } from "../modals/photoModal";
 
-export function AdImagesCarousel() {
+interface Props {
+  adData: IAd;
+}
+
+export function AdImagesCarousel({ adData }: Props) {
   //Image number to show in modal only
   const [imgToShowModal, setImgToShowModal] = useState<number>(0);
-
-  const { adData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.ad
-  );
 
   const { carouselImgState, carouselImgDispatch } = useCarouselImgContext();
 
   const photoNumbers = useCalcPhotosNumber(
     carouselImgState.number,
-    adData?.images.length!
-  );
-  const photoNumbersModal = useCalcPhotosNumber(
-    imgToShowModal,
     adData?.images.length!
   );
 
@@ -39,17 +35,6 @@ export function AdImagesCarousel() {
     setImgToShowModal(iteration);
   };
 
-  //Open modals
-  const handleOpenModal = () => {
-    setImgToShowModal(carouselImgState.number);
-    const modal = document.getElementById(
-      `zoomImageModal`
-    ) as HTMLDialogElement | null;
-    if (modal) {
-      modal.showModal();
-    }
-  };
-
   return (
     <>
       {/* Image carousel */}
@@ -63,7 +48,7 @@ export function AdImagesCarousel() {
             />
             {/* Zoom in /open modal - top right icon */}
             <MdOutlineZoomOutMap
-              onClick={() => handleOpenModal()}
+              onClick={() => handleOpenModal("zoomImage")}
               className="absolute top-2 right-2 text-3xl bg-slate-100 rounded-md cursor-pointer hover:bg-slate-300"
             />
             {adData.images.length > 1 && (
@@ -93,45 +78,11 @@ export function AdImagesCarousel() {
         </div>
       )}
 
-      {/*Photo modal*/}
-      <dialog id="zoomImageModal" className="modal">
-        <div className="modal-box md:flex md:min-w-[60vw] md:min-h-[60vh]">
-          {/* Image in modal */}
-          <img
-            src={adData?.images[imgToShowModal].imageUrl}
-            className="m-auto max-h-[70vh]"
-          ></img>
-          {/* No of image user is looking at (in modal) */}
-          <div className="absolute flex bottom-2 right-2 p-2 bg-slate-100 gap-2 text-xl rounded-md cursor-pointer transition-transform">
-            {imgToShowModal + 1}/{adData?.images.length}
-          </div>
-          {/* Changing visible image in modal (left and right arrows) */}
-          {adData?.images.length! > 1 && (
-            <div className="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-              <a
-                onClick={() => handleChangeImageModal(photoNumbersModal.before)}
-                className="btn btn-circle bg-slate-100 transition-transform"
-              >
-                ❮
-              </a>
-              <a
-                onClick={() => handleChangeImageModal(photoNumbersModal.after)}
-                className="btn btn-circle bg-slate-100 transition-transform"
-              >
-                ❯
-              </a>
-            </div>
-          )}
-          {/* Close button (X) */}
-          <div className="modal-action h-0 m-0">
-            <form method="dialog">
-              <button>
-                <IoMdCloseCircle className="absolute text-5xl bg-white text-red-500 top-0 right-0 rounded-full" />
-              </button>
-            </form>
-          </div>
-        </div>
-      </dialog>
+      <PhotoModal
+        adData={adData}
+        imgToShowModal={imgToShowModal}
+        handleChangeImageModal={handleChangeImageModal}
+      />
     </>
   );
 }

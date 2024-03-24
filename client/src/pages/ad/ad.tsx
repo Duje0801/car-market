@@ -3,16 +3,17 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addAdData, removeAdData } from "../../store/slices/ad";
 import { store } from "../../store";
+import { CarouselImgProvider } from "../../context/carouselImgContext";
 import { AdMessages } from "../../components/ad/messages/adMessages";
 import { AdInfoBox } from "../../components/ad/info/adInfoBox";
-import { AdModals } from "../../components/ad/modals/adModals";
+import { AdOperationModals } from "../../components/ad/modals/adOperationModals";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { AdDropdowns } from "../../components/ad/dropdowns/adDropdowns";
 import { AdAdditionalInfo } from "../../components/ad/info/adAdditionalInfo";
 import { catchErrors } from "../../utilis/catchErrors";
+import { deleteImage } from "../../utilis/deleteImage";
 import axios from "axios";
-import { CarouselImgProvider } from "../../context/carouselImgContext";
 
 export function Ad() {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -33,12 +34,12 @@ export function Ad() {
 
   useEffect(() => {
     if (isChecked) {
-      fetchData();
+      fetchAdData();
     }
   }, [isChecked]);
 
-  //Fetch function
-  const fetchData = async () => {
+  //Fetch ad data function
+  const fetchAdData = async () => {
     try {
       const response = await axios.get(
         `http://localhost:4000/api/v1/ad/find/${params.id}`,
@@ -55,16 +56,6 @@ export function Ad() {
     setIsLoaded(true);
   };
 
-  //Open modals
-  const handleOpenModal = (id: string) => {
-    const modal = document.getElementById(
-      `${id}Modal`
-    ) as HTMLDialogElement | null;
-    if (modal) {
-      modal.showModal();
-    }
-  };
-
   //Function for hiding, deactivating and deleting ad
   const handleModalClick = async (operation: string) => {
     setIsLoaded(false);
@@ -79,7 +70,10 @@ export function Ad() {
       );
       if (operation === "delete") {
         //Deleting all images associated with ad
-        const deleteImageMessage: string = await deleteImage();
+        const deleteImageMessage: string = await deleteImage(
+          adData,
+          loggedProfileData
+        );
         navigate(`/redirect/ad/deleteAd-${deleteImageMessage}`);
       }
       if (
@@ -88,6 +82,7 @@ export function Ad() {
       ) {
         navigate(`/redirect/ad/deactivate`);
       } else {
+        //if ad is hidden/unhidden or ad is deactivated by admin
         setMessage(response.data.message);
         dispatch(removeAdData());
         dispatch(addAdData(response.data.ad));
@@ -96,32 +91,6 @@ export function Ad() {
       catchErrors(error, setError);
     }
     setIsLoaded(true);
-  };
-
-  const deleteImage = async () => {
-    let imagesDeleteList: string[] = [];
-
-    //Adding all ad`s images
-    adData?.images?.forEach((img) => {
-      imagesDeleteList.push(img.publicID);
-    });
-
-    //Creating fetch for all images
-    const promises = imagesDeleteList.map((publicID) =>
-      axios.delete(`http://localhost:4000/api/v1/ad/deleteImage/${publicID}`, {
-        headers: {
-          authorization: `Bearer ${loggedProfileData?.token}`,
-        },
-      })
-    );
-
-    try {
-      //Deleting images
-      await Promise.all(promises);
-      return "allDeleted";
-    } catch (error) {
-      return "notAllDeleted";
-    }
   };
 
   if (!isChecked || !isLoaded) {
@@ -147,22 +116,33 @@ export function Ad() {
       <CarouselImgProvider>
         <div className="mx-auto md:w-2/3">
           {/* Profile top messages */}
-          <AdMessages error={error} message={message} />
+          <AdMessages
+            loggedProfileData={loggedProfileData}
+            adData={adData}
+            error={error}
+            message={message}
+          />
 
           {/*Dropdown menu*/}
           {loggedProfileData.username === adData.username ||
           loggedProfileData.username === `admin` ? (
-            <AdDropdowns handleOpenModal={handleOpenModal} />
+            <AdDropdowns
+              loggedProfileData={loggedProfileData}
+              adData={adData}
+            />
           ) : null}
 
           {/* Ad display */}
-          <AdInfoBox />
+          <AdInfoBox adData={adData} />
 
           {/* Ad data and seller data */}
-          <AdAdditionalInfo />
+          <AdAdditionalInfo adData={adData} />
         </div>
         {/* Ad modals */}
-        <AdModals handleModalClick={handleModalClick} />
+        <AdOperationModals
+          adData={adData}
+          handleModalClick={handleModalClick}
+        />
       </CarouselImgProvider>
     );
   }

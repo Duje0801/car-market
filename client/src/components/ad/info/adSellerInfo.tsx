@@ -1,16 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
 import { useCreateAtToString } from "../../../hooks/useCreateAtToString";
 import { IoMail } from "react-icons/io5";
 import { BsFillTelephoneFill } from "react-icons/bs";
 import { useProfileAvatar } from "../../../hooks/useProfileAvatar";
+import { IAd } from "../../../interfaces/IAd";
 
-export function AdSellerInfo() {
-  const { adData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.ad
-  );
+interface Props {
+  adData: IAd;
+}
 
+export function AdSellerInfo({ adData }: Props) {
   const navigate = useNavigate();
   const createdAt = useCreateAtToString(adData?.createdAt);
 
@@ -44,7 +43,11 @@ export function AdSellerInfo() {
             ></img>
           </div>
         ) : null}
-        <div className={`my-auto text-center lg:flex lg:flex-col lg:ml-0 ${avatar ? `lg:text-left lg:mr-auto` : ``}`}>
+        <div
+          className={`my-auto text-center lg:flex lg:flex-col lg:ml-0 ${
+            avatar ? `lg:text-left lg:mr-auto` : ``
+          }`}
+        >
           {/* Username */}
           <p
             onClick={() => handleRedirectToProfile()}
@@ -54,7 +57,11 @@ export function AdSellerInfo() {
           </p>
           <p>Active since: {createdAt}</p>
           {/* Email */}
-          <div className={`flex justify-center gap-2 lg:justify-start ${avatar ? `` : `w-fit mx-auto`}`}>
+          <div
+            className={`flex justify-center gap-2 lg:justify-start ${
+              avatar ? `` : `w-fit mx-auto`
+            }`}
+          >
             <IoMail className="my-auto" />
             {adData?.user && adData?.user[0].email ? (
               <p className="cursor-pointer" onClick={handleClickSendMail}>
@@ -63,7 +70,11 @@ export function AdSellerInfo() {
             ) : null}
           </div>
           {/* Contact */}
-          <div className={`flex justify-center gap-2 lg:justify-start ${avatar ? `` : `w-fit mx-auto`}`}>
+          <div
+            className={`flex justify-center gap-2 lg:justify-start ${
+              avatar ? `` : `w-fit mx-auto`
+            }`}
+          >
             <BsFillTelephoneFill className="my-auto" />
             {adData?.user && adData?.user[0].contact ? (
               <p>{adData?.user[0].contact}</p>

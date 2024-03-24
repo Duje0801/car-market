@@ -1,20 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
+import { handleOpenModal } from "../../../utilis/handleOpenModal";
+import { ILoggedProfile } from "../../../interfaces/ILoggedProfile";
+import { IAd } from "../../../interfaces/IAd";
 
 interface Props {
-  handleOpenModal: (id: string) => void;
+  loggedProfileData: ILoggedProfile;
+  adData: IAd;
 }
 
-export function AdDropdowns({ handleOpenModal }: Props) {
-  const { loggedProfileData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.loggedProfile
-  );
-
-  const { adData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.ad
-  );
-
+export function AdDropdowns({ loggedProfileData, adData }: Props) {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
@@ -30,7 +24,7 @@ export function AdDropdowns({ handleOpenModal }: Props) {
       >
         Go back
       </button>
-      {/* Dropdown - Ad options -top right */}
+      {/* Dropdown - Ad options - top right */}
       <div className="dropdown dropdown-end">
         <div
           tabIndex={0}

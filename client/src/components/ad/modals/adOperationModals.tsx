@@ -1,16 +1,13 @@
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
 import { EditAd } from "../edit/editAd";
+import { IAd } from "../../../interfaces/IAd";
 
 interface Props {
+  adData: IAd;
   handleModalClick: (operation: string) => void;
 }
 
-export function AdModals({ handleModalClick }: Props) {
-  const { adData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.ad
-  );
-
+export function AdOperationModals({ adData, handleModalClick }: Props) {
+  //Here are modals to hide, de/activate/delete or edit ad
   return (
     <>
       {/* Hide ad modal */}

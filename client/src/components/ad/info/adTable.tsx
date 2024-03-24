@@ -1,5 +1,3 @@
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
 import { useMakeLogo } from "../../../hooks/useMakeLogo";
 import { MdNewReleases } from "react-icons/md";
 import { FaCar } from "react-icons/fa";
@@ -10,12 +8,14 @@ import { BsFillFuelPumpFill } from "react-icons/bs";
 import { TbManualGearbox } from "react-icons/tb";
 import { ImPower } from "react-icons/im";
 import { ImPriceTags } from "react-icons/im";
+import { IAd } from "../../../interfaces/IAd";
 
-export function AdTable() {
-  const { adData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.ad
-  );
+interface Props {
+  adData: IAd;
+}
 
+export function AdTable({ adData }: Props) {
+  //Getting make logo
   const makeLogo = useMakeLogo(adData?.make!);
 
   //Calculating horse power from kw

@@ -20,7 +20,7 @@ export const deactivateAd: any = async function (req: ReqUser, res: Response) {
     }
 
     //Checking if the user has permission to de/activate this ad
-    //1. Is ad is not acitve
+    //1. Is ad is not active
     if (!ad.active && req.user.role !== "admin") {
       return errorResponse(
         "You don't have permission for this operation",
@@ -29,7 +29,7 @@ export const deactivateAd: any = async function (req: ReqUser, res: Response) {
       );
     }
 
-    //1. If ad is  acitve
+    //2. If ad is  acitve
     if (
       ad.active &&
       ad.user &&
