@@ -1,6 +1,5 @@
 import { Dispatch, RefObject, SetStateAction, useState } from "react";
 import { useSelector } from "react-redux";
-import { IImage } from "../../../interfaces/IImage";
 import { store } from "../../../store";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageError } from "../../elements/messages/messageError";
@@ -8,6 +7,8 @@ import { MessageWarning } from "../../elements/messages/messageWarning";
 import { WaitingDots } from "../../elements/waitingDots";
 import { useCalcPhotosNumber } from "../../../hooks/useCalcPhotosNumber";
 import { catchErrors } from "../../../utilis/catchErrors";
+import { handleOpenModal } from "../../../utilis/handleOpenModal";
+import { IImage } from "../../../interfaces/IImage";
 import axios from "axios";
 
 interface Props {
@@ -21,7 +22,6 @@ interface Props {
   messageImgError: string;
   setMessageImgError: Dispatch<SetStateAction<string>>;
   fileInputRef: RefObject<HTMLInputElement>;
-  handleOpenModal: (id: string) => void;
 }
 
 export function UploadAdImages({
@@ -35,7 +35,6 @@ export function UploadAdImages({
   messageImgError,
   setMessageImgError,
   fileInputRef,
-  handleOpenModal,
 }: Props) {
   const [isSaving, setIsSaving] = useState<boolean>(false);
 

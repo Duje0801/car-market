@@ -2,7 +2,6 @@ import { FormEvent, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
 import { catchErrors } from "../../utilis/catchErrors";
-import { handleOpenModal } from "../../utilis/handleOpenModal";
 import { deleteUploadedImages } from "../../utilis/deleteUploadedImages";
 import { EditAdImagesModal } from "../../components/ad/modals/editAdImagesModal";
 import { UploadAdImages } from "../../components/ad/uploadImages/uploadAdImages";
@@ -501,7 +500,6 @@ export function NewAd() {
                 messageImgError={messageImgError}
                 setMessageImgError={setMessageImgError}
                 fileInputRef={fileInputRef}
-                handleOpenModal={handleOpenModal}
               />
               {/* Clear all button */}
               <div className="card-actions justify-end">

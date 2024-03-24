@@ -5,7 +5,6 @@ import { addAdData } from "../../../store/slices/ad";
 import { useCarouselImgContext } from "../../../context/carouselImgContext";
 import { catchErrors } from "../../../utilis/catchErrors";
 import { deleteImageEditingAd } from "../../../utilis/deleteImageEditingAd";
-import { handleOpenModal } from "../../../utilis/handleOpenModal";
 import { WaitingDots } from "../../elements/waitingDots";
 import { MessageError } from "../../elements/messages/messageError";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
@@ -483,7 +482,6 @@ export function EditAd({ loggedProfileData, adData }: Props) {
                 messageImgError={messageImgError}
                 setMessageImgError={setMessageImgError}
                 fileInputRef={fileInputRef}
-                handleOpenModal={handleOpenModal}
               />
               <div className="label pt-1">
                 <span className="label-text-alt text-[0.75rem]">
