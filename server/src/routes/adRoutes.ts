@@ -4,6 +4,7 @@ import { oneAd } from "../controller/ad/oneAd";
 import { newAd } from "../controller/ad/newAd";
 import { editAd } from "../controller/ad/editAd";
 import { searchAds } from "../controller/ad/searchAds";
+import { searchAdsTotal } from "../controller/ad/searchAdsTotal";
 import { newestAds } from "../controller/ad/newestAds";
 import { hideAd } from "../controller/ad/hideAd";
 import { deactivateAd } from "../controller/ad/deactivateAd";
@@ -18,8 +19,8 @@ const upload = multer({ dest: "uploads/" });
 
 router.route("/find/:id").get(oneAd);
 router.route("/find/edit/:id").get(oneAd);
-router.route("/searchNo").get(searchAds);
 router.route("/search").get(searchAds);
+router.route("/searchTotal").get(searchAdsTotal);
 router.route("/newest").get(newestAds);
 router.route("/new").post(protect, newAd);
 router.route("/edit/:id").patch(protect, editAd);

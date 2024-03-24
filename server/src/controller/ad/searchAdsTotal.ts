@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import { Ad } from "../../models/adModel";
 import { checkSearchQueries } from "../../utilis/checkSearchQueries";
-import { checkUser } from "../../utilis/checkUser";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
+import { checkUser } from "../../utilis/checkUser";
 import { IUser } from "../../interfaces/user";
 
-export const searchAds: any = async function (req: Request, res: Response) {
+export const searchAdsTotal: any = async function (
+  req: Request,
+  res: Response
+) {
   try {
     const user: IUser | null = await checkUser(req);
 
@@ -26,16 +29,9 @@ export const searchAds: any = async function (req: Request, res: Response) {
 
     const adsNo = await Ad.countDocuments({ ...adsCheck, ...filters });
 
-    const ads = await Ad.find({ ...adsCheck, ...filters })
-      .select("-updatedAt -__v")
-      .sort(String(req.query.sort))
-      .skip(Number(req.query.page))
-      .limit(5);
-
     res.status(200).json({
       status: `success`,
       adsNo,
-      ads,
     });
   } catch (error) {
     errorHandler(error, req, res);

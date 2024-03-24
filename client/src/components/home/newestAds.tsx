@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IAd } from "../../interfaces/IAd";
 import { WaitingDots } from "../elements/waitingDots";
 import { MessageError } from "../elements/messages/messageError";
 import { catchErrors } from "../../utilis/catchErrors";
+import { IAd } from "../../interfaces/IAd";
 import axios from "axios";
 
 export function NewestAds() {
@@ -56,7 +56,7 @@ export function NewestAds() {
     );
   } else {
     {
-      /* 5 lastest created ads */
+      /* 5 newest ads */
     }
     return (
       <div className="flex flex-col mt-6 p-4 bg-base-200 shadow-xl gap-2 rounded-lg lg:mt-8">
@@ -64,7 +64,7 @@ export function NewestAds() {
         <p className="text-xl xl:text-2xl">
           <b>Newest ads</b>
         </p>
-        {/* Ad images (with text) */}
+        {/* Ad images mapped */}
         <div className="carousel flex flex-col w-full gap-2 lg:flex-row lg:max-h-[25vh] lg:justify-between lg:rounded-lg lg:gap-0">
           {newestAds.map((ad, i) => {
             return (
@@ -73,11 +73,13 @@ export function NewestAds() {
                 key={i}
                 className="carousel-item relative group w-full max-h-[30vh] overflow-hidden hover:cursor-pointer lg:w-[19.5%]"
               >
+                {/* Image */}
                 <img
                   src={ad.images[0].imageUrl}
                   className="w-full object-cover transform transition duration-500 hover:scale-110"
                   alt="adImage"
                 />
+                {/* Bottom box */}
                 <div className="absolute w-full p-2 opacity-75 pointer-events-none bg-black text-white text-md text-right bottom-0 group-hover:opacity-75 lg:opacity-0 xxl:text-lg">
                   <p>{ad.title}</p>
                   <p>{ad.price}€</p>

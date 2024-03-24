@@ -1,7 +1,9 @@
-import { useEffect, useState, Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
+import { WaitingDots } from "../elements/waitingDots";
+import { useQueryParams } from "../../hooks/useQueryParams";
 import { catchErrors } from "../../utilis/catchErrors";
 import { makes as makesList } from "../../data/makes";
 import { countries as countriesList } from "../../data/countries";
@@ -9,7 +11,6 @@ import { yearsData } from "../../data/years";
 import { condition as conditionList } from "../../data/condition";
 import { fuel as fuelList } from "../../data/fuel";
 import { gearbox as gearboxList } from "../../data/gearbox";
-import { WaitingDots } from "../elements/waitingDots";
 import axios from "axios";
 
 interface Props {
@@ -44,34 +45,19 @@ export function SearchAds({ setError }: Props) {
   const [searchId, setSearchId] = useState<string>("");
   const [lockedNewCar, setLockedNewCar] = useState<boolean>(false);
 
+  //Loged user details (username, email and token)
   const { loggedProfileData } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
   const navigate = useNavigate();
+  const queryParamsMaker = useQueryParams;
 
   const years = yearsData();
 
-  //New fetch after any change (getting results number)
+  //New fetch after any change (getting total results number)
   useEffect(() => {
-    if (
-      make ||
-      model ||
-      priceFrom ||
-      priceTo ||
-      country ||
-      condition ||
-      fuel ||
-      gearbox ||
-      firstRegistrationFrom ||
-      firstRegistrationTo ||
-      mileageFrom ||
-      mileageTo ||
-      minPower ||
-      maxPower
-    ) {
-      fetchData();
-    } else setResultsNo(0);
+    fetchSearchTotalResults();
   }, [
     make,
     model,
@@ -113,7 +99,7 @@ export function SearchAds({ setError }: Props) {
   };
 
   const handleSelectCountry = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if (event.target.value === "Any") setCountry("");
+    if (event.target.value === "Pick country") setCountry("");
     else setCountry(event.target.value);
   };
 
@@ -128,11 +114,11 @@ export function SearchAds({ setError }: Props) {
       setFirstRegistrationTo("-");
       setLockedNewCar(true);
     } else {
-      setLockedNewCar(false);
       setMileageFrom("");
       setMileageTo("");
       setFirstRegistrationFrom("");
       setFirstRegistrationTo("");
+      setLockedNewCar(false);
     }
   };
 
@@ -189,54 +175,39 @@ export function SearchAds({ setError }: Props) {
     }
   };
 
-  //Open/close additional search options
+  //Open/close additional search options (click on button `More search options`)
   const handleMoreSearchOptions = () => {
-    clearFields(false);
     return moreSearchOptions
       ? setMoreSearchOptions(false)
       : setMoreSearchOptions(true);
   };
 
   //Fetching data function
-  const fetchData = async () => {
+  const fetchSearchTotalResults = async () => {
     setIsLoading(true);
 
-    let queries = "";
-    if (make && make !== "Make") queries += `make=${make}&`;
-    if (model) queries += `model=${model}&`;
-    if (
-      firstRegistrationFrom &&
-      firstRegistrationFrom !== "First registration from" &&
-      firstRegistrationFrom !== "-"
-    ) {
-      queries += `firstRegistrationFrom=${firstRegistrationFrom}&`;
-    }
-    if (
-      firstRegistrationTo &&
-      firstRegistrationTo !== "First registration to" &&
-      firstRegistrationFrom !== "-"
-    ) {
-      queries += `firstRegistrationTo=${firstRegistrationTo}&`;
-    }
-    if (country && country !== "Pick country") queries += `country=${country}&`;
-    if (mileageFrom) queries += `mileageFrom=${mileageFrom}&`;
-    if (mileageTo) queries += `mileageTo=${mileageTo}&`;
-    if (condition && condition !== "New/Used")
-      queries += `condition=${condition}&`;
-    if (fuel && fuel !== "Fuel") queries += `fuel=${fuel}&`;
-    if (gearbox && gearbox !== "Gearbox") queries += `gearbox=${gearbox}&`;
-    if (minPower) queries += `minPower=${minPower}&`;
-    if (maxPower) queries += `maxPower=${maxPower}&`;
-    if (priceFrom) queries += `priceFrom=${priceFrom}&`;
-    if (priceTo) queries += `priceTo=${priceTo}`;
+    const allfields = {
+      make,
+      model,
+      firstRegistrationFrom,
+      firstRegistrationTo,
+      country,
+      mileageFrom,
+      mileageTo,
+      condition,
+      fuel,
+      gearbox,
+      minPower,
+      maxPower,
+      priceFrom,
+      priceTo,
+    };
 
-    if (queries.slice(-1) === "&" || queries.slice(-1) === "?") {
-      queries = queries.slice(0, -1);
-    }
+    const queryParams = queryParamsMaker(allfields);
 
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/v1/ad/searchNo/?${queries}`,
+        `http://localhost:4000/api/v1/ad/searchTotal/?${queryParams}`,
         {
           headers: {
             authorization: `Bearer ${loggedProfileData?.token}`,
@@ -244,7 +215,8 @@ export function SearchAds({ setError }: Props) {
         }
       );
       setResultsNo(response.data.adsNo);
-      setSearchId(queries);
+      //If the user requests a search, prepare queries in the URL link
+      setSearchId(queryParams);
     } catch (error) {
       catchErrors(error, setError);
     }
@@ -258,14 +230,12 @@ export function SearchAds({ setError }: Props) {
   };
 
   //Clear all fields function
-  const clearFields = (all: boolean) => {
-    if (all) {
-      setMake("");
-      setModel("");
-      setPriceFrom("");
-      setPriceTo("");
-      setCountry("");
-    }
+  const clearFields = () => {
+    setMake("");
+    setModel("");
+    setPriceFrom("");
+    setPriceTo("");
+    setCountry("");
     setCondition("");
     setFuel("");
     setFirstRegistrationFrom("");
@@ -277,242 +247,239 @@ export function SearchAds({ setError }: Props) {
   };
 
   return (
-    <>
-      {/* Search form */}
-      <form className="flex flex-col bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw] md:w-[70vw] lg:full lg:mt-0">
-        {/* 1st row */}
-        <div className="flex gap-2 justify-around">
-          {/* Make select */}
+    <form className="flex flex-col bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-2 rounded-lg w-[90vw] md:w-[70vw] lg:mt-0">
+      {/* 1st row */}
+      <div className="flex gap-2 justify-around">
+        {/* Make select */}
+        <select
+          value={make}
+          onChange={handleSelectMake}
+          className="input input-bordered w-1/2 xxl:text-xl"
+        >
+          <option>Make</option>
+          {makesList.map((m, i) => (
+            <option key={i} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
+        {/* Model input */}
+        <input
+          type="text"
+          placeholder="Model"
+          className="input input-bordered w-1/2 text-black xxl:text-xl"
+          minLength={1}
+          maxLength={20}
+          value={model}
+          onChange={handleChangeModel}
+        />
+      </div>
+      {/* 2nd row */}
+      <div className="flex gap-2 justify-around">
+        {/* Price from input */}
+        <input
+          type="text"
+          placeholder="Price from"
+          className="input input-bordered w-1/2 text-black xxl:text-xl"
+          minLength={0}
+          maxLength={8}
+          value={priceFrom}
+          onChange={handleChangePriceFrom}
+        />
+        {/* Price to input */}
+        <input
+          type="text"
+          placeholder="Price to"
+          className="input input-bordered w-1/2 text-black xxl:text-xl"
+          minLength={0}
+          maxLength={8}
+          value={priceTo}
+          onChange={handleChangePriceTo}
+        />
+      </div>
+      {/* 3rd row */}
+      {/* Country select */}
+      <select
+        value={country}
+        onChange={handleSelectCountry}
+        className="input input-bordered w-full xxl:text-xl"
+      >
+        <option>Pick country</option>
+        {countriesList.map((c, i) => {
+          return (
+            <option key={i} value={c}>
+              {c}
+            </option>
+          );
+        })}
+      </select>
+      {/* 4th row */}
+      {/* More search options button */}
+      <button
+        type="button"
+        className="btn bg-black text-white w-full xxl:text-xl"
+        onClick={handleMoreSearchOptions}
+      >
+        {moreSearchOptions ? "Less" : "More"} search options
+      </button>
+      {moreSearchOptions && (
+        <>
+          {/* 5th row */}
+          {/* Condition select */}
           <select
-            value={make}
-            onChange={handleSelectMake}
-            className="input input-bordered w-1/2 xxl:text-xl"
+            value={condition}
+            onChange={handleSelectCondition}
+            className="input input-bordered w-full xxl:text-xl"
           >
-            <option>Make</option>
-            {makesList.map((m, i) => (
-              <option key={i} value={m}>
-                {m}
+            <option>New/Used</option>
+            {conditionList.map((f, i) => (
+              <option key={i} value={f}>
+                {f}
               </option>
             ))}
           </select>
-          {/* Model input */}
-          <input
-            type="text"
-            placeholder="Model"
-            className="input input-bordered w-1/2 text-black xxl:text-xl"
-            minLength={1}
-            maxLength={20}
-            value={model}
-            onChange={handleChangeModel}
-          />
-        </div>
-        {/* 2nd row */}
-        <div className="flex gap-2 justify-around">
-          {/* Price from input */}
-          <input
-            type="text"
-            placeholder="Price from"
-            className="input input-bordered w-1/2 text-black xxl:text-xl"
-            minLength={0}
-            maxLength={8}
-            value={priceFrom}
-            onChange={handleChangePriceFrom}
-          />
-          {/* Price to input */}
-          <input
-            type="text"
-            placeholder="Price to"
-            className="input input-bordered w-1/2 text-black xxl:text-xl"
-            minLength={0}
-            maxLength={8}
-            value={priceTo}
-            onChange={handleChangePriceTo}
-          />
-        </div>
-        {/* 3rd row */}
-        {/* Country select */}
-        <select
-          value={country}
-          onChange={handleSelectCountry}
-          className="input input-bordered w-full xxl:text-xl"
-        >
-          <option>Pick country</option>
-          {countriesList.map((c, i) => {
-            return (
-              <option key={i} value={c}>
-                {c}
+          {/* 6th row */}
+          {/* Fuel select */}
+          <select
+            value={fuel}
+            onChange={handleSelectFuel}
+            className="input input-bordered w-full xxl:text-xl"
+          >
+            <option>Fuel</option>
+            {fuelList.map((f, i) => (
+              <option key={i} value={f}>
+                {f}
               </option>
-            );
-          })}
-        </select>
-        {/* 4th row */}
-        {/* More search options button */}
-        <button
-          type="button"
-          className="btn bg-black text-white w-full xxl:text-xl"
-          onClick={handleMoreSearchOptions}
-        >
-          {moreSearchOptions ? "Less" : "More"} search options
-        </button>
-        {moreSearchOptions && (
-          <>
-            {/* 5th row */}
-            {/* Condition select */}
+            ))}
+          </select>
+          {/* 7th row */}
+          {/* Gearbox select */}
+          <select
+            value={gearbox}
+            onChange={handleSelectGearbox}
+            className="input input-bordered w-full xxl:text-xl"
+          >
+            <option>Gearbox</option>
+            {gearboxList.map((g, i) => (
+              <option key={i} value={g}>
+                {g}
+              </option>
+            ))}
+          </select>
+          {/* 8th row */}
+          <div className="flex gap-2 justify-around">
+            {/* First registration from select */}
             <select
-              value={condition}
-              onChange={handleSelectCondition}
-              className="input input-bordered w-full xxl:text-xl"
+              value={firstRegistrationFrom}
+              onChange={handleSelectFirstRegistrationFrom}
+              className="input input-bordered w-1/2 xxl:text-xl"
+              disabled={lockedNewCar}
             >
-              <option>New/Used</option>
-              {conditionList.map((f, i) => (
-                <option key={i} value={f}>
-                  {f}
-                </option>
-              ))}
+              <option>First registration from</option>
+              {years.map((y, i) => {
+                if (y === "-" || y === "First registration from") return;
+                return (
+                  <option key={i + 1} value={y}>
+                    {y}
+                  </option>
+                );
+              })}
             </select>
-            {/* 6th row */}
-            {/* Fuel select */}
+            {/* First registration to select */}
             <select
-              value={fuel}
-              onChange={handleSelectFuel}
-              className="input input-bordered w-full xxl:text-xl"
+              value={firstRegistrationTo}
+              onChange={handleSelectFirstRegistrationTo}
+              className="input input-bordered w-1/2 xxl:text-xl"
+              disabled={lockedNewCar}
             >
-              <option>Fuel</option>
-              {fuelList.map((f, i) => (
-                <option key={i} value={f}>
-                  {f}
-                </option>
-              ))}
-            </select>
-            {/* 7th row */}
-            {/* Gearbox select */}
-            <select
-              value={gearbox}
-              onChange={handleSelectGearbox}
-              className="input input-bordered w-full xxl:text-xl"
-            >
-              <option>Gearbox</option>
-              {gearboxList.map((g, i) => (
-                <option key={i} value={g}>
-                  {g}
-                </option>
-              ))}
-            </select>
-            {/* 8th row */}
-            <div className="flex gap-2 justify-around">
-              {/* First registration from select */}
-              <select
-                value={firstRegistrationFrom}
-                onChange={handleSelectFirstRegistrationFrom}
-                className="input input-bordered w-1/2 xxl:text-xl"
-                disabled={lockedNewCar}
-              >
-                <option>First registration from</option>
-                {years.map((y, i) => {
-                  if (y === "-" || y === "First registration from") return;
+              <option>First registration to</option>
+              {years.map((y, i) => {
+                if (
+                  y === "-" ||
+                  y === "First registration to" ||
+                  y === "1999. and before"
+                ) {
+                  return;
+                } else {
                   return (
                     <option key={i + 1} value={y}>
                       {y}
                     </option>
                   );
-                })}
-              </select>
-              {/* First registration to select */}
-              <select
-                value={firstRegistrationTo}
-                onChange={handleSelectFirstRegistrationTo}
-                className="input input-bordered w-1/2 xxl:text-xl"
-                disabled={lockedNewCar}
-              >
-                <option>First registration to</option>
-                {years.map((y, i) => {
-                  if (
-                    y === "-" ||
-                    y === "First registration to" ||
-                    y === "1999. and before"
-                  )
-                    return;
-                  else {
-                    return (
-                      <option key={i + 1} value={y}>
-                        {y}
-                      </option>
-                    );
-                  }
-                })}
-              </select>
-            </div>
-            {/* 9th row */}
-            <div className="flex gap-2 justify-around">
-              {/* Mileage from input */}
-              <input
-                type="text"
-                placeholder="Mileage from (km)"
-                className="input input-bordered w-1/2 text-black xxl:text-xl"
-                minLength={1}
-                maxLength={7}
-                value={mileageFrom}
-                disabled={lockedNewCar}
-                onChange={handleChangeMileageFrom}
-              />
-              {/* Mileage to input*/}
-              <input
-                type="text"
-                placeholder="Mileage to (km)"
-                className="input input-bordered w-1/2 text-black xxl:text-xl"
-                minLength={1}
-                maxLength={7}
-                value={mileageTo}
-                disabled={lockedNewCar}
-                onChange={handleChangeMileageTo}
-              />
-            </div>
-            {/* 10th row */}
-            <div className="flex gap-2 justify-around">
-              {/* Min power input*/}
-              <input
-                type="text"
-                placeholder="Min power (kW)"
-                className="input input-bordered w-1/2 text-black xxl:text-xl"
-                minLength={1}
-                maxLength={4}
-                value={minPower}
-                onChange={handleChangeMinPower}
-              />
-              {/* Max power input*/}
-              <input
-                type="text"
-                placeholder="Max power (kW)"
-                className="input input-bordered w-1/2 text-black xxl:text-xl"
-                minLength={1}
-                maxLength={4}
-                value={maxPower}
-                onChange={handleChangeMaxPower}
-              />
-            </div>
-          </>
-        )}
-        {/* Last row */}
-        {/* Clear all and Results buttons */}
-        <button
-          type="button"
-          className="btn btn-error w-full xxl:text-xl"
-          onClick={() => clearFields(true)}
-        >
-          Clear All
-        </button>
-        <button
-          type="button"
-          className="btn bg-black text-white w-full xxl:text-xl"
-          onClick={handleRedirect}
-        >
-          {isLoading ? (
-            <WaitingDots size={"xs"} marginTop={2} />
-          ) : (
-            `${resultsNo} Results`
-          )}{" "}
-        </button>
-      </form>
-    </>
+                }
+              })}
+            </select>
+          </div>
+          {/* 9th row */}
+          <div className="flex gap-2 justify-around">
+            {/* Mileage from input */}
+            <input
+              type="text"
+              placeholder="Mileage from (km)"
+              className="input input-bordered w-1/2 text-black xxl:text-xl"
+              minLength={1}
+              maxLength={7}
+              value={mileageFrom}
+              disabled={lockedNewCar}
+              onChange={handleChangeMileageFrom}
+            />
+            {/* Mileage to input*/}
+            <input
+              type="text"
+              placeholder="Mileage to (km)"
+              className="input input-bordered w-1/2 text-black xxl:text-xl"
+              minLength={1}
+              maxLength={7}
+              value={mileageTo}
+              disabled={lockedNewCar}
+              onChange={handleChangeMileageTo}
+            />
+          </div>
+          {/* 10th row */}
+          <div className="flex gap-2 justify-around">
+            {/* Min power input*/}
+            <input
+              type="text"
+              placeholder="Min power (kW)"
+              className="input input-bordered w-1/2 text-black xxl:text-xl"
+              minLength={1}
+              maxLength={4}
+              value={minPower}
+              onChange={handleChangeMinPower}
+            />
+            {/* Max power input*/}
+            <input
+              type="text"
+              placeholder="Max power (kW)"
+              className="input input-bordered w-1/2 text-black xxl:text-xl"
+              minLength={1}
+              maxLength={4}
+              value={maxPower}
+              onChange={handleChangeMaxPower}
+            />
+          </div>
+        </>
+      )}
+      {/* Last row */}
+      {/* Clear all and Results buttons */}
+      <button
+        type="button"
+        className="btn btn-error w-full xxl:text-xl"
+        onClick={() => clearFields()}
+      >
+        Clear All
+      </button>
+      <button
+        type="button"
+        className="btn bg-black text-white w-full xxl:text-xl"
+        onClick={handleRedirect}
+      >
+        {isLoading ? (
+          <WaitingDots size={"xs"} marginTop={2} />
+        ) : (
+          `${resultsNo} Results`
+        )}{" "}
+      </button>
+    </form>
   );
 }
