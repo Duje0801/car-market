@@ -21,6 +21,8 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
       adImages,
     } = req.body;
 
+    const adImagesObject = JSON.parse(adImages);
+
     //Checking if the new car is registered and it's mileage
     if (condition === "New" && firstRegistration !== "-" && mileage !== "0") {
       return errorResponse(
@@ -28,6 +30,11 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
         res,
         400
       );
+    }
+
+    //Checking number of images in ad
+    if (adImagesObject.length < 1 || adImagesObject.length > 10) {
+      return errorResponse("Ad must have between 1 and 10 images", res, 400);
     }
 
     //Checking first registration
@@ -66,7 +73,7 @@ export const newAd: any = async function (req: ReqUser, res: Response) {
       location: req.user.location,
       country: req.user.country,
       description,
-      images: JSON.parse(adImages),
+      images: adImagesObject,
     });
 
     res.status(200).json({

@@ -2,6 +2,8 @@ import { FormEvent, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
 import { catchErrors } from "../../utilis/catchErrors";
+import { handleOpenModal } from "../../utilis/handleOpenModal";
+import { deleteUploadedImages } from "../../utilis/deleteUploadedImages";
 import { EditAdImagesModal } from "../../components/ad/modals/editAdImagesModal";
 import { UploadAdImages } from "../../components/ad/uploadImages/uploadAdImages";
 import { WaitingDots } from "../../components/elements/waitingDots";
@@ -40,7 +42,7 @@ export function NewAd() {
   const [lockedNewCar, setLockedNewCar] = useState<boolean>(false);
 
   //Reason why this is in the parent element,
-  //after clicking on the clear all button (in /src/pages/ad/new.tsx),
+  //after clicking on the clear all button
   //it will delete both successful and error messages
 
   //UploadAdImagesStates
@@ -132,16 +134,6 @@ export function NewAd() {
     e.preventDefault();
     setIsSaving(true);
 
-    if (adImages.length < 1) {
-      setError("Ad must have at least one image");
-      setIsSaving(false);
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-      return;
-    }
-
     try {
       const formData = new FormData();
       formData.append("title", title);
@@ -168,7 +160,7 @@ export function NewAd() {
         }
       );
       handleClearAll(`submit`);
-      setError("")
+      setError("");
       setMessage(response.data.message);
       window.scrollTo({
         top: 0,
@@ -206,24 +198,20 @@ export function NewAd() {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+    //There are two tyes of clear all:
+    //1. after submit images will not be deleted from Cloudinary DB
+    //2. after clear all images will be deleted from Cloudinary DB
     if (operation === `clear`) {
-      const deleteImageResponse = await deleteUploadedImages();
-      setMessage(deleteImageResponse);
+      const deleteImageResponse = await deleteUploadedImages(
+        loggedProfileData,
+        adImages
+      );
+      setMessage("All inputs and " + deleteImageResponse);
     }
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
-  };
-
-  //Open modals
-  const handleOpenModal = (id: string) => {
-    const modal = document.getElementById(
-      `${id}Modal`
-    ) as HTMLDialogElement | null;
-    if (modal) {
-      modal.showModal();
-    }
   };
 
   //Deleting image/s (from adImages array and Cloudinary DB)
@@ -232,8 +220,11 @@ export function NewAd() {
     if (operation === `deleteOne`) {
       const updatedadImagesArray = [...adImages];
       updatedadImagesArray.splice(imgToShow, 1);
+      const publicID = adImages[imgToShow].publicID;
       const deleteImageResponse = await deleteUploadedImages(
-        adImages[imgToShow].publicID
+        loggedProfileData,
+        adImages,
+        publicID
       );
       setMessageImgSuccess(deleteImageResponse);
       setAdImages([...updatedadImagesArray]);
@@ -241,43 +232,12 @@ export function NewAd() {
     }
     //Removing all images from images array (adImages)
     else if (operation === `deleteAll`) {
-      const deleteImageResponse = await deleteUploadedImages();
+      const deleteImageResponse = await deleteUploadedImages(
+        loggedProfileData,
+        adImages
+      );
       setMessageImgSuccess(deleteImageResponse);
       setAdImages([]);
-    }
-  };
-
-  //Deleting image/s (from Cloudinary DB)
-  const deleteUploadedImages = async (publicID?: string) => {
-    let imagesDeleteList: string[] = [];
-
-    if (publicID) {
-      //Deleting only one ad image
-      imagesDeleteList = [publicID];
-    } else {
-      //Deleting all ad`s images
-      adImages.forEach((img) => {
-        imagesDeleteList.push(img.publicID);
-      });
-    }
-
-    //Creating fetch for all images
-    const promises = imagesDeleteList.map((publicID) =>
-      axios.delete(`http://localhost:4000/api/v1/ad/deleteImage/${publicID}`, {
-        headers: {
-          authorization: `Bearer ${loggedProfileData?.token}`,
-        },
-      })
-    );
-
-    try {
-      //Deleting images
-      await Promise.all(promises);
-      if (publicID) return "Image is deleted!";
-      else return "All images are deleted!";
-    } catch (error) {
-      if (publicID) return "Image is not deleted!";
-      else return "Maybe some uploaded images are not deleted!!";
     }
   };
 
