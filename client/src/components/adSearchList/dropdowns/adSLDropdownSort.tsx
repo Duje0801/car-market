@@ -1,5 +1,5 @@
 interface Props {
-  handleSorting: (id: string) => void;
+  handleSorting: (operation: string) => void;
 }
 
 export function AdSLDropdownSort({ handleSorting }: Props) {

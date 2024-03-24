@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { addAdListData, changeAdListDataNo } from "../../store/slices/adList";
 import { store } from "../../store";
 import { AdSL } from "../../components/adSearchList/info/adSL";
@@ -21,8 +21,8 @@ export function AdsList() {
   const [sort, setSort] = useState<string>("-createdAt");
 
   const params = useParams();
-
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { loggedProfileData, isChecked } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.loggedProfile
@@ -35,12 +35,12 @@ export function AdsList() {
   //Automatically fetches ad list data on page load and page change
   useEffect(() => {
     if (isChecked) {
-      fetchData();
+      fetchAdsData();
     }
   }, [isChecked, page, sort]);
 
   //Ads fetching function
-  const fetchData = async () => {
+  const fetchAdsData = async () => {
     try {
       const response = await axios.get(
         `http://localhost:4000/api/v1/ad/search/?sort=${sort}&page=${
@@ -60,19 +60,14 @@ export function AdsList() {
     setIsLoaded(true);
   };
 
-  //Open modal
-  const handleOpenModal = (id: string) => {
-    const modal = document.getElementById(
-      `${id}Modal`
-    ) as HTMLDialogElement | null;
-    if (modal) {
-      modal.showModal();
-    }
+  //Redirect to ad (after clicking `See more` button)
+  const handleSeeMoreClick = (id: string) => {
+    navigate(`/ad/${id}`);
   };
 
   //Sorting ads list
-  const handleSorting = (id: string) => {
-    setSort(id);
+  const handleSorting = (operation: string) => {
+    setSort(operation);
     setPage(1);
   };
 
@@ -110,7 +105,10 @@ export function AdsList() {
         <div className="hidden w-2/5 md:block md:w-1/3">
           <div className="w-11/12 mx-auto mt-12 bg-base-200 py-4 shadow-xl rounded-lg md:w-10/12 md:mr-2 lg:w-2/3 lg:mr-4">
             <h3 className="font-bold text-lg text-center">Filter</h3>
-            <AdSLFilter />
+            <AdSLFilter
+              loggedProfileData={loggedProfileData}
+              isChecked={isChecked}
+            />
           </div>
         </div>
 
@@ -118,8 +116,8 @@ export function AdsList() {
         <div className="md:w-2/3">
           {/* Ads dropdowns */}
           <AdSLDropdowns
+            adListDataNo={adListDataNo}
             handleSorting={handleSorting}
-            handleOpenModal={handleOpenModal}
           />
 
           {/* Ads  */}
@@ -134,7 +132,10 @@ export function AdsList() {
 
             {/*Ads list (mapped)*/}
             <div className="card-body p-2 md:gap-6 md:py-0">
-              <AdSL />
+              <AdSL
+                adListData={adListData}
+                handleSeeMoreClick={handleSeeMoreClick}
+              />
             </div>
 
             {/* Pagination */}
@@ -148,7 +149,10 @@ export function AdsList() {
         </div>
 
         {/* Modal- active only if screen is narrower than 768px */}
-        <AdSLModal />
+        <AdSLModal
+          loggedProfileData={loggedProfileData}
+          isChecked={isChecked}
+        />
       </div>
     );
   }

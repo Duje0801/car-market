@@ -1,20 +1,25 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
+import { useQueryParams } from "../../../hooks/useQueryParams";
+import { WaitingDots } from "../../elements/waitingDots";
+import { MessageError } from "../../elements/messages/messageError";
+import { MessageWarning } from "../../elements/messages/messageWarning";
+import { catchErrors } from "../../../utilis/catchErrors";
 import { makes as makesList } from "../../../data/makes";
 import { countries as countriesList } from "../../../data/countries";
 import { yearsData } from "../../../data/years";
 import { condition as conditionList } from "../../../data/condition";
 import { fuel as fuelList } from "../../../data/fuel";
 import { gearbox as gearboxList } from "../../../data/gearbox";
-import { WaitingDots } from "../../elements/waitingDots";
-import { MessageError } from "../../elements/messages/messageError";
-import { MessageWarning } from "../../elements/messages/messageWarning";
-import { catchErrors } from "../../../utilis/catchErrors";
+import { ILoggedProfile } from "../../../interfaces/ILoggedProfile";
 import axios from "axios";
 
-export function AdSLFilter() {
+interface Props {
+  loggedProfileData: ILoggedProfile;
+  isChecked: boolean;
+}
+
+export function AdSLFilter({ loggedProfileData, isChecked }: Props) {
   //States of search parameters
   const [make, setMake] = useState<string>("Make");
   const [model, setModel] = useState<string>("");
@@ -37,23 +42,21 @@ export function AdSLFilter() {
 
   //Functional states
   const [moreSearchOptions, setMoreSearchOptions] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [resultsNo, setResultsNo] = useState<number>(0);
   const [searchId, setSearchId] = useState<string>("");
   const [warningMessage, setWarningMessage] = useState<string>("");
   const [lockedNewCar, setLockedNewCar] = useState<boolean>(false);
 
-  const { loggedProfileData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.loggedProfile
-  );
-
   const params = useParams();
   const navigate = useNavigate();
+  const queryParamsMaker = useQueryParams;
 
   const years = yearsData();
 
   useEffect(() => {
+    //Search data loading
     params.id &&
       params.id
         .split("&")
@@ -84,26 +87,11 @@ export function AdSLFilter() {
         });
   }, []);
 
-  //New fetch after any change (getting results number)
+  //New fetch after any change (getting total results number (in results button))
   useEffect(() => {
-    if (
-      make ||
-      model ||
-      priceFrom ||
-      priceTo ||
-      country ||
-      condition ||
-      fuel ||
-      gearbox ||
-      firstRegistrationFrom ||
-      firstRegistrationTo ||
-      mileageFrom ||
-      mileageTo ||
-      minPower ||
-      maxPower
-    ) {
-      fetchDataNo();
-    } else setResultsNo(0);
+    if (isChecked) {
+      fetchAdsTotalNo();
+    }
   }, [
     make,
     model,
@@ -229,46 +217,31 @@ export function AdSLFilter() {
   };
 
   //Fetching data function
-  const fetchDataNo = async () => {
+  const fetchAdsTotalNo = async () => {
     setIsLoading(true);
 
-    let queries = "";
-    if (make && make !== "Make") queries += `make=${make}&`;
-    if (model) queries += `model=${model}&`;
-    if (
-      firstRegistrationFrom &&
-      firstRegistrationFrom !== "First registration from" &&
-      firstRegistrationFrom !== "-"
-    ) {
-      queries += `firstRegistrationFrom=${firstRegistrationFrom}&`;
-    }
-    if (
-      firstRegistrationTo &&
-      firstRegistrationTo !== "First registration to" &&
-      firstRegistrationFrom !== "-"
-    ) {
-      queries += `firstRegistrationTo=${firstRegistrationTo}&`;
-    }
-    if (country && country !== "Pick country") queries += `country=${country}&`;
-    if (mileageFrom) queries += `mileageFrom=${mileageFrom}&`;
-    if (mileageTo) queries += `mileageTo=${mileageTo}&`;
-    if (condition && condition !== "New/Used") {
-      queries += `condition=${condition}&`;
-    }
-    if (fuel && fuel !== "Fuel") queries += `fuel=${fuel}&`;
-    if (gearbox && gearbox !== "Gearbox") queries += `gearbox=${gearbox}&`;
-    if (minPower) queries += `minPower=${minPower}&`;
-    if (maxPower) queries += `maxPower=${maxPower}&`;
-    if (priceFrom) queries += `priceFrom=${priceFrom}&`;
-    if (priceTo) queries += `priceTo=${priceTo}`;
+    const allfields = {
+      make,
+      model,
+      firstRegistrationFrom,
+      firstRegistrationTo,
+      country,
+      mileageFrom,
+      mileageTo,
+      condition,
+      fuel,
+      gearbox,
+      minPower,
+      maxPower,
+      priceFrom,
+      priceTo,
+    };
 
-    if (queries.slice(-1) === "&" || queries.slice(-1) === "?") {
-      queries = queries.slice(0, -1);
-    }
+    const queryParams = queryParamsMaker(allfields);
 
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/v1/ad/searchNo/?${queries}`,
+        `http://localhost:4000/api/v1/ad/searchTotal/?${queryParams}`,
         {
           headers: {
             authorization: `Bearer ${loggedProfileData?.token}`,
@@ -276,7 +249,7 @@ export function AdSLFilter() {
         }
       );
       setResultsNo(response.data.adsNo);
-      setSearchId(queries);
+      setSearchId(queryParams);
       if (response.data.adsNo > 0) setWarningMessage("");
     } catch (error) {
       catchErrors(error, setError);
@@ -331,7 +304,7 @@ export function AdSLFilter() {
       <form
         method="dialog"
         onSubmit={handleSubmit}
-        className="flex flex-col justify-between gap-2 mx-auto w-full md:pt-2 md:px-2"
+        className="flex flex-col justify-between gap-2 mx-auto w-full md:px-2"
       >
         <p className="text-xs px-2 text-center xl:text-sm">
           To submit the search, click on the button displaying the number of
@@ -454,12 +427,13 @@ export function AdSLFilter() {
               <option>First registration from</option>
               {years.map((y, i) => {
                 if (y === "-" || y === "First registration from") return;
-                else
+                else {
                   return (
                     <option key={i + 1} value={y}>
                       {y}
                     </option>
                   );
+                }
               })}
             </select>
             {/* First registration to select */}
@@ -475,9 +449,9 @@ export function AdSLFilter() {
                   y === "-" ||
                   y === "First registration to" ||
                   y === "1999. and before"
-                )
+                ) {
                   return;
-                else {
+                } else {
                   return (
                     <option key={i + 1} value={y}>
                       {y}

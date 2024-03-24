@@ -1,19 +1,19 @@
-import { MessageWarning } from "../elements/messages/messageWarning";
-import { MessageError } from "../elements/messages/messageError";
-import { useIsAdOld } from "../../hooks/useIsAdOld";
-import { IAd } from "../../interfaces/IAd";
+import { MessageWarning } from "../../elements/messages/messageWarning";
+import { MessageError } from "../../elements/messages/messageError";
+import { useIsAdOld } from "../../../hooks/useIsAdOld";
+import { IAd } from "../../../interfaces/IAd";
 
 interface Props {
   ad: IAd;
 }
 
 export function AdDisplayMessages({ ad }: Props) {
-  const adDate = useIsAdOld(ad.createdAt);
+  const isAdOld = useIsAdOld(ad.createdAt);
 
   return (
     <>
       {/* Old ad */}
-      {adDate && (
+      {isAdOld && (
         <div className="mx-auto w-full pb-2 md:mt-0">
           <MessageWarning message={"This ad is older than 180 days"} />
         </div>

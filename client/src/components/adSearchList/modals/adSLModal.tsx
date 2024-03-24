@@ -1,6 +1,12 @@
 import { AdSLFilter } from "../filter/adSLFilter";
+import { ILoggedProfile } from "../../../interfaces/ILoggedProfile";
 
-export function AdSLModal() {
+interface Props {
+  loggedProfileData: ILoggedProfile;
+  isChecked: boolean;
+}
+
+export function AdSLModal({ loggedProfileData, isChecked }: Props) {
   return (
     <dialog id="filterSearchModal" className="modal">
       <div className="modal-box">
@@ -11,7 +17,10 @@ export function AdSLModal() {
         </form>
         <h3 className="font-bold text-lg mb-2">Filter</h3>
         <div className="flex flex-col gap-2">
-          <AdSLFilter />
+          <AdSLFilter
+            loggedProfileData={loggedProfileData}
+            isChecked={isChecked}
+          />
         </div>
       </div>
     </dialog>

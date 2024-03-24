@@ -3,14 +3,15 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { FaRoad } from "react-icons/fa";
 import { FaFlag } from "react-icons/fa";
 import { ImPriceTags } from "react-icons/im";
-import { IAd } from "../../interfaces/IAd";
+import { IAd } from "../../../interfaces/IAd";
 
 interface Props {
   ad: IAd;
-  handleSeeMoreClick: (id: string) => void;
+  handleSeeMoreClick: (id:string) => void
 }
 
 export function AdDisplayNarrow({ ad, handleSeeMoreClick }: Props) {
+
   return (
     <div className="lg:hidden">
       {/* Ad image */}
@@ -40,7 +41,11 @@ export function AdDisplayNarrow({ ad, handleSeeMoreClick }: Props) {
         <div className="flex gap-10">
           <p className="ml-auto flex gap-2">
             <FaCalendarAlt className="m-auto" />{" "}
-            {ad.firstRegistration === 1999 ? "<2000" : ad.firstRegistration}.
+            {ad.firstRegistration === 1999
+              ? "<2000."
+              : ad.firstRegistration === 0
+              ? "-"
+              : `${ad.firstRegistration}.`}
           </p>
           <p className="ml-auto flex gap-2 text-md xl:text-md">
             <FaFlag className="m-auto" /> {ad.country}

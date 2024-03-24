@@ -1,9 +1,9 @@
-import { useIsAdOld } from "../../hooks/useIsAdOld";
+import { useIsAdOld } from "../../../hooks/useIsAdOld";
 import { MdNewReleases } from "react-icons/md";
 import { FaCalendarAlt } from "react-icons/fa";
 import { FaRoad } from "react-icons/fa";
 import { FaFlag } from "react-icons/fa";
-import { IAd } from "../../interfaces/IAd";
+import { IAd } from "../../../interfaces/IAd";
 
 interface Props {
   ad: IAd;
@@ -12,6 +12,7 @@ interface Props {
 
 export function AdDisplayWide({ ad, handleSeeMoreClick }: Props) {
   const isOld = useIsAdOld(ad.createdAt);
+
   return (
     <div
       className={`hidden card card-side bg-base-100 shadow-xl rounded-lg h-[22.5vh] lg:h-[27.5vh] lg:flex ${
@@ -39,20 +40,24 @@ export function AdDisplayWide({ ad, handleSeeMoreClick }: Props) {
         <div className="card-body items-center text-center text-md p-0 gap-1 xl:gap-4">
           {/* 1st data row */}
           <div className="flex gap-4 mt-auto xl:gap-6">
-            <p className="ml-auto flex gap-2 xl:text-2xl xl:gap-4">
+            <p className="ml-auto flex gap-2 xl:text-2xl">
               <MdNewReleases className="m-auto" /> {ad.condition}
             </p>
-            <p className="ml-auto flex gap-2 xl:text-2xl xl:gap-4">
+            <p className="ml-auto flex gap-2 xl:text-2xl">
               <FaRoad className="m-auto" /> {ad.mileage} km
             </p>
           </div>
           {/* 2nd data row */}
           <div className="flex gap-4 mb-auto xl:gap-6">
-            <p className="ml-auto flex gap-2 xl:text-2xl xl:gap-4">
+            <p className="ml-auto flex gap-2 xl:text-2xl">
               <FaCalendarAlt className="m-auto" />{" "}
-              {ad.firstRegistration === 1999 ? "<2000" : ad.firstRegistration}.
+              {ad.firstRegistration === 1999
+                ? "<2000."
+                : ad.firstRegistration === 0
+                ? "-"
+                : `${ad.firstRegistration}.`}
             </p>
-            <p className="ml-auto flex gap-2 xl:text-2xl xl:gap-4">
+            <p className="ml-auto flex gap-2 xl:text-2xl">
               <FaFlag className="m-auto" /> {ad.country}
             </p>
           </div>

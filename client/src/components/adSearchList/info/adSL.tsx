@@ -1,22 +1,14 @@
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
-import { AdDisplayMessages } from "../../adsDisplay/adDisplayMessages";
-import { AdDisplayNarrow } from "../../adsDisplay/adDisplayNarrow";
-import { AdDisplayWide } from "../../adsDisplay/adDisplayWide";
+import { AdDisplayMessages } from "../adDisplay/adDisplayMessages";
+import { AdDisplayNarrow } from "../adDisplay/adDisplayNarrow";
+import { AdDisplayWide } from "../adDisplay/adDisplayWide";
+import { IAd } from "../../../interfaces/IAd";
 
-export function AdSL() {
-  const navigate = useNavigate();
+interface Props {
+  adListData: IAd[];
+  handleSeeMoreClick: (id: string) => void;
+}
 
-  const { adListData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.adList
-  );
-
-  //Redirect to ad (after clicking `See more` button)
-  const handleSeeMoreClick = (id: string) => {
-    navigate(`/ad/${id}`);
-  };
-
+export function AdSL({ adListData, handleSeeMoreClick }: Props) {
   return (
     <>
       {adListData &&
