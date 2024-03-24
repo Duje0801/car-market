@@ -1,10 +1,11 @@
 import { FormEvent, useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addAdData } from "../../../store/slices/ad";
-import { store } from "../../../store";
 import { useCarouselImgContext } from "../../../context/carouselImgContext";
 import { catchErrors } from "../../../utilis/catchErrors";
+import { deleteImageEditingAd } from "../../../utilis/deleteImageEditingAd";
+import { handleOpenModal } from "../../../utilis/handleOpenModal";
 import { WaitingDots } from "../../elements/waitingDots";
 import { MessageError } from "../../elements/messages/messageError";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
@@ -18,13 +19,15 @@ import { gearbox as gearboxList } from "../../../data/gearbox";
 import { condition as conditionList } from "../../../data/condition";
 import { IImage } from "../../../interfaces/IImage";
 import { IAd } from "../../../interfaces/IAd";
+import { ILoggedProfile } from "../../../interfaces/ILoggedProfile";
 import axios from "axios";
 
 interface Props {
+  loggedProfileData: ILoggedProfile;
   adData: IAd | null;
 }
 
-export function EditAd({ adData }: Props) {
+export function EditAd({ loggedProfileData, adData }: Props) {
   //Form data states
   const [title, setTitle] = useState<string>(adData?.title || "");
   const [condition, setCondition] = useState<string>(adData?.condition || "");
@@ -48,9 +51,11 @@ export function EditAd({ adData }: Props) {
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [lockedNewCar, setLockedNewCar] = useState<boolean>(false);
 
   //Reason why this is in the parent element,
   //after clicking on the clear all button (in /src/pages/ad/new.tsx),
+  //or submitting ad edits (in this file)
   //it will delete both successful and error messages
 
   //UploadAdImagesStates
@@ -58,10 +63,6 @@ export function EditAd({ adData }: Props) {
   const [messageImgError, setMessageImgError] = useState<string>("");
 
   const { carouselImgDispatch } = useCarouselImgContext();
-
-  const { loggedProfileData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.loggedProfile
-  );
 
   const params = useParams();
   const dispatch = useDispatch();
@@ -75,6 +76,7 @@ export function EditAd({ adData }: Props) {
     if (condition === "New") {
       setFirstRegistration("-");
       setMileage("0");
+      setLockedNewCar(true);
     }
   }, []);
 
@@ -87,10 +89,17 @@ export function EditAd({ adData }: Props) {
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setCondition(event.target.value);
-    if(event.target.value === "New"){
-      setMileage("0")
-      setFirstRegistration("-")
-      setMessage("New cars automatically have their mileage set to 0 and no first registration.")  
+    if (event.target.value === "New") {
+      setMileage("0");
+      setFirstRegistration("-");
+      setMessage(
+        "New cars automatically have their mileage set to 0 and no first registration."
+      );
+      setLockedNewCar(true);
+    } else {
+      setMileage("");
+      setFirstRegistration("");
+      setLockedNewCar(false);
     }
   };
 
@@ -143,7 +152,7 @@ export function EditAd({ adData }: Props) {
   };
 
   //Submit new ad data
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmitNewData = async (e: FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
 
@@ -162,13 +171,6 @@ export function EditAd({ adData }: Props) {
       formData.append("description", description);
       formData.append("adImages", JSON.stringify(adImages));
 
-      if (adImages.length < 1 || adImages.length > 10) {
-        setError("Ad must have between 1 and 10 images");
-        setMessage("");
-        setIsSaving(false);
-        return;
-      }
-
       const response = await axios.patch(
         `http://localhost:4000/api/v1/ad/edit/${params.id}`,
         formData,
@@ -179,69 +181,30 @@ export function EditAd({ adData }: Props) {
           },
         }
       );
-      const deletedImagesMessage = await deleteImage();
-      dispatch(addAdData(response.data.ad));
-      carouselImgDispatch({ type: "SET_IMG_NO", payload: 0 });
+      const deletedImagesMessage = await deleteImageEditingAd(
+        loggedProfileData,
+        adData,
+        adImages
+      );
       setMessage(response.data.message + ". " + deletedImagesMessage);
+      carouselImgDispatch({ type: "SET_IMG_NO", payload: 0 });
+      dispatch(addAdData(response.data.ad));
       setError("");
       setMessageImgError("");
       setMessageImgSuccess("");
       setImgToShow(0);
     } catch (error) {
       setMessage("");
-      setMessageImgSuccess("")
-      setMessageImgError("")
+      setMessageImgSuccess("");
+      setMessageImgError("");
       catchErrors(error, setError);
     }
     setIsSaving(false);
   };
 
-  //Deleting images (from Cloudinary DB)
-  const deleteImage = async () => {
-    let imagesDeleteList: string[] = [];
-
-    //Looking to images that are deleted during editing ad
-    const adImagesMapped = adImages.map((img) => img.publicID);
-    adData?.images.forEach((img) => {
-      if (!adImagesMapped.includes(img.publicID)) {
-        imagesDeleteList.push(img.publicID);
-      }
-    });
-
-    if (imagesDeleteList.length === 0) return "";
-
-    //Creating fetch for all images
-    const promises = imagesDeleteList.map((publicID) =>
-      axios.delete(
-        `http://localhost:4000/api/v1/user/deleteImage/${publicID}`,
-        {
-          headers: {
-            authorization: `Bearer ${loggedProfileData?.token}`,
-          },
-        }
-      )
-    );
-
-    try {
-      //Deleting images message
-      await Promise.all(promises);
-      return "All ad images designated for deletion have been deleted";
-    } catch (error) {
-      return "Some of the ad images designated for deletion have not been deleted";
-    }
-  };
-
-  //Open modals
-  const handleOpenModal = (id: string) => {
-    const modal = document.getElementById(
-      `${id}Modal`
-    ) as HTMLDialogElement | null;
-    if (modal) {
-      modal.showModal();
-    }
-  };
-
-  //Deleting image from images array (images are deleted from Cloudinary DB after edit form submit)
+  //Deleting image from images array
+  //(images are not deleted from Cloudinary DB now, 
+  //images will be deleted from Cloudinary DB after edit form is submitted)
   const handleModalClick = async (operation: string) => {
     if (operation === `deleteOne`) {
       //Removing one image from images array (adImages)
@@ -282,7 +245,10 @@ export function EditAd({ adData }: Props) {
               </button>
             </form>
             {/* Edit form */}
-            <form className="card gap-2 mx-auto w-full" onSubmit={handleSubmit}>
+            <form
+              className="card gap-2 mx-auto w-full"
+              onSubmit={handleSubmitNewData}
+            >
               <h3 className="font-bold text-lg mb-2">Edit Ad</h3>
               {message && (
                 <div className="mx-auto w-full">
@@ -375,15 +341,18 @@ export function EditAd({ adData }: Props) {
                   value={firstRegistration}
                   onChange={handleSelectFirstRegistration}
                   className="input input-bordered w-full"
+                  disabled={lockedNewCar}
                   required
                 >
                   <option key={0}></option>
-                  {years.map((m, i) => {
-                    return (
-                      <option key={i + 1} value={m}>
-                        {m}
-                      </option>
-                    );
+                  {years.map((y, i) => {
+                    if (y === "-" && !lockedNewCar) return;
+                    else
+                      return (
+                        <option key={i + 1} value={y}>
+                          {y}
+                        </option>
+                      );
                   })}
                 </select>
               </label>
@@ -400,6 +369,7 @@ export function EditAd({ adData }: Props) {
                   value={mileage}
                   onChange={handleChangeMileage}
                   className="input input-bordered w-full"
+                  disabled={lockedNewCar}
                   required
                 />
               </label>

@@ -1,12 +1,14 @@
 import { EditAd } from "../edit/editAd";
 import { IAd } from "../../../interfaces/IAd";
+import { ILoggedProfile } from "../../../interfaces/ILoggedProfile";
 
 interface Props {
+  loggedProfileData: ILoggedProfile;
   adData: IAd;
   handleModalClick: (operation: string) => void;
 }
 
-export function AdOperationModals({ adData, handleModalClick }: Props) {
+export function AdOperationModals({ loggedProfileData, adData, handleModalClick }: Props) {
   //Here are modals to hide, de/activate/delete or edit ad
   return (
     <>
@@ -91,7 +93,7 @@ export function AdOperationModals({ adData, handleModalClick }: Props) {
       </dialog>
       {/* Edit ad modal */}
       <dialog id="editAdModal" className="modal">
-        <EditAd adData={adData} />
+        <EditAd adData={adData} loggedProfileData={loggedProfileData} />
       </dialog>
     </>
   );

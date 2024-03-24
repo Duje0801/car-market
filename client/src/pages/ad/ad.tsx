@@ -140,6 +140,7 @@ export function Ad() {
         </div>
         {/* Ad modals */}
         <AdOperationModals
+          loggedProfileData={loggedProfileData}
           adData={adData}
           handleModalClick={handleModalClick}
         />

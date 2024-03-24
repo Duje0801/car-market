@@ -22,6 +22,8 @@ export const editAd: any = async function (req: ReqUser, res: Response) {
       adImages,
     } = req.body;
 
+    const adImagesObject = JSON.parse(adImages)
+
     //Checking if the new car is registered and it's mileage
     if (condition === "New" && firstRegistration !== "-" && mileage !== "0") {
       return errorResponse(
@@ -29,6 +31,11 @@ export const editAd: any = async function (req: ReqUser, res: Response) {
         res,
         400
       );
+    }
+
+    //Checking number of images in ad
+    if (adImagesObject.length < 1 || adImagesObject.length > 10) {
+      return errorResponse("Ad must have between 1 and 10 images", res, 400);
     }
 
     //Getting ad
@@ -82,7 +89,7 @@ export const editAd: any = async function (req: ReqUser, res: Response) {
     ad.gearbox = gearbox;
     ad.power = power;
     ad.price = price;
-    ad.images = JSON.parse(adImages);
+    ad.images = adImagesObject;
     ad.location = req.user.location || "";
     ad.country = req.user.country;
     ad.description = description;
