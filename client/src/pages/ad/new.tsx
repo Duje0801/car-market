@@ -2,7 +2,7 @@ import { FormEvent, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { store } from "../../store";
 import { catchErrors } from "../../utilis/catchErrors";
-import { deleteUploadedImages } from "../../utilis/deleteUploadedImages";
+import { deleteNewAdImages } from "../../utilis/deleteImagesFromDB/deleteNewAdImages";
 import { EditAdImagesModal } from "../../components/ad/modals/editAdImagesModal";
 import { UploadAdImages } from "../../components/ad/uploadImages/uploadAdImages";
 import { WaitingDots } from "../../components/elements/waitingDots";
@@ -199,9 +199,9 @@ export function NewAd() {
     }
     //There are two tyes of clear all:
     //1. after submit images will not be deleted from Cloudinary DB
-    //2. after clear all images will be deleted from Cloudinary DB
+    //2. after clear all, all images will be deleted from Cloudinary DB
     if (operation === `clear`) {
-      const deleteImageResponse = await deleteUploadedImages(
+      const deleteImageResponse = await deleteNewAdImages(
         loggedProfileData,
         adImages
       );
@@ -220,7 +220,7 @@ export function NewAd() {
       const updatedadImagesArray = [...adImages];
       updatedadImagesArray.splice(imgToShow, 1);
       const publicID = adImages[imgToShow].publicID;
-      const deleteImageResponse = await deleteUploadedImages(
+      const deleteImageResponse = await deleteNewAdImages(
         loggedProfileData,
         adImages,
         publicID
@@ -231,7 +231,7 @@ export function NewAd() {
     }
     //Removing all images from images array (adImages)
     else if (operation === `deleteAll`) {
-      const deleteImageResponse = await deleteUploadedImages(
+      const deleteImageResponse = await deleteNewAdImages(
         loggedProfileData,
         adImages
       );

@@ -1,10 +1,13 @@
 import axios from "axios";
-import { ILoggedProfile } from "../interfaces/ILoggedProfile";
-import { IAd } from "../interfaces/IAd";
+import { ILoggedProfile } from "../../interfaces/ILoggedProfile";
+import { IAd } from "../../interfaces/IAd";
 
-export async function deleteImage(
+//This function is used when ad is deleted
+//Deletes all images from Cloudinary DB associated with ad
+
+export async function deleteAdImages(
+  loggedProfileData: ILoggedProfile,
   adData: IAd | null,
-  loggedProfileData: ILoggedProfile
 ) {
   let imagesDeleteList: string[] = [];
 

@@ -1,8 +1,11 @@
-import { IImage } from "../interfaces/IImage";
-import { ILoggedProfile } from "../interfaces/ILoggedProfile";
+import { IImage } from "../../interfaces/IImage";
+import { ILoggedProfile } from "../../interfaces/ILoggedProfile";
 import axios from "axios";
 
-export async function deleteUploadedImages(
+//This function is used when clear all button is clicked while creating new ad
+//Deletes all recently uploaded images from Cloudinary DB
+
+export async function deleteNewAdImages(
   loggedProfileData: ILoggedProfile,
   adImages: IImage[],
   publicID?: string

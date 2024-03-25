@@ -10,7 +10,8 @@ import { removeLoggedProfileData } from "../../store/slices/loggedProfile";
 import { changeProfileAdsNo } from "../../store/slices/profile";
 import { store } from "../../store";
 import { catchErrors } from "../../utilis/catchErrors";
-import { deleteProfileImages } from "../../utilis/deleteProfileImages";
+import { deleteAllProfileImages } from "../../utilis/deleteImagesFromDB/deleteAllProfileImages";
+import { deleteAvatar } from "../../utilis/deleteImagesFromDB/deleteAvatar";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { ProfileModals } from "../../components/profile/modals/profileModals";
@@ -83,11 +84,9 @@ export function Profile() {
         }
       );
       //Deleting avatar from Cloudinary DB
-      const deleteAvatarMessage: string = await deleteProfileImages(
+      const deleteAvatarMessage: string = await deleteAvatar(
         loggedProfileData,
-        profileData,
-        profileAds,
-        "deleteAvatar"
+        profileData?.avatar.uploadedAvatar.publicID
       );
       setMessage(response.data.message + deleteAvatarMessage);
       dispatch(addProfileData(response.data.user));
@@ -133,12 +132,11 @@ export function Profile() {
           },
         }
       );
-      //Deleting all images associated with profile (avatar and ads images) from Cloudinary DB
-      const deleteImageMessage: string = await deleteProfileImages(
+      //Deleting all images associated with profile (avatar and ad`s images) from Cloudinary DB
+      const deleteImageMessage: string = await deleteAllProfileImages(
         loggedProfileData,
         profileData,
-        profileAds,
-        "deleteProfile"
+        profileAds
       );
       navigate(`/redirect/admin/deleteUser-${deleteImageMessage}`);
     } catch (error) {

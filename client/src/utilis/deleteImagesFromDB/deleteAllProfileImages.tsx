@@ -1,13 +1,15 @@
 import axios from "axios";
-import { IProfile } from "../interfaces/IProfile";
-import { IAd } from "../interfaces/IAd";
-import { ILoggedProfile } from "../interfaces/ILoggedProfile";
+import { IProfile } from "../../interfaces/IProfile";
+import { IAd } from "../../interfaces/IAd";
+import { ILoggedProfile } from "../../interfaces/ILoggedProfile";
 
-export async function deleteProfileImages(
+//This function is used when profile is deleted
+//Deletes all images associated with profile (including avatar and ad's images) from Cloudinary DB
+
+export async function deleteAllProfileImages(
   loggedProfileData: ILoggedProfile,
   profileData: IProfile | null,
-  profileAds: IAd[],
-  operation: string
+  profileAds: IAd[]
 ) {
   let imagesDeleteList: string[] = [];
 
@@ -17,13 +19,11 @@ export async function deleteProfileImages(
   }
 
   //Adding all ad`s images (if user/admin is deleting profile)
-  if (operation === `deleteProfile`) {
-    profileAds.forEach((ad) => {
-      ad.images.forEach((img) => {
-        imagesDeleteList.push(img.publicID);
-      });
+  profileAds.forEach((ad) => {
+    ad.images.forEach((img) => {
+      imagesDeleteList.push(img.publicID);
     });
-  }
+  });
 
   //Creating fetch for all images
   const promises = imagesDeleteList.map((publicID) =>
@@ -37,10 +37,8 @@ export async function deleteProfileImages(
   try {
     //Deleting images
     await Promise.all(promises);
-    return operation === "deleteProfile" ? "allDeleted" : "";
+    return "allDeleted";
   } catch (error) {
-    return operation === "deleteProfile"
-      ? "notAllDeleted"
-      : " But maybe avatar is not deleted from database.";
+    return "notAllDeleted";
   }
 }

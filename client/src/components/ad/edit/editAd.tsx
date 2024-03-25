@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { addAdData } from "../../../store/slices/ad";
 import { useCarouselImgContext } from "../../../context/carouselImgContext";
 import { catchErrors } from "../../../utilis/catchErrors";
-import { deleteImageEditingAd } from "../../../utilis/deleteImageEditingAd";
+import { deleteImageEditingAd } from "../../../utilis/deleteImagesFromDB/deleteImageEditingAd";
 import { WaitingDots } from "../../elements/waitingDots";
 import { MessageError } from "../../elements/messages/messageError";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
@@ -180,6 +180,8 @@ export function EditAd({ loggedProfileData, adData }: Props) {
           },
         }
       );
+
+      //Updating images in Cloudinary DB
       const deletedImagesMessage = await deleteImageEditingAd(
         loggedProfileData,
         adData,

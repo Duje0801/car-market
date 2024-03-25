@@ -1,8 +1,11 @@
-import { IProfile } from "../interfaces/IProfile";
-import { ILoggedProfile } from "../interfaces/ILoggedProfile";
+import { IProfile } from "../../interfaces/IProfile";
+import { ILoggedProfile } from "../../interfaces/ILoggedProfile";
 import axios from "axios";
 
-export async function deleteOldAvatarMessage(
+//This function is used when new avatar is submitted
+//Deletes old avatar from Cloudinary DB 
+
+export async function deleteOldAvatarImage(
   profileData: IProfile,
   loggedProfileData: ILoggedProfile
 ) {

@@ -2,7 +2,7 @@ import { Dispatch, FormEvent, SetStateAction, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { addProfileData } from "../../../store/slices/profile";
 import { catchErrors } from "../../../utilis/catchErrors";
-import { deleteOldAvatarMessage } from "../../../utilis/deleteOldAvatarMessage";
+import { deleteOldAvatarImage } from "../../../utilis/deleteImagesFromDB/deleteOldAvatarImage";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageError } from "../../elements/messages/messageError";
 import { WaitingDots } from "../../elements/waitingDots";
@@ -161,7 +161,7 @@ export function EditAvatar({
       );
 
       //Removing old avatar from Cloudinary DB
-      const deleteAvatarText: string = await deleteOldAvatarMessage(
+      const deleteAvatarText: string = await deleteOldAvatarImage(
         profileData,
         loggedProfileData
       );

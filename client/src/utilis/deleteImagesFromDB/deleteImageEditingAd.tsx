@@ -1,9 +1,11 @@
-import { ILoggedProfile } from "../interfaces/ILoggedProfile";
-import { IAd } from "../interfaces/IAd";
-import { IImage } from "../interfaces/IImage";
+import { ILoggedProfile } from "../../interfaces/ILoggedProfile";
+import { IAd } from "../../interfaces/IAd";
+import { IImage } from "../../interfaces/IImage";
 import axios from "axios";
 
-//Deleting images (from Cloudinary DB)
+//This function is used when ad is edited
+//Deletes all images from Cloudinary DB that are not part of ad anymore
+
 export async function deleteImageEditingAd(
   loggedProfileData: ILoggedProfile,
   adData: IAd | null,

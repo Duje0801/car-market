@@ -12,7 +12,7 @@ import { MessageError } from "../../components/elements/messages/messageError";
 import { AdDropdowns } from "../../components/ad/dropdowns/adDropdowns";
 import { AdAdditionalInfo } from "../../components/ad/info/adAdditionalInfo";
 import { catchErrors } from "../../utilis/catchErrors";
-import { deleteImage } from "../../utilis/deleteImage";
+import { deleteAdImages } from "../../utilis/deleteImagesFromDB/deleteAdImages";
 import axios from "axios";
 
 export function Ad() {
@@ -69,10 +69,10 @@ export function Ad() {
         }
       );
       if (operation === "delete") {
-        //Deleting all images associated with ad
-        const deleteImageMessage: string = await deleteImage(
-          adData,
-          loggedProfileData
+        //Deleting all images from Cloudinary DB associated with ad
+        const deleteImageMessage: string = await deleteAdImages(
+          loggedProfileData,
+          adData
         );
         navigate(`/redirect/ad/deleteAd-${deleteImageMessage}`);
       }
