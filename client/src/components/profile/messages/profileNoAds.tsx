@@ -1,18 +1,15 @@
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
 import { MessageWarning } from "../../elements/messages/messageWarning";
+import { ILoggedProfile } from "../../../interfaces/ILoggedProfile";
+import { IAd } from "../../../interfaces/IAd";
 
-export function ProfileNoAds() {
+interface Props {
+  loggedProfileData: ILoggedProfile;
+  profileAds: IAd[];
+}
+
+export function ProfileNoAds({ loggedProfileData, profileAds }: Props) {
   const params = useParams();
-
-  const { loggedProfileData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.loggedProfile
-  );
-
-  const { profileAds } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
-  );
 
   return (
     <div className="lg:w-2/3">

@@ -1,32 +1,32 @@
 import { Dispatch, SetStateAction } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
+import { handleOpenModal } from "../../../utilis/handleOpenModal";
 import { ProfileEditDropdown } from "../dropdowns/profileEditDropdown";
 import { useCreateAtToString } from "../../../hooks/useCreateAtToString";
 import { useProfileAvatar } from "../../../hooks/useProfileAvatar";
 import { ProfileMessages } from "../messages/profileMessages";
 import { BsFillTelephoneFill } from "react-icons/bs";
 import { IoMail } from "react-icons/io5";
+import { ILoggedProfile } from "../../../interfaces/ILoggedProfile";
+import { IProfile } from "../../../interfaces/IProfile";
 
 interface Props {
+  loggedProfileData: ILoggedProfile;
+  profileData: IProfile;
+  profileAdsNo: number;
   error: string;
   message: string;
   setError: Dispatch<SetStateAction<string>>;
-  handleOpenModal: (id: string) => void;
 }
 
-export function ProfileInfoBox({ error, message, handleOpenModal }: Props) {
-  const { loggedProfileData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.loggedProfile
-  );
-
-  const { profileData, profileAdsNo } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
-  );
-
+export function ProfileInfoBox({
+  loggedProfileData,
+  profileData,
+  profileAdsNo,
+  error,
+  message,
+}: Props) {
   const params = useParams();
-
   const createdAt = useCreateAtToString(profileData?.createdAt);
   const avatar = useProfileAvatar(profileData?.avatar);
 
@@ -41,7 +41,7 @@ export function ProfileInfoBox({ error, message, handleOpenModal }: Props) {
         {/*Dropdown menu*/}
         {loggedProfileData.username === params.id &&
         loggedProfileData.username !== `admin` ? (
-          <ProfileEditDropdown handleOpenModal={handleOpenModal} />
+          <ProfileEditDropdown profileData={profileData} />
         ) : null}
 
         {/* Profile info box */}
@@ -54,7 +54,11 @@ export function ProfileInfoBox({ error, message, handleOpenModal }: Props) {
           }`}
         >
           {/* Profile messages */}
-          <ProfileMessages error={error} message={message} />
+          <ProfileMessages
+            profileData={profileData}
+            error={error}
+            message={message}
+          />
 
           {/* Avatar */}
           <div className="card-body p-0">
@@ -113,7 +117,6 @@ export function ProfileInfoBox({ error, message, handleOpenModal }: Props) {
           </div>
 
           {/* Buttons */}
-
           {/* De/activate profile */}
           {(loggedProfileData.username === `admin` ||
             loggedProfileData.username === profileData?.username) &&

@@ -1,10 +1,10 @@
 import { Response } from "express";
 import { User } from "../../models/userModel";
-import { IUser } from "../../interfaces/user";
-import { ReqUser } from "../../interfaces/reqUser";
+import { Ad } from "../../models/adModel";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
 import { errorResponse } from "../../utilis/errorHandling/errorResponse";
-import { Ad } from "../../models/adModel";
+import { IUser } from "../../interfaces/user";
+import { ReqUser } from "../../interfaces/reqUser";
 
 export const deleteProfile: any = async function (req: ReqUser, res: Response) {
   try {
@@ -16,6 +16,7 @@ export const deleteProfile: any = async function (req: ReqUser, res: Response) {
       );
     }
 
+    //Getting and deleting user user
     const user: IUser = await User.findByIdAndDelete(req.params.id).select(
       "+active -updatedAt -__v"
     );
@@ -24,6 +25,7 @@ export const deleteProfile: any = async function (req: ReqUser, res: Response) {
       return errorResponse("Can't delete this user", res, 404);
     }
 
+    //Deleting all user ads
     const ads = await Ad.deleteMany({ username: user.username });
 
     if (!ads) {

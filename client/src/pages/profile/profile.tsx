@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { store } from "../../store";
 import {
   addProfileData,
   removeProfileData,
@@ -9,7 +8,9 @@ import {
 } from "../../store/slices/profile";
 import { removeLoggedProfileData } from "../../store/slices/loggedProfile";
 import { changeProfileAdsNo } from "../../store/slices/profile";
+import { store } from "../../store";
 import { catchErrors } from "../../utilis/catchErrors";
+import { deleteProfileImages } from "../../utilis/deleteProfileImages";
 import { WaitingDots } from "../../components/elements/waitingDots";
 import { MessageError } from "../../components/elements/messages/messageError";
 import { ProfileModals } from "../../components/profile/modals/profileModals";
@@ -31,7 +32,7 @@ export function Profile() {
     (state: ReturnType<typeof store.getState>) => state.loggedProfile
   );
 
-  const { profileData, profileAds } = useSelector(
+  const { profileData, profileAds, profileAdsNo } = useSelector(
     (state: ReturnType<typeof store.getState>) => state.profile
   );
 
@@ -42,12 +43,12 @@ export function Profile() {
   //Fetch user data
   useEffect(() => {
     if (isChecked) {
-      fetchData();
+      fetchProfileData();
     }
   }, [isChecked, page, sort]);
 
   //Data fetch function
-  const fetchData = async () => {
+  const fetchProfileData = async () => {
     try {
       const response = await axios.get(
         `http://localhost:4000/api/v1/user/profile/${
@@ -71,6 +72,7 @@ export function Profile() {
   //Deleting avatar function
   const handleDeleteAvatar = async () => {
     try {
+      //Deleting avatar from Mongo DB
       const response = await axios.delete(
         `http://localhost:4000/api/v1/user/deleteAvatar/`,
         {
@@ -80,7 +82,13 @@ export function Profile() {
           },
         }
       );
-      const deleteAvatarMessage: string = await deleteImage("deleteAvatar");
+      //Deleting avatar from Cloudinary DB
+      const deleteAvatarMessage: string = await deleteProfileImages(
+        loggedProfileData,
+        profileData,
+        profileAds,
+        "deleteAvatar"
+      );
       setMessage(response.data.message + deleteAvatarMessage);
       dispatch(addProfileData(response.data.user));
     } catch (error) {
@@ -116,6 +124,7 @@ export function Profile() {
   //Delete user function
   const handleDeleteProfile = async () => {
     try {
+      //Deleting profile (and all ads) from Mongo DB
       await axios.delete(
         `http://localhost:4000/api/v1/user/delete/${profileData?.id}`,
         {
@@ -124,69 +133,17 @@ export function Profile() {
           },
         }
       );
-      //Deleting all images associated with profile (avatar and ads images)
-      const deleteImageMessage: string = await deleteImage("deleteProfile");
+      //Deleting all images associated with profile (avatar and ads images) from Cloudinary DB
+      const deleteImageMessage: string = await deleteProfileImages(
+        loggedProfileData,
+        profileData,
+        profileAds,
+        "deleteProfile"
+      );
       navigate(`/redirect/admin/deleteUser-${deleteImageMessage}`);
     } catch (error) {
       catchErrors(error, setError);
     }
-  };
-
-  //Delete images function (avatar and ad's images)
-  const deleteImage = async (operation: string) => {
-    let imagesDeleteList: string[] = [];
-
-    //Adding avatar to delete list (if exist)
-    if (profileData?.avatar.uploadedAvatar.publicID) {
-      imagesDeleteList = [profileData?.avatar.uploadedAvatar.publicID];
-    }
-
-    //Adding all ad`s images (if user/admin is deleting profile)
-    if (operation === `deleteProfile`) {
-      profileAds.forEach((ad) => {
-        ad.images.forEach((img) => {
-          imagesDeleteList.push(img.publicID);
-        });
-      });
-    }
-
-    //Creating fetch for all images
-    const promises = imagesDeleteList.map((publicID) =>
-      axios.delete(
-        `http://localhost:4000/api/v1/user/deleteImage/${publicID}`,
-        {
-          headers: {
-            authorization: `Bearer ${loggedProfileData?.token}`,
-          },
-        }
-      )
-    );
-
-    try {
-      //Deleting images
-      await Promise.all(promises);
-      return operation === "deleteProfile" ? "allDeleted" : "";
-    } catch (error) {
-      return operation === "deleteProfile"
-        ? "notAllDeleted"
-        : " But maybe avatar is not deleted from database.";
-    }
-  };
-
-  //Open modals
-  const handleOpenModal = (id: string) => {
-    const modal = document.getElementById(
-      `${id}Modal`
-    ) as HTMLDialogElement | null;
-    if (modal) {
-      modal.showModal();
-    }
-  };
-
-  //Restarting error text after clicking on X (exit) in modal
-  const handleClickX = () => {
-    setEditError("");
-    setEditMessage("");
   };
 
   //Redirect to ad (after clicking `See more` button)
@@ -194,10 +151,16 @@ export function Profile() {
     navigate(`/ad/${id}`);
   };
 
-  //Sorting function
+  //Sorting ads function
   const handleSorting = (id: string) => {
     setSort(id);
     setPage(1);
+  };
+
+  //Restarting error text in modal after clicking on X (exit) in modal
+  const handleClickX = () => {
+    setEditError("");
+    setEditMessage("");
   };
 
   if (!isChecked || !isLoaded) {
@@ -221,9 +184,11 @@ export function Profile() {
         <div className="pb-2 lg:flex">
           {/* Profile info box */}
           <ProfileInfoBox
-            setError={setError}
-            handleOpenModal={handleOpenModal}
+            loggedProfileData={loggedProfileData}
+            profileData={profileData}
+            profileAdsNo={profileAdsNo}
             error={error}
+            setError={setError}
             message={message}
           />
           {/* Profile has ads */}
@@ -231,6 +196,8 @@ export function Profile() {
           profileAds.length > 0 &&
           profileAds.length < 9999999 ? (
             <ProfileAds
+              profileAds={profileAds}
+              profileAdsNo={profileAdsNo}
               page={page}
               setPage={setPage}
               setSort={setSort}
@@ -240,13 +207,18 @@ export function Profile() {
           ) : null}
           {/* No ads */}
           {profileAds.length === 0 || profileAds.length === 9999999 ? (
-            <ProfileNoAds />
+            <ProfileNoAds
+              loggedProfileData={loggedProfileData}
+              profileAds={profileAds}
+            />
           ) : null}
         </div>
 
         {/* Modals */}
         {profileData && (
           <ProfileModals
+            loggedProfileData={loggedProfileData}
+            profileData={profileData}
             editError={editError}
             setEditError={setEditError}
             editMessage={editMessage}

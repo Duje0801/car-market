@@ -13,14 +13,10 @@ export const editPassword: any = async function (req: ReqUser, res: Response) {
 
     //Checking email
     if (!validator.isEmail(email)) {
-      return errorResponse("Invalid email address", res, 401);
+      return errorResponse("Invalid email address format", res, 400);
     }
 
     //Checking password
-    if (newPassword !== confirmNewPassword) {
-      return errorResponse("New passwords must be identical", res, 401);
-    }
-
     if (
       oldPassword.length < 9 ||
       newPassword.length < 9 ||
@@ -29,7 +25,27 @@ export const editPassword: any = async function (req: ReqUser, res: Response) {
       return errorResponse(
         "Password must contain 9 or more characters",
         res,
-        401
+        400
+      );
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      return errorResponse("New passwords must be identical", res, 400);
+    }
+
+    //Checking is new password strong enough
+    async function checkPasswordValidation() {
+      return !validator.isStrongPassword(newPassword) ? false : true;
+    }
+
+    const checkPassValidation = await checkPasswordValidation();
+
+    if (!checkPassValidation) {
+      return errorResponse(
+        `New password must be longer than 8 characters and must contain at least one: uppercase letter, 
+             lowercase letter, digit and special character.`,
+        res,
+        400
       );
     }
 
@@ -38,14 +54,10 @@ export const editPassword: any = async function (req: ReqUser, res: Response) {
       `+active +password -__v`
     );
 
-    //Checking does user exist, is user active and is old password correct
-    if (
-      !user ||
-      !user.active ||
-      !(await bcrypt.compare(oldPassword, user.password))
-    ) {
+    //Checking does user exist and is user active
+    if (!user || !user.active) {
       return errorResponse(
-        "The user with that email is deactivated, does not exist or old password is incorrect.",
+        "The user with that email is deactivated or does not exist.",
         res,
         401
       );
@@ -60,20 +72,9 @@ export const editPassword: any = async function (req: ReqUser, res: Response) {
       );
     }
 
-    //Checking is new password strong enough
-    async function checkPasswordValidation() {
-      return !validator.isStrongPassword(newPassword) ? false : true;
-    }
-
-    const checkPassValidation = await checkPasswordValidation();
-
-    if (!checkPassValidation) {
-      return errorResponse(
-        `New password must be longer than 8 characters and must contain at least one: uppercase letter, 
-         lowercase letter, digit and special character.`,
-        res,
-        401
-      );
+    //Checking is old password correct
+    if (!(await bcrypt.compare(oldPassword, user.password))) {
+      return errorResponse("Old password is incorrect.", res, 401);
     }
 
     //Removing restart password data and saving new password

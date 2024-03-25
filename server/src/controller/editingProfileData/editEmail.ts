@@ -16,13 +16,13 @@ export const editEmail: any = async function (req: ReqUser, res: Response) {
       return errorResponse(
         "Password must contain 9 or more characters",
         res,
-        401
+        400
       );
     }
 
     //Checking email format
     if (!validator.isEmail(newEmail)) {
-      return errorResponse("Invalid new email address", res, 401);
+      return errorResponse("Invalid new email address format", res, 400);
     }
 
     //Getting user
@@ -46,18 +46,18 @@ export const editEmail: any = async function (req: ReqUser, res: Response) {
       );
     }
 
-    //Checking is password correct
-    if (!(await bcrypt.compare(password, user.password))) {
-      return errorResponse("Password is incorrect.", res, 401);
-    }
-
-    //Checking if the user has permission to change the password
+    //Checking if the user has permission to change email
     if (user.id !== req.user.id) {
       return errorResponse(
         "You don't have permission for this operation.",
         res,
         401
       );
+    }
+
+    //Checking is password correct
+    if (!(await bcrypt.compare(password, user.password))) {
+      return errorResponse("Password is incorrect.", res, 401);
     }
 
     //Adding new email

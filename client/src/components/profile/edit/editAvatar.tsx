@@ -1,14 +1,18 @@
 import { Dispatch, FormEvent, SetStateAction, useState, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { store } from "../../../store";
+import { useDispatch } from "react-redux";
 import { addProfileData } from "../../../store/slices/profile";
 import { catchErrors } from "../../../utilis/catchErrors";
+import { deleteOldAvatarMessage } from "../../../utilis/deleteOldAvatarMessage";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageError } from "../../elements/messages/messageError";
 import { WaitingDots } from "../../elements/waitingDots";
+import { ILoggedProfile } from "../../../interfaces/ILoggedProfile";
+import { IProfile } from "../../../interfaces/IProfile";
 import axios from "axios";
 
 interface Props {
+  loggedProfileData: ILoggedProfile;
+  profileData: IProfile;
   editError: string;
   setEditError: Dispatch<SetStateAction<string>>;
   editMessage: string;
@@ -17,6 +21,8 @@ interface Props {
 }
 
 export function EditAvatar({
+  loggedProfileData,
+  profileData,
   editError,
   setEditError,
   editMessage,
@@ -37,14 +43,6 @@ export function EditAvatar({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { loggedProfileData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.loggedProfile
-  );
-
-  const { profileData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
-  );
-
   //Form data states changes
   const handleChangeAvatarURL = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -52,45 +50,7 @@ export function EditAvatar({
     setAvatarURL(event.target.value);
   };
 
-  //Submit avatar
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsSaving(true);
-    try {
-      const formData = new FormData();
-      formData.append("email", loggedProfileData.email);
-      formData.append("avatarURL", avatarURL);
-      formData.append("uploadedAvatarURL", uploadedImageURL);
-      formData.append("uploadedPublicID", uploadedImagePublicID);
-
-      const response = await axios.patch(
-        "http://localhost:4000/api/v1/user/edit/avatar",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            authorization: `Bearer ${loggedProfileData?.token}`,
-          },
-        }
-      );
-
-      //Deleting old avatar
-      const deleteAvatarText: string = await deleteOldAvatarMessage();
-      dispatch(addProfileData(response.data.user));
-      setEditMessage(response.data.message + deleteAvatarText);
-      setAvatarURL("");
-      setUploadedImageURL("");
-      setUploadedImagePublicID("");
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    } catch (error) {
-      catchErrors(error, setEditError);
-    }
-    setIsSaving(false);
-  };
-
-  //Changing from copy/paste avatar URL to upload avatar (and vice versa)
+  //Changing from copy/paste avatar URL to upload avatar (and vice versa), after click on gray underlined text
   const handleChangeUpload = async () => {
     if (uploadImage) {
       setUploadedImageURL("");
@@ -98,15 +58,12 @@ export function EditAvatar({
       setUploadImage(false);
       setEditError("");
     } else {
-      setIsSaving(true);
       if (uploadedImageURL && uploadedImagePublicID) {
         await removeAvatar();
       }
       setAvatarURL("");
       setUploadImage(true);
     }
-    setEditMessage("");
-    setIsSaving(false);
   };
 
   //Avatar upload function
@@ -126,10 +83,12 @@ export function EditAvatar({
         reader.readAsDataURL(file);
       }
 
-      const formData = new FormData();
-      formData.append("image", file);
       setIsSaving(true);
 
+      const formData = new FormData();
+      formData.append("image", file);
+
+      //Uploading image in Cloudinary DB
       try {
         const response = await axios.post(
           "http://localhost:4000/api/v1/user/uploadAvatar",
@@ -160,6 +119,7 @@ export function EditAvatar({
   const removeAvatar = async () => {
     setIsSaving(true);
     try {
+      //Removing image from Cloudinary DB
       await axios.delete(
         `http://localhost:4000/api/v1/user/deleteImage/${uploadedImagePublicID}`,
         {
@@ -177,31 +137,46 @@ export function EditAvatar({
     setIsSaving(false);
   };
 
-  //Delete avatar function (deleting old avatar from Cloudinary database, after deleting from profile)
-  const deleteOldAvatarMessage = async () => {
-    if (profileData?.avatar.uploadedAvatar.publicID) {
-      try {
-        //Deleting avatar from Cloudinary database
-        await axios.delete(
-          `http://localhost:4000/api/v1/user/deleteImage/${profileData?.avatar.uploadedAvatar.publicID}`,
-          {
-            headers: {
-              authorization: `Bearer ${loggedProfileData?.token}`,
-            },
-          }
-        );
-        return " Old user avatar is succesfully deleted too.";
-      } catch (error: any) {
-        if (
-          error?.response?.data?.status === "fail" &&
-          typeof error?.response?.data?.message === `string`
-        ) {
-          return ` ${error.response.data.message}`;
-        } else {
-          return " Old user's avatar is not deleted";
+  //Submit avatar (final confirmation)
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+    try {
+      const formData = new FormData();
+      formData.append("email", loggedProfileData.email);
+      formData.append("avatarURL", avatarURL);
+      formData.append("uploadedAvatarURL", uploadedImageURL);
+      formData.append("uploadedPublicID", uploadedImagePublicID);
+
+      //Saving new avatar and deleting old one (Mongo DB)
+      const response = await axios.patch(
+        "http://localhost:4000/api/v1/user/edit/avatar",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${loggedProfileData?.token}`,
+          },
         }
+      );
+
+      //Removing old avatar from Cloudinary DB
+      const deleteAvatarText: string = await deleteOldAvatarMessage(
+        profileData,
+        loggedProfileData
+      );
+      dispatch(addProfileData(response.data.user));
+      setEditMessage(response.data.message + deleteAvatarText);
+      setAvatarURL("");
+      setUploadedImageURL("");
+      setUploadedImagePublicID("");
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
       }
-    } else return "";
+    } catch (error) {
+      catchErrors(error, setEditError);
+    }
+    setIsSaving(false);
   };
 
   return (

@@ -1,16 +1,16 @@
 import React, { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
 import { addProfileData } from "../../../store/slices/profile";
 import { catchErrors } from "../../../utilis/catchErrors";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageError } from "../../elements/messages/messageError";
 import { WaitingDots } from "../../elements/waitingDots";
 import { countries as countriesList } from "../../../data/countries";
+import { ILoggedProfile } from "../../../interfaces/ILoggedProfile";
 import axios from "axios";
 
 interface Props {
+  loggedProfileData: ILoggedProfile;
   editError: string;
   setEditError: Dispatch<SetStateAction<string>>;
   editMessage: string;
@@ -19,6 +19,7 @@ interface Props {
 }
 
 export function EditLocationCountry({
+  loggedProfileData,
   editError,
   setEditError,
   editMessage,
@@ -32,10 +33,6 @@ export function EditLocationCountry({
 
   //Other states
   const [isSaving, setIsSaving] = useState<boolean>(false);
-
-  const { loggedProfileData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.loggedProfile
-  );
 
   const dispatch = useDispatch();
 
@@ -55,7 +52,6 @@ export function EditLocationCountry({
   //Submit function
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     setIsSaving(true);
 
     try {

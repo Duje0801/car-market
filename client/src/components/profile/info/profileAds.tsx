@@ -1,13 +1,14 @@
 import { Dispatch, SetStateAction } from "react";
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
 import { ProfileDropdownSort } from "../dropdowns/profileDropdownSort";
 import { Pagination } from "../../elements/pagination";
 import { AdDisplayMessages } from "../../adSearchList/adDisplay/adDisplayMessages";
 import { AdDisplayNarrow } from "../../adSearchList/adDisplay/adDisplayNarrow";
 import { AdDisplayWide } from "../../adSearchList/adDisplay/adDisplayWide";
+import { IAd } from "../../../interfaces/IAd";
 
 interface Props {
+  profileAds: IAd[];
+  profileAdsNo: number;
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
   setSort: Dispatch<SetStateAction<string>>;
@@ -16,15 +17,13 @@ interface Props {
 }
 
 export function ProfileAds({
+  profileAds,
+  profileAdsNo,
   page,
   setPage,
   handleSeeMoreClick,
   handleSorting,
 }: Props) {
-  const { profileAds, profileAdsNo } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
-  );
-
   return (
     <div className="lg:w-2/3">
       {/* Profile ads sort button */}

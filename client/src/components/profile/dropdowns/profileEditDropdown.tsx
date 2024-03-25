@@ -1,15 +1,11 @@
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
+import { handleOpenModal } from "../../../utilis/handleOpenModal";
+import { IProfile } from "../../../interfaces/IProfile";
 
 interface Props {
-  handleOpenModal: (id: string) => void;
+  profileData: IProfile;
 }
 
-export function ProfileEditDropdown({ handleOpenModal }: Props) {
-  const { profileData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
-  );
-
+export function ProfileEditDropdown({ profileData }: Props) {
   return (
     <div className="flex justify-end mx-auto w-[90vw] mb-2 sm:w-[66vw] lg:w-2/3 lg:ml-auto lg:mr-4">
       <div className="dropdown dropdown-end">

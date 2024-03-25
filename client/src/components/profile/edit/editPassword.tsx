@@ -1,13 +1,13 @@
 import React, { FormEvent, useState, Dispatch, SetStateAction } from "react";
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
 import { catchErrors } from "../../../utilis/catchErrors";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageError } from "../../elements/messages/messageError";
 import { WaitingDots } from "../../elements/waitingDots";
+import { ILoggedProfile } from "../../../interfaces/ILoggedProfile";
 import axios from "axios";
 
 interface Props {
+  loggedProfileData: ILoggedProfile;
   editError: string;
   setEditError: Dispatch<SetStateAction<string>>;
   editMessage: string;
@@ -16,6 +16,7 @@ interface Props {
 }
 
 export function EditPassword({
+  loggedProfileData,
   editError,
   setEditError,
   editMessage,
@@ -29,10 +30,6 @@ export function EditPassword({
 
   //Other states
   const [isSaving, setIsSaving] = useState<boolean>(false);
-
-  const { loggedProfileData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.loggedProfile
-  );
 
   //Form data states changes
   const handleChangeOldPassword = (
@@ -56,17 +53,7 @@ export function EditPassword({
   //Submit function
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     setIsSaving(true);
-
-    if (newPassword !== confirmNewPassword) {
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmNewPassword("");
-      setIsSaving(false);
-      setEditError("New passwords must be identical");
-      return;
-    }
 
     try {
       const formData = new FormData();

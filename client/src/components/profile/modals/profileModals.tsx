@@ -1,37 +1,37 @@
 import { Dispatch, SetStateAction } from "react";
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
 import { EditAvatar } from "../edit/editAvatar";
 import { EditContact } from "../edit/editContact";
 import { EditLocationCountry } from "../edit/editLocationCountry";
 import { EditEmail } from "../edit/editEmail";
 import { EditPassword } from "../edit/editPassword";
+import { IProfile } from "../../../interfaces/IProfile";
+import { ILoggedProfile } from "../../../interfaces/ILoggedProfile";
 
 interface Props {
+  loggedProfileData: ILoggedProfile;
+  profileData: IProfile;
   editError: string;
   setEditError: Dispatch<SetStateAction<string>>;
   editMessage: string;
   setEditMessage: Dispatch<SetStateAction<string>>;
-  handleClickX: () => void;
   handleDeleteAvatar: () => void;
   handleDeactivateProfile: () => void;
   handleDeleteProfile: () => void;
+  handleClickX: () => void;
 }
 
 export function ProfileModals({
+  loggedProfileData,
+  profileData,
   editError,
   setEditError,
   editMessage,
   setEditMessage,
-  handleClickX,
   handleDeleteAvatar,
   handleDeactivateProfile,
   handleDeleteProfile,
+  handleClickX,
 }: Props) {
-  const { profileData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
-  );
-
   return (
     <>
       {/* Edit Avatar modal */}
@@ -47,6 +47,8 @@ export function ProfileModals({
           </form>
           <h3 className="font-bold text-lg mb-2">Edit Avatar</h3>
           <EditAvatar
+            loggedProfileData={loggedProfileData}
+            profileData={profileData}
             editError={editError}
             setEditError={setEditError}
             editMessage={editMessage}
@@ -101,6 +103,7 @@ export function ProfileModals({
           </form>
           <h3 className="font-bold text-lg mb-2">Edit Email</h3>
           <EditEmail
+            loggedProfileData={loggedProfileData}
             editError={editError}
             setEditError={setEditError}
             editMessage={editMessage}
@@ -123,6 +126,7 @@ export function ProfileModals({
           </form>
           <h3 className="font-bold text-lg mb-2">Edit Contact</h3>
           <EditContact
+            loggedProfileData={loggedProfileData}
             editError={editError}
             setEditError={setEditError}
             editMessage={editMessage}
@@ -145,6 +149,7 @@ export function ProfileModals({
           </form>
           <h3 className="font-bold text-lg mb-2">Edit Location and Country</h3>
           <EditLocationCountry
+            loggedProfileData={loggedProfileData}
             editError={editError}
             setEditError={setEditError}
             editMessage={editMessage}
@@ -167,6 +172,7 @@ export function ProfileModals({
           </form>
           <h3 className="font-bold text-lg mb-2">Edit Password</h3>
           <EditPassword
+            loggedProfileData={loggedProfileData}
             editError={editError}
             setEditError={setEditError}
             editMessage={editMessage}

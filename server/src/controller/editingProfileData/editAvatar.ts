@@ -1,13 +1,26 @@
 import { Response } from "express";
 import { User } from "../../models/userModel";
-import { ReqUser } from "../../interfaces/reqUser";
-import { IUser } from "../../interfaces/user";
 import { errorResponse } from "../../utilis/errorHandling/errorResponse";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
+import { ReqUser } from "../../interfaces/reqUser";
+import { IUser } from "../../interfaces/user";
 
 export const editAvatar: any = async function (req: ReqUser, res: Response) {
   try {
     const { email, avatarURL, uploadedAvatarURL, uploadedPublicID } = req.body;
+
+    //Checking avatar link length
+    if (
+      avatarURL.length > 200 ||
+      uploadedAvatarURL.length > 200 ||
+      uploadedPublicID.length > 200
+    ) {
+      return errorResponse(
+        "URL links are too long, the maximum number of characters in links is 200.",
+        res,
+        400
+      );
+    }
 
     //Getting user
     const user: IUser | null = await User.findOne({ email })
@@ -39,19 +52,6 @@ export const editAvatar: any = async function (req: ReqUser, res: Response) {
       );
     }
 
-    //Checking avatar link length
-    if (
-      avatarURL.length > 200 ||
-      uploadedAvatarURL.length > 200 ||
-      uploadedPublicID.length > 200
-    ) {
-      return errorResponse(
-        "URL links are too long, the maximum number of characters in links is 200.",
-        res,
-        400
-      );
-    }
-
     //Adding new avatar links
     if (avatarURL) {
       user.avatar.avatarURL = avatarURL;
@@ -62,7 +62,7 @@ export const editAvatar: any = async function (req: ReqUser, res: Response) {
       user.avatar.uploadedAvatar.imageUrl = uploadedAvatarURL;
       user.avatar.uploadedAvatar.publicID = uploadedPublicID;
     } else {
-      return errorResponse("Can't save images, please try again.", res, 400);
+      return errorResponse("Can't save images, please try again.", res, 404);
     }
 
     //Saving new avatar links

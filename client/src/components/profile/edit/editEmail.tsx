@@ -1,6 +1,5 @@
 import React, { Dispatch, FormEvent, SetStateAction, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { store } from "../../../store";
+import { useDispatch } from "react-redux";
 import { catchErrors } from "../../../utilis/catchErrors";
 import { addLoggedProfileData } from "../../../store/slices/loggedProfile";
 import { addProfileData } from "../../../store/slices/profile";
@@ -11,6 +10,7 @@ import { ILoggedProfile } from "../../../interfaces/ILoggedProfile";
 import axios from "axios";
 
 interface Props {
+  loggedProfileData: ILoggedProfile;
   editError: string;
   setEditError: Dispatch<SetStateAction<string>>;
   editMessage: string;
@@ -19,6 +19,7 @@ interface Props {
 }
 
 export function EditEmail({
+  loggedProfileData,
   editError,
   setEditError,
   editMessage,
@@ -31,10 +32,6 @@ export function EditEmail({
 
   //Other states
   const [isSaving, setIsSaving] = useState<boolean>(false);
-
-  const { loggedProfileData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.loggedProfile
-  );
 
   const dispatch = useDispatch();
 
@@ -50,7 +47,6 @@ export function EditEmail({
   //Submit function
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     setIsSaving(true);
 
     try {

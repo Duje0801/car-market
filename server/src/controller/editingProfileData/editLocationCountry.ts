@@ -14,49 +14,6 @@ export const editLocationCountry: any = async function (
   try {
     const { email, newLocation, newCountry, password } = req.body;
 
-    //Checking password length
-    if (password.length < 9) {
-      return errorResponse(
-        "Password must contain 9 or more characters",
-        res,
-        401
-      );
-    }
-
-    //Getting user
-    const user: IUser | null = await User.findOne({ email })
-      .select(`+active +password -updatedAt -__v`)
-      .populate({
-        path: `ads`,
-        options: { sort: { createdAt: -1 } },
-        select: {
-          updatedAt: 0,
-          __v: 0,
-        },
-      });
-
-    //Checking does user exist, is user active and is password correct
-    if (!user || !user.active) {
-      return errorResponse(
-        "This user is deactivated or does not exist.",
-        res,
-        401
-      );
-    }
-
-    if (!(await bcrypt.compare(password, user.password))) {
-      return errorResponse("Password is incorrect.", res, 401);
-    }
-
-    //Checking if the user has permission to change the password
-    if (user.id !== req.user.id) {
-      return errorResponse(
-        "You don't have permission for this operation.",
-        res,
-        401
-      );
-    }
-
     //Checking location length
     if (newLocation.length > 20) {
       return errorResponse(
@@ -81,6 +38,50 @@ export const editLocationCountry: any = async function (
     ];
     if (!allowedCountries.includes(newCountry)) {
       return errorResponse("The country you entered is not allowed.", res, 400);
+    }
+
+    //Checking password length
+    if (password.length < 9) {
+      return errorResponse(
+        "Password must contain 9 or more characters",
+        res,
+        400
+      );
+    }
+
+    //Getting user
+    const user: IUser | null = await User.findOne({ email })
+      .select(`+active +password -updatedAt -__v`)
+      .populate({
+        path: `ads`,
+        options: { sort: { createdAt: -1 } },
+        select: {
+          updatedAt: 0,
+          __v: 0,
+        },
+      });
+
+    //Checking does user exist, is user active and is password correct
+    if (!user || !user.active) {
+      return errorResponse(
+        "This user is deactivated or does not exist.",
+        res,
+        401
+      );
+    }
+
+    //Checking if the user has permission to change the password
+    if (user.id !== req.user.id) {
+      return errorResponse(
+        "You don't have permission for this operation.",
+        res,
+        401
+      );
+    }
+
+    //Checking password
+    if (!(await bcrypt.compare(password, user.password))) {
+      return errorResponse("Password is incorrect.", res, 401);
     }
 
     //Adding new user data (location and country)

@@ -1,17 +1,14 @@
-import { useSelector } from "react-redux";
-import { store } from "../../../store";
 import { MessageSuccessfully } from "../../elements/messages/messageSuccessfully";
 import { MessageError } from "../../elements/messages/messageError";
+import { IProfile } from "../../../interfaces/IProfile";
 
 interface Props {
+  profileData:IProfile;
   error: string;
   message: string;
 }
 
-export function ProfileMessages({ error, message }: Props) {
-  const { profileData } = useSelector(
-    (state: ReturnType<typeof store.getState>) => state.profile
-  );
+export function ProfileMessages({ profileData, error, message }: Props) {
   return (
     <>
       {/* Error */}

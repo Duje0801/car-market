@@ -1,10 +1,10 @@
 import { Response } from "express";
 import { User } from "../../models/userModel";
-import { IUser } from "../../interfaces/user";
-import { ReqUser } from "../../interfaces/reqUser";
+import { Ad } from "../../models/adModel";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
 import { errorResponse } from "../../utilis/errorHandling/errorResponse";
-import { Ad } from "../../models/adModel";
+import { IUser } from "../../interfaces/user";
+import { ReqUser } from "../../interfaces/reqUser";
 
 export const deactivateProfile: any = async function (
   req: ReqUser,
