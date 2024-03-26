@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import validator = require("validator");
 import bcrypt from "bcryptjs";
 import { User } from "../../models/userModel";
-import { IUser } from "../../interfaces/user";
 import { createToken } from "../../utilis/createToken";
 import { errorResponse } from "../../utilis/errorHandling/errorResponse";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
+import { IUser } from "../../interfaces/user";
 
 export const logIn: any = async function (req: Request, res: Response) {
   try {
@@ -13,7 +13,7 @@ export const logIn: any = async function (req: Request, res: Response) {
 
     //Checking email
     if (!validator.isEmail(email)) {
-      return errorResponse("Invalid email address", res, 401);
+      return errorResponse("Invalid email address format", res, 400);
     }
 
     //Checking password
@@ -21,7 +21,7 @@ export const logIn: any = async function (req: Request, res: Response) {
       return errorResponse(
         "Password must contain 9 or more characters",
         res,
-        401
+        400
       );
     }
 
@@ -37,8 +37,7 @@ export const logIn: any = async function (req: Request, res: Response) {
     )
       return errorResponse("Your email or password is incorrect", res, 401);
 
-    if (!user.active)
-      return errorResponse("The user is deactivated", res, 401);
+    if (!user.active) return errorResponse("The user is deactivated", res, 401);
 
     //Creating token
     const token = createToken(user._id);

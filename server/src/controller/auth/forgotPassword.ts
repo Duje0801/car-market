@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 import validator = require("validator");
 import bcrypt from "bcryptjs";
 import { User } from "../../models/userModel";
-import { IUser } from "../../interfaces/user";
 import { errorResponse } from "../../utilis/errorHandling/errorResponse";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
 import { sendEmail } from "../../utilis/sendEmail";
+import { IUser } from "../../interfaces/user";
 
 export const forgotPassword: any = async function (
   req: Request,
@@ -16,7 +16,7 @@ export const forgotPassword: any = async function (
 
     //Checking email
     if (!validator.isEmail(email)) {
-      return errorResponse("Invalid email address format", res, 401);
+      return errorResponse("Invalid email address format", res, 400);
     }
 
     //Getting user profile

@@ -46,17 +46,7 @@ export function ResetPassword() {
   //Submit function
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     setIsSaving(true);
-
-    if (password !== confirmPassword) {
-      setPassword("");
-      setConfirmPassword("");
-      setToken("");
-      setIsSaving(false);
-      setError("Passwords must be identical");
-      return;
-    }
 
     try {
       const formData = new FormData();

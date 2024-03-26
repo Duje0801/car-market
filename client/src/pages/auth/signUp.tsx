@@ -68,17 +68,7 @@ export function SignUp() {
   //Submit function
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
     setIsSigningUp(true);
-
-    if (password !== confirmPassword) {
-      setIsSigningUp(false);
-      setPassword("");
-      setConfirmPassword("");
-      setError("Passwords must be identical");
-      window.scrollTo(0, 0);
-      return;
-    }
 
     try {
       const formData = new FormData();

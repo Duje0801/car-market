@@ -1,10 +1,10 @@
 import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../../models/userModel";
-import { IUser } from "../../interfaces/user";
-import { ReqUser } from "../../interfaces/reqUser";
 import { errorResponse } from "../../utilis/errorHandling/errorResponse";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
+import { IUser } from "../../interfaces/user";
+import { ReqUser } from "../../interfaces/reqUser";
 
 //Dotenv
 import dotenv from "dotenv";

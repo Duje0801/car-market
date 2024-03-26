@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import validator = require("validator");
 import bcrypt from "bcryptjs";
 import { User } from "../../models/userModel";
-import { IUser } from "../../interfaces/user";
 import { errorResponse } from "../../utilis/errorHandling/errorResponse";
 import { errorHandler } from "../../utilis/errorHandling/errorHandler";
+import { IUser } from "../../interfaces/user";
 
 export const resetPassword: any = async function (req: Request, res: Response) {
   try {
@@ -12,18 +12,34 @@ export const resetPassword: any = async function (req: Request, res: Response) {
 
     //Checking email
     if (!validator.isEmail(email)) {
-      return errorResponse("Invalid email address form", res, 401);
+      return errorResponse("Invalid email address format", res, 400);
     }
 
     //Checking password
-    if (password !== confirmPassword)
-      return errorResponse("Passwords must be identical", res, 401);
-
     if (password.length < 9 || confirmPassword.length < 9) {
       return errorResponse(
         "Password must contain 9 or more characters",
         res,
-        401
+        400
+      );
+    }
+
+    if (password !== confirmPassword)
+      return errorResponse("Passwords must be identical", res, 400);
+
+    //Checking is new password strong enough
+    async function checkPasswordValidation() {
+      return !validator.isStrongPassword(password) ? false : true;
+    }
+
+    const checkPassValidation = await checkPasswordValidation();
+
+    if (!checkPassValidation) {
+      return errorResponse(
+        `New password must be longer than 8 characters and must contain at least one: uppercase letter, 
+             lowercase letter, digit and special character.`,
+        res,
+        400
       );
     }
 
@@ -40,28 +56,12 @@ export const resetPassword: any = async function (req: Request, res: Response) {
         401
       );
 
-    //Checking is new password strong enough
-    async function checkPasswordValidation() {
-      return !validator.isStrongPassword(password) ? false : true;
-    }
-
-    const checkPassValidation = await checkPasswordValidation();
-
-    if (!checkPassValidation) {
-      return errorResponse(
-        `New password must be longer than 8 characters and must contain at least one: uppercase letter, 
-         lowercase letter, digit and special character.`,
-        res,
-        401
-      );
-    }
-
     //Checking token
     if (
       token.length !== 6 ||
       !(await bcrypt.compare(token, user.restartPasswordCode!))
     )
-      return errorResponse("Invalid token code", res, 401);
+      return errorResponse("Invalid token code", res, 400);
 
     if (Date.now() > user.restartPasswordCodeExpire!.getTime())
       return errorResponse(
