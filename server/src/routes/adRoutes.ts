@@ -18,7 +18,6 @@ export const router: Router = express.Router();
 const upload = multer({ dest: "uploads/" });
 
 router.route("/find/:id").get(oneAd);
-router.route("/find/edit/:id").get(oneAd);
 router.route("/search").get(searchAds);
 router.route("/searchTotal").get(searchAdsTotal);
 router.route("/newest").get(newestAds);
