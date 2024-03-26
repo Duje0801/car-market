@@ -34,6 +34,9 @@ const errorHandler = (error: any, req: Request, res: Response) => {
     } else if (error.name === "TokenExpiredError") {
       errorText = `Token expiried`;
       status = 401;
+    } else if (error.name === "Too many requests") {
+      errorText = `Too many requests from this IP address, please try again in 30 minutes.`;
+      status = 401;
     }
 
     return res.status(status).json({
