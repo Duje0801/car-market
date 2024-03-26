@@ -13,7 +13,7 @@ export function Home() {
     <div>
       {/*Error box*/}
       {error && (
-        <div className="mx-auto mb-6 w-[90vw] md:w-[70vw] lg:w-full lg:px-16">
+        <div className="mx-auto mb-6 w-[90vw] md:w-[70vw] lg:w-full lg:px-6">
           <MessageError message={error} />
         </div>
       )}
