@@ -38,7 +38,7 @@ export function ForgotPassword() {
       formData.append("email", email);
 
       await axios.post(
-        "http://localhost:4000/api/v1/user/forgotPassword",
+        "https://car-market-production.up.railway.app/api/v1/user/forgotPassword",
         formData,
         {
           headers: {

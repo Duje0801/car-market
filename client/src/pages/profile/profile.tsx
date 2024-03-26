@@ -52,7 +52,7 @@ export function Profile() {
   const fetchProfileData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/v1/user/profile/${
+        `https://car-market-production.up.railway.app/api/v1/user/profile/${
           params.id
         }/?sort=${sort}&page=${(page - 1) * 5}`,
         {
@@ -75,7 +75,7 @@ export function Profile() {
     try {
       //Deleting avatar from Mongo DB
       const response = await axios.delete(
-        `http://localhost:4000/api/v1/user/deleteAvatar/`,
+        `https://car-market-production.up.railway.app/api/v1/user/deleteAvatar/`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -99,7 +99,7 @@ export function Profile() {
   const handleDeactivateProfile = async () => {
     try {
       const response = await axios.delete(
-        `http://localhost:4000/api/v1/user/deactivate/${profileData?.id}`,
+        `https://car-market-production.up.railway.app/api/v1/user/deactivate/${profileData?.id}`,
         {
           headers: {
             authorization: `Bearer ${loggedProfileData?.token}`,
@@ -125,7 +125,7 @@ export function Profile() {
     try {
       //Deleting profile (and all ads) from Mongo DB
       await axios.delete(
-        `http://localhost:4000/api/v1/user/delete/${profileData?.id}`,
+        `https://car-market-production.up.railway.app/api/v1/user/delete/${profileData?.id}`,
         {
           headers: {
             authorization: `Bearer ${loggedProfileData?.token}`,

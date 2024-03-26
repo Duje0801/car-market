@@ -46,7 +46,7 @@ export function LogIn() {
       formData.append("password", password);
 
       const response = await axios.post(
-        "http://localhost:4000/api/v1/user/logIn",
+        "https://car-market-production.up.railway.app/api/v1/user/logIn",
         formData,
         {
           headers: {

@@ -13,7 +13,7 @@ export async function deleteOldAvatarImage(
     try {
       //Deleting avatar from Cloudinary database
       await axios.delete(
-        `http://localhost:4000/api/v1/user/deleteImage/${profileData?.avatar.uploadedAvatar.publicID}`,
+        `https://car-market-production.up.railway.app/api/v1/user/deleteImage/${profileData?.avatar.uploadedAvatar.publicID}`,
         {
           headers: {
             authorization: `Bearer ${loggedProfileData?.token}`,

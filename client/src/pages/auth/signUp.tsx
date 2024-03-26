@@ -81,7 +81,7 @@ export function SignUp() {
       formData.append("country", country);
       formData.append("userType", userType);
 
-      await axios.post("http://localhost:4000/api/v1/user/signUp", formData, {
+      await axios.post("https://car-market-production.up.railway.app/api/v1/user/signUp", formData, {
         headers: {
           "Content-Type": "application/json",
         },

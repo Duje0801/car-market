@@ -10,7 +10,7 @@ export async function deleteAvatar(
 ) {
   try {
     await axios.delete(
-      `http://localhost:4000/api/v1/user/deleteImage/${publicID}`,
+      `https://car-market-production.up.railway.app/api/v1/user/deleteImage/${publicID}`,
       {
         headers: {
           authorization: `Bearer ${loggedProfileData?.token}`,

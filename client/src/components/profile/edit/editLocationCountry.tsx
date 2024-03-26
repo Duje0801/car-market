@@ -62,7 +62,7 @@ export function EditLocationCountry({
       formData.append("password", password);
 
       const response = await axios.patch(
-        "http://localhost:4000/api/v1/user/edit/locationCountry",
+        "https://car-market-production.up.railway.app/api/v1/user/edit/locationCountry",
         formData,
         {
           headers: {

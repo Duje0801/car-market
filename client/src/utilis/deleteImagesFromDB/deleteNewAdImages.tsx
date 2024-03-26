@@ -24,7 +24,7 @@ export async function deleteNewAdImages(
 
   //Creating fetch for all images
   const promises = imagesDeleteList.map((publicID) =>
-    axios.delete(`http://localhost:4000/api/v1/ad/deleteImage/${publicID}`, {
+    axios.delete(`https://car-market-production.up.railway.app/api/v1/ad/deleteImage/${publicID}`, {
       headers: {
         authorization: `Bearer ${loggedProfileData?.token}`,
       },

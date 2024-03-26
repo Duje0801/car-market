@@ -91,7 +91,7 @@ export function EditAvatar({
       //Uploading image in Cloudinary DB
       try {
         const response = await axios.post(
-          "http://localhost:4000/api/v1/user/uploadAvatar",
+          "https://car-market-production.up.railway.app/api/v1/user/uploadAvatar",
           formData,
           {
             headers: {
@@ -121,7 +121,7 @@ export function EditAvatar({
     try {
       //Removing image from Cloudinary DB
       await axios.delete(
-        `http://localhost:4000/api/v1/user/deleteImage/${uploadedImagePublicID}`,
+        `https://car-market-production.up.railway.app/api/v1/user/deleteImage/${uploadedImagePublicID}`,
         {
           headers: {
             authorization: `Bearer ${loggedProfileData?.token}`,
@@ -150,7 +150,7 @@ export function EditAvatar({
 
       //Saving new avatar and deleting old one (Mongo DB)
       const response = await axios.patch(
-        "http://localhost:4000/api/v1/user/edit/avatar",
+        "https://car-market-production.up.railway.app/api/v1/user/edit/avatar",
         formData,
         {
           headers: {

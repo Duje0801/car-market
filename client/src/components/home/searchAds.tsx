@@ -207,7 +207,7 @@ export function SearchAds({ setError }: Props) {
 
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/v1/ad/searchTotal/?${queryParams}`,
+        `https://car-market-production.up.railway.app/api/v1/ad/searchTotal/?${queryParams}`,
         {
           headers: {
             authorization: `Bearer ${loggedProfileData?.token}`,

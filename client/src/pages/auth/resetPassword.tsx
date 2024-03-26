@@ -56,7 +56,7 @@ export function ResetPassword() {
       formData.append("token", token);
 
       await axios.post(
-        "http://localhost:4000/api/v1/user/resetPassword",
+        "https://car-market-production.up.railway.app/api/v1/user/resetPassword",
         formData,
         {
           headers: {

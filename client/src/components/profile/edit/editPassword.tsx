@@ -63,7 +63,7 @@ export function EditPassword({
       formData.append("confirmNewPassword", confirmNewPassword);
 
       const response = await axios.patch(
-        "http://localhost:4000/api/v1/user/edit/password",
+        "https://car-market-production.up.railway.app/api/v1/user/edit/password",
         formData,
         {
           headers: {

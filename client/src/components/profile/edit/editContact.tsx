@@ -56,7 +56,7 @@ export function EditContact({
       formData.append("password", password);
 
       const response = await axios.patch(
-        "http://localhost:4000/api/v1/user/edit/contact",
+        "https://car-market-production.up.railway.app/api/v1/user/edit/contact",
         formData,
         {
           headers: {

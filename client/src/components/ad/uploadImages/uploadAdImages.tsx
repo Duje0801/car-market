@@ -61,7 +61,7 @@ export function UploadAdImages({
 
       try {
         const response = await axios.post(
-          "http://localhost:4000/api/v1/ad/uploadImage",
+          "https://car-market-production.up.railway.app/api/v1/ad/uploadImage",
           formData,
           {
             headers: {

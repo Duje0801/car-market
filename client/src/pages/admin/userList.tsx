@@ -46,7 +46,7 @@ export function UserList() {
       }
 
       const response = await axios.get(
-        `http://localhost:4000/api/v1/user/admin/userList${
+        `https://car-market-production.up.railway.app/api/v1/user/admin/userList${
           url.length > 2 ? url : ""
         }`,
         {
