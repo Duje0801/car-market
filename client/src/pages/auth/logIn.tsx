@@ -108,7 +108,12 @@ export function LogIn() {
               className="card bg-base-200 p-4 gap-2 shadow-xl mx-auto mt-8 rounded-lg w-[80vw] md:w-[50vw] lg:w-[30vw]"
             >
               <div className="card-body p-4">
-                <p className="card-title mx-auto text-3xl xxl:text-4xl">Log in</p>
+                <p className="card-title mx-auto text-3xl xxl:text-4xl">
+                  Log in
+                </p>
+                <p className="text-sm text-center">
+                  email: seller05@gmail.com password: password123ABC$
+                </p>
                 <label className="form-control w-full max-w-md mx-auto">
                   <div className="label p-0">
                     <span className="label-text xxl:text-xl">Email</span>
@@ -149,12 +154,18 @@ export function LogIn() {
                 </p>
                 <p className="text-center xxl:text-xl">
                   Not a member yet?{" "}
-                  <a className="link xxl:text-xl" onClick={() => handleClick(`signUp`)}>
+                  <a
+                    className="link xxl:text-xl"
+                    onClick={() => handleClick(`signUp`)}
+                  >
                     Sign up
                   </a>
                 </p>
                 <div className="card-actions justify-end mt-4">
-                  <button type="submit" className="btn bg-black text-white xxl:text-xl">
+                  <button
+                    type="submit"
+                    className="btn bg-black text-white xxl:text-xl"
+                  >
                     Submit
                   </button>
                 </div>
