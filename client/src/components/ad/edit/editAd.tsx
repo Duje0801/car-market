@@ -171,7 +171,7 @@ export function EditAd({ loggedProfileData, adData }: Props) {
       formData.append("adImages", JSON.stringify(adImages));
 
       const response = await axios.patch(
-        `https://car-market-production.up.railway.app//api/v1/ad/edit/${params.id}`,
+        `https://car-market-production.up.railway.app/api/v1/ad/edit/${params.id}`,
         formData,
         {
           headers: {
