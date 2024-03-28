@@ -48,6 +48,7 @@ export function AdSLFilter({ loggedProfileData, isChecked }: Props) {
   const [searchId, setSearchId] = useState<string>("");
   const [warningMessage, setWarningMessage] = useState<string>("");
   const [lockedNewCar, setLockedNewCar] = useState<boolean>(false);
+  const [allFieldsChecked, setAllFieldsChecked] = useState<boolean>(false);
 
   const params = useParams();
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ export function AdSLFilter({ loggedProfileData, isChecked }: Props) {
 
   useEffect(() => {
     //Search data loading
-    params.id &&
+    if (isChecked && params.id) {
       params.id
         .split("&")
         .map((el) => {
@@ -85,11 +86,13 @@ export function AdSLFilter({ loggedProfileData, isChecked }: Props) {
           else if (el[0] === `minPower`) return setMinPower(el[1]);
           else if (el[0] === `maxPower`) return setMaxPower(el[1]);
         });
+      setAllFieldsChecked(true);
+    }
   }, []);
 
   //New fetch after any change (getting total results number (in results button))
   useEffect(() => {
-    if (isChecked) {
+    if (allFieldsChecked) {
       fetchAdsTotalNo();
     }
   }, [

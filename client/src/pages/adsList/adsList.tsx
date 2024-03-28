@@ -102,15 +102,17 @@ export function AdsList() {
     return (
       <div className="flex justify-center w-full">
         {/* Ads filter - left, if screen is wider than 768px */}
-        <div className="hidden w-2/5 md:block md:w-1/3">
-          <div className="w-11/12 mx-auto mt-12 bg-base-200 py-4 shadow-xl rounded-lg md:w-10/12 md:mr-2 lg:w-2/3 lg:mr-4">
-            <h3 className="font-bold text-lg text-center">Filter</h3>
-            <AdSLFilter
-              loggedProfileData={loggedProfileData}
-              isChecked={isChecked}
-            />
+        {window.innerWidth < 768 ? null : (
+          <div className="hidden w-2/5 md:block md:w-1/3">
+            <div className="w-11/12 mx-auto mt-12 bg-base-200 py-4 shadow-xl rounded-lg md:w-10/12 md:mr-2 lg:w-2/3 lg:mr-4">
+              <h3 className="font-bold text-lg text-center">Filter</h3>
+              <AdSLFilter
+                loggedProfileData={loggedProfileData}
+                isChecked={isChecked}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Ads column */}
         <div className="md:w-2/3">
@@ -148,11 +150,13 @@ export function AdsList() {
           </div>
         </div>
 
-        {/* Modal- active only if screen is narrower than 768px */}
-        <AdSLModal
-          loggedProfileData={loggedProfileData}
-          isChecked={isChecked}
-        />
+        {/* Modal- active only if screen is 768px or narrower */}
+        {window.innerWidth < 768 ? (
+          <AdSLModal
+            loggedProfileData={loggedProfileData}
+            isChecked={isChecked}
+          />
+        ) : null}
       </div>
     );
   }
