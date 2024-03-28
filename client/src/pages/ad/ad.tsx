@@ -124,13 +124,7 @@ export function Ad() {
           />
 
           {/*Dropdown menu*/}
-          {loggedProfileData.username === adData.username ||
-          loggedProfileData.username === `admin` ? (
-            <AdDropdowns
-              loggedProfileData={loggedProfileData}
-              adData={adData}
-            />
-          ) : null}
+          <AdDropdowns loggedProfileData={loggedProfileData} adData={adData} />
 
           {/* Ad display */}
           <AdInfoBox adData={adData} />
