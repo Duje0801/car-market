@@ -1,3 +1,4 @@
+import fs from "fs";
 import { Request, Response } from "express";
 import { v2 as cloudinary } from "cloudinary";
 
@@ -20,9 +21,20 @@ const uploadImage: any = async function (req: Request, res: Response) {
         : { width: 200, height: 200, crop: "fill" };
 
     try {
-      const cloudinaryUpload = await cloudinary.uploader.upload(req.file.path, {
+      const filePath = req.file.path;
+
+      //Uploading image to Cloudinary DB
+      const cloudinaryUpload = await cloudinary.uploader.upload(filePath, {
         transformation: [imageDimensions],
       });
+
+      //Immediately delete the image from the server after it is uploaded to Cloudinary DB
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.error("Error while deleting image from server");
+        }
+      });
+
       res.status(200).json({
         status: "success",
         message: "Image successfully uploaded",
