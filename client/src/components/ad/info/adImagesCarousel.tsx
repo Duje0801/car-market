@@ -40,7 +40,7 @@ export function AdImagesCarousel({ adData }: Props) {
       {/* Image carousel */}
       {adData && adData.images.length > 0 && (
         <div className="flex lg:w-1/2">
-          <div className="carousel carousel-item h-[40vh] w-full bg-black rounded-lg relative lg:h-full">
+          <div className="carousel carousel-item h-[40vh] w-full bg-black rounded-lg relative overflow-hidden lg:h-full">
             {/* Image in box */}
             <img
               src={adData.images[carouselImgState.number].imageUrl}
