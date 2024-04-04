@@ -149,7 +149,7 @@ export function NewAd() {
       formData.append("adImages", JSON.stringify(adImages));
 
       const response = await axios.post(
-        "https://car-market-production.up.railway.app/api/v1/ad/new",
+        "https://car-market-production.up.railway.app/api/v1/car/new",
         formData,
         {
           headers: {

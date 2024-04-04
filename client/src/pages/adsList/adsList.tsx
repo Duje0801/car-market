@@ -43,7 +43,7 @@ export function AdsList() {
   const fetchAdsData = async () => {
     try {
       const response = await axios.get(
-        `https://car-market-production.up.railway.app/api/v1/ad/search/?sort=${sort}&page=${
+        `https://car-market-production.up.railway.app/api/v1/car/search/?sort=${sort}&page=${
           (page - 1) * 5
         }&${params.id}`,
         {

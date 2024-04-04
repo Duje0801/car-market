@@ -42,7 +42,7 @@ export function Ad() {
   const fetchAdData = async () => {
     try {
       const response = await axios.get(
-        `https://car-market-production.up.railway.app/api/v1/ad/find/${params.id}`,
+        `https://car-market-production.up.railway.app/api/v1/car/find/${params.id}`,
         {
           headers: {
             authorization: `Bearer ${loggedProfileData?.token}`,
@@ -61,7 +61,7 @@ export function Ad() {
     setIsLoaded(false);
     try {
       const response = await axios.delete(
-        `https://car-market-production.up.railway.app/api/v1/ad/${operation}/${params.id}`,
+        `https://car-market-production.up.railway.app/api/v1/car/${operation}/${params.id}`,
         {
           headers: {
             authorization: `Bearer ${loggedProfileData?.token}`,

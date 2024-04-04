@@ -21,7 +21,7 @@ export function NewestAds() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://car-market-production.up.railway.app/api/v1/ad/newest/?sort=-createdAt`
+        `https://car-market-production.up.railway.app/api/v1/car/newest/?sort=-createdAt`
       );
       setNewestAds(response.data.ads);
       setIsLoading(false);
