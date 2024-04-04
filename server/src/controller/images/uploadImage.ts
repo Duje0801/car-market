@@ -16,7 +16,7 @@ const uploadImage: any = async function (req: Request, res: Response) {
   if (req.file) {
     //Ad images and avatars have different dimensions
     const imageDimensions =
-      req.originalUrl.split("/")[3] === "ad"
+      req.originalUrl.split("/")[3] === "car"
         ? { height: 800 }
         : { width: 200, height: 200, crop: "fill" };
 
