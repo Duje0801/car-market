@@ -33,7 +33,7 @@ app.use(
 
 //Routes
 app.use(`/api/v1/user`, userRoutes);
-app.use(`/api/v1/ad`, adRoutes);
+app.use(`/api/v1/car`, adRoutes);
 app.all(`*`, routeDontExist);
 
 //Connection to MongoDB
